@@ -1,4 +1,5 @@
 from PIL import Image
+import colorsys
 
 
 class Color(object):
@@ -18,14 +19,8 @@ class Color(object):
 
     @property
     def HSV(self):
-        pass
+        return colorsys.rgb_to_hsv(*self.RGB)
 
     @property
-    def HSL(self):
-        pass
-
-
-if __name__ == '__main__':
-
-    C = Color(35, 12, 255)
-    C.display()
+    def HLS(self):
+        return colorsys.rgb_to_hls(*self.RGB)
