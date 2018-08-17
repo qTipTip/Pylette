@@ -18,9 +18,9 @@ class Color(object):
         img.show()
 
     @property
-    def HSV(self):
+    def hsv(self):
         return colorsys.rgb_to_hsv(*self.RGB)
 
     @property
-    def HLS(self):
+    def hls(self):
         return colorsys.rgb_to_hls(*self.RGB)
