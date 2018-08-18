@@ -2,8 +2,8 @@ from PIL import Image
 import numpy as np
 from sklearn.cluster import KMeans
 
-from Pylette.src.color import Color
-from Pylette.src.palette import Palette
+from Pylette.color import Color
+from Pylette.palette import Palette
 
 
 def extract_colors(image, palette_size=5, resize=True):
