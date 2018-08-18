@@ -4,8 +4,9 @@ import colorsys
 
 class Color(object):
 
-    def __init__(self, R, G, B):
-        self.RGB = (R, G, B)
+    def __init__(self, RGB, freq):
+        self.rgb = tuple([c for c in RGB])
+        self.freq = freq
 
     def display(self, w=50, h=50):
         """
@@ -14,13 +15,13 @@ class Color(object):
         :param h: height in pixels
         """
 
-        img = Image.new('RGB', size=(w, h), color=self.RGB)
+        img = Image.new('RGB', size=(w, h), color=self.rgb)
         img.show()
 
     @property
     def hsv(self):
-        return colorsys.rgb_to_hsv(*self.RGB)
+        return colorsys.rgb_to_hsv(*self.rgb)
 
     @property
     def hls(self):
-        return colorsys.rgb_to_hls(*self.RGB)
+        return colorsys.rgb_to_hls(*self.rgb)
