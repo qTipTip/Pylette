@@ -48,6 +48,16 @@ three_most_common_colors = palette[:3]
 ```
 As seen, slicing is also supported.
 
+The Palette object contains a list of Color objects, which contains a representation of the color in various color modes, with RGB being the default. Accessing the color attributes is easy:
+
+```python
+color = palette[0]
+
+print(color.rgb)
+print(color.hls)
+print(color.hsv)
+```
+
 To display the extracted color palette, simply call the `display`-method, which optionally takes a flag for saving the palette to an image file.
 The palette can be dumped to a CSV-file as well, where each row represents the RGB values and the corresponding color frequency (optional).
 ```python
