@@ -25,7 +25,7 @@ class Palette():
 
         if save_to_file:
             img.save('color_palette.jpg')
-
+
     def __getitem__(self, item):
         return self.colors[item]
 
