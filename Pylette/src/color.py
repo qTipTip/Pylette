@@ -4,9 +4,8 @@ import colorsys
 
 class Color(object):
 
-    def __init__(self, RGB, freq):
+    def __init__(self, RGB):
         self.rgb = tuple([c for c in RGB])
-        self.freq = freq
 
     def display(self, w=50, h=50):
         """

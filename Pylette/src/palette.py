@@ -21,3 +21,10 @@ class Palette():
             arr[:, i * h:(i + 1) * h, :] = c.rgb
         img = Image.fromarray(arr, 'RGB')
         img.show()
+
+    def __getitem__(self, item):
+        return self.colors[item]
+
+    def __len(self):
+        return self.number_of_colors
+
