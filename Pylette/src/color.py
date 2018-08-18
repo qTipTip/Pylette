@@ -4,8 +4,9 @@ import colorsys
 
 class Color(object):
 
-    def __init__(self, RGB):
+    def __init__(self, RGB, frequency):
         self.rgb = tuple([c for c in RGB])
+        self.freq = frequency
 
     def display(self, w=50, h=50):
         """
@@ -16,6 +17,9 @@ class Color(object):
 
         img = Image.new('RGB', size=(w, h), color=self.rgb)
         img.show()
+
+    def __lt__(self, other):
+        return self.freq < other.freq
 
     @property
     def hsv(self):

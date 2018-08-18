@@ -18,17 +18,25 @@ def extract_colors(image, palette_size=5, resize=True):
     # open the image
     img = Image.open(image).convert('RGB')
     if resize:
-        img = img.resize((64, 64))
+        img = img.resize((256, 256))
     width, height = img.size
     arr = np.asarray(img)
     arr = np.reshape(arr, (width * height, -1))
 
-    model = KMeans(n_clusters=palette_size, n_jobs=-1)
-    model.fit_predict(arr)
+    model = KMeans(n_clusters=palette_size)
+    labels = model.fit_predict(arr)
     palette = np.array(model.cluster_centers_, dtype=np.int)
+    color_count = np.bincount(labels)
+    color_frequency = color_count / float(np.sum(color_count))
 
     colors = []
-    for color in palette:
-        colors.append(Color(color))
-
+    for color, freq in zip(palette, color_frequency):
+        colors.append(Color(color, freq))
+    colors.sort()
     return Palette(colors)
+
+
+if __name__ == '__main__':
+    p = extract_colors('bilde.jpeg', palette_size=10, resize=True)
+    p.display()
+    p.to_csv('theodor.csv')
