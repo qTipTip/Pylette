@@ -28,3 +28,11 @@ class Palette():
     def __len(self):
         return self.number_of_colors
 
+    def to_csv(self, filename='palette.csv'):
+        """
+        Dumps the palette to a comma separated text file
+        :param filename: file to dump to
+        """
+        with open(filename, 'w') as palette_file:
+            for color in self.colors:
+                palette_file.write(','.join(map(str, color.rgb)) + '\n')

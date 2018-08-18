@@ -32,8 +32,3 @@ def extract_colors(image, palette_size=5, resize=True):
         colors.append(Color(color))
 
     return Palette(colors)
-
-
-if __name__ == '__main__':
-    palette = extract_colors('test.jpg', palette_size=10, resize=True)
-    palette.display()
