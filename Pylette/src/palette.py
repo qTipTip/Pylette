@@ -11,6 +11,7 @@ class Palette():
         """
 
         self.colors = colors
+        self.frequencies = [c.freq for c in colors]
         self.number_of_colors = len(colors)
 
     def display(self, w=50, h=50):
@@ -40,3 +41,18 @@ class Palette():
                 if frequency:
                     palette_file.write(',{}'.format(color.freq))
                 palette_file.write('\n')
+
+    def random_color(self, N, mode='frequency'):
+        """
+        Returns N random colors from the palette, either using the frequency of each color, or
+        choosing uniformly.
+        :param mode: frequency/uniform
+        :return: a color from the Palette
+        """
+
+        if mode is 'frequency':
+            pdf = self.frequencies
+        elif mode is 'uniform':
+            pdf = None
+
+        return np.random.choice(self.colors, size=N, p=pdf)

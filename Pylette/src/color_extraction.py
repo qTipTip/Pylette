@@ -32,11 +32,5 @@ def extract_colors(image, palette_size=5, resize=True):
     colors = []
     for color, freq in zip(palette, color_frequency):
         colors.append(Color(color, freq))
-    colors.sort()
+    colors.sort(reverse=True)
     return Palette(colors)
-
-
-if __name__ == '__main__':
-    p = extract_colors('bilde.jpeg', palette_size=10, resize=True)
-    p.display()
-    p.to_csv('theodor.csv')
