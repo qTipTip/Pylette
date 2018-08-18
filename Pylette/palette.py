@@ -14,7 +14,7 @@ class Palette():
         self.frequencies = [c.freq for c in colors]
         self.number_of_colors = len(colors)
 
-    def display(self, w=50, h=50):
+    def display(self, w=50, h=50, save_to_file=False):
         img = Image.new('RGB', size=(w * self.number_of_colors, h))
         arr = np.asarray(img).copy()
         for i in range(self.number_of_colors):
@@ -23,6 +23,9 @@ class Palette():
         img = Image.fromarray(arr, 'RGB')
         img.show()
 
+        if save_to_file:
+            img.save('color_palette.jpg')
+
     def __getitem__(self, item):
         return self.colors[item]
 
