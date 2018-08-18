@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.cluster import KMeans
 
 from Pylette.src.color import Color
+from Pylette.src.palette import Palette
 
 
 def extract_colors(image, palette_size=5, resize=True):
@@ -30,10 +31,8 @@ def extract_colors(image, palette_size=5, resize=True):
     for color in palette:
         colors.append(Color(color, 1))
 
-    return colors
+    return Palette(colors)
 
 if __name__ == '__main__':
     palette = extract_colors('test.jpg', palette_size=10, resize=True)
-
-    for color in palette:
-        color.display()
+    palette.display()
