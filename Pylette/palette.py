@@ -59,3 +59,7 @@ class Palette():
             pdf = None
 
         return np.random.choice(self.colors, size=N, p=pdf)
+
+    def __str__(self):
+
+        return ''.join(['({}, {}, {}, {}) \n'.format(c.rgb[0], c.rgb[1], c.rgb[2], c.freq) for c in self.colors])

@@ -24,21 +24,22 @@ def median_cut_extraction(arr, height, width, palette_size):
     # Each iteration, find the largest box, split it, remove original box from list of boxes, and add the two new boxes.
     while len(c) < palette_size:
         largest_c_idx = np.argmax(c)
+        # add the two new boxes to the list, while removing the split box.
         c = c[:largest_c_idx] + c[largest_c_idx].split() + c[largest_c_idx + 1:]
 
-    colors = [Color(box.average, box.size / full_box_size) for box in c]
-    colors.sort(reverse=True)
+    colors = [Color(map(int, box.average), box.size / full_box_size) for box in c]
 
     return colors
 
 
-def extract_colors(image, palette_size=5, resize=True, mode='KM'):
+def extract_colors(image, palette_size=5, resize=True, mode='KM', sort_mode='luminance'):
     """
     Extracts a set of 'palette_size' colors from the given image.
     :param image: path to Image file
     :param palette_size: number of colors to extract
     :param resize: whether to resize the image before processing, yielding faster results with lower quality
     :param mode: the color quantization algorithm to use. Currently supports K-Means (KM) and Median Cut (MC)
+    :param sort_mode: sort colors by luminance, or by frequency
     :return: a list of the extracted colors
     """
 
@@ -51,12 +52,17 @@ def extract_colors(image, palette_size=5, resize=True, mode='KM'):
 
     if mode is 'KM':
         colors = k_means_extraction(arr, height, width, palette_size)
-        return Palette(colors)
     elif mode is 'MC':
         colors = median_cut_extraction(arr, height, width, palette_size)
-        return Palette(colors)
+    else:
+        raise NotImplementedError('Extraction mode not implemented')
 
-    raise NotImplementedError('The quantization mode {} is not implemented'.format(mode))
+    if sort_mode is 'luminance':
+        colors.sort(key=lambda c: c.luminance, reverse=False)
+    else:
+        colors.sort(reverse=True)
+
+    return Palette(colors)
 
 
 def k_means_extraction(arr, height, width, palette_size):
@@ -77,5 +83,4 @@ def k_means_extraction(arr, height, width, palette_size):
     colors = []
     for color, freq in zip(palette, color_frequency):
         colors.append(Color(color, freq))
-    colors.sort(reverse=True)
     return colors

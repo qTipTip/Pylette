@@ -1,6 +1,8 @@
 from PIL import Image
 import colorsys
+import numpy as np
 
+luminance_weights = np.array([0.2126, 0.7152, 0.0722])
 
 class Color(object):
 
@@ -28,3 +30,7 @@ class Color(object):
     @property
     def hls(self):
         return colorsys.rgb_to_hls(*self.rgb)
+
+    @property
+    def luminance(self):
+        return np.dot(luminance_weights, self.rgb)

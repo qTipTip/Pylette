@@ -31,7 +31,7 @@ class ColorBox(object):
 
     @property
     def size(self):
-        return np.prod(self.max_channel - self.min_channel)
+        return self.volume
 
     def _get_dominant_channel(self):
         dominant_channel = np.argmax(self.max_channel - self.min_channel)
