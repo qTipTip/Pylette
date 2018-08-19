@@ -2,11 +2,37 @@ from PIL import Image
 import numpy as np
 from sklearn.cluster import KMeans
 
+from Pylette.aux import ColorBox
 from Pylette.color import Color
 from Pylette.palette import Palette
 
 
-def extract_colors(image, palette_size=5, resize=True):
+def median_cut_extraction(arr, height, width, palette_size):
+    """
+    Extracts a color palette using the median cut algorithm.
+    :param arr:
+    :param height:
+    :param width:
+    :param palette_size:
+    :return:
+    """
+
+    arr = arr.reshape((width * height, -1))
+    c = [ColorBox(arr)]
+    full_box_size = c[0].size
+
+    # Each iteration, find the largest box, split it, remove original box from list of boxes, and add the two new boxes.
+    while len(c) < palette_size:
+        largest_c_idx = np.argmax(c)
+        c = c[:largest_c_idx] + c[largest_c_idx].split() + c[largest_c_idx + 1:]
+
+    colors = [Color(box.average, box.size / full_box_size) for box in c]
+    colors.sort(reverse=True)
+
+    return colors
+
+
+def extract_colors(image, palette_size=5, resize=True, mode='KM'):
     """
     Extracts a set of 'palette_size' colors from the given image.
     :param image: path to Image file
@@ -21,16 +47,34 @@ def extract_colors(image, palette_size=5, resize=True):
         img = img.resize((256, 256))
     width, height = img.size
     arr = np.asarray(img)
-    arr = np.reshape(arr, (width * height, -1))
 
+    if mode is 'KM':
+        colors = k_means_extraction(arr, height, width, palette_size)
+        return Palette(colors)
+    elif mode is 'MC':
+        colors = median_cut_extraction(arr, height, width, palette_size)
+        return Palette(colors)
+
+    raise NotImplementedError('The quantization mode {} is not implemented'.format(mode))
+
+
+def k_means_extraction(arr, height, width, palette_size):
+    """
+    Extracts a color palette using KMeans.
+    :param arr: pixel array (height, width, 3)
+    :param height: height
+    :param width: width
+    :param palette_size: number of colors
+    :return: a palette of colors sorted by frequency
+    """
+    arr = np.reshape(arr, (width * height, -1))
     model = KMeans(n_clusters=palette_size)
     labels = model.fit_predict(arr)
     palette = np.array(model.cluster_centers_, dtype=np.int)
     color_count = np.bincount(labels)
     color_frequency = color_count / float(np.sum(color_count))
-
     colors = []
     for color, freq in zip(palette, color_frequency):
         colors.append(Color(color, freq))
     colors.sort(reverse=True)
-    return Palette(colors)
+    return colors
