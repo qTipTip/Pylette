@@ -81,6 +81,17 @@ Original Image  | Extracted Palette
 <img src="https://images.unsplash.com/photo-1534547774987-e59593542e1e?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=e8e5af1676517ac1ef8067f97a206415&auto=format&fit=crop&w=1234&q=80" width=200 height=200> | ![](example_imgs/alex_perez_palette.jpg)
 <img src="https://images.unsplash.com/photo-1534537841395-2e594ba9ed4a?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=34ad54d1ba5d88b42abf43219c905c78&auto=format&fit=crop&w=1234&q=80" width=200 height=200> | ![](example_imgs/josh_hild_palette.jpg)
 
+## Under the hood
+
+Currently, Pylette uses KMeans for the color quantization. There are plans for implementing other color quantization schemes, like:
+
+1. Median-cut
+2. Octree
+3. Modified minmax
+
+The article [*Improving the Performance of K-Means for Color Quantization*](https://arxiv.org/pdf/1101.0395.pdf) gives a 
+nice overview of available methods.
+
 ## Feedback
 Any feedback and suggestions is much appreciated. 
 This is very much a work in progress. 
