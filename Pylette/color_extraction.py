@@ -38,6 +38,7 @@ def extract_colors(image, palette_size=5, resize=True, mode='KM'):
     :param image: path to Image file
     :param palette_size: number of colors to extract
     :param resize: whether to resize the image before processing, yielding faster results with lower quality
+    :param mode: the color quantization algorithm to use. Currently supports K-Means (KM) and Median Cut (MC)
     :return: a list of the extracted colors
     """
 
