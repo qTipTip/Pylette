@@ -75,6 +75,8 @@ random_colors = palette.random_color(N=100, mode='frequency')
 
 ## Example Palettes
 
+A selection of example palettes. Each palette is sorted by luminance (percieved brightness). The top row corresponds to extraction using K-Means, and the bottom row corresponds to Median-Cut extraction.
+
 Original Image  | Extracted Palette
 :--------------:|:-----------------:
 <img src="https://images.unsplash.com/photo-1534535009397-1fb0a46440f1?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=0de8fee9f4e6aa3d55fef987734a0787&auto=format&fit=crop&w=1234&q=80" width=200 height=200> | ![](example_imgs/jason_leung_palette_kmeans.jpg) ![](example_imgs/jason_leung_palette_mediancut.jpg) 
