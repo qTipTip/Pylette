@@ -34,13 +34,16 @@ A `Palette` object is created by calling the `extract_colors` function.
 from Pylette import extract_colors
 
 palette = extract_colors('image.jpg', palette_size=10, resize=True)
+palette = extract_colors('image.jpg', palette_size=10, resize=True, mode='MC', sort_mode='luminance')
 ```
 
 This yields a palette of ten colors, and the `resize` flag tells Pylette to resize the image to a more manageable size before
 beginning color extraction. This significantly speeds up the extraction, but reduces the faithfulness of the color palette.
-The palette object supports indexing and iteration, and the colors are sorted from highest to lowest frequency by default.
- E.g, the following snippet will fetch the most common, and least common
-color in the picture:
+One can choose between color quantization using K-Means (default) or Median-Cut algorithms, by setting in the `mode`-parameter. One can also specify to alternatively sort the color palette by the luminance (percieved brightness).
+
+The palette object supports indexing and iteration, and the colors are sorted from highest to lowest frequency by default. 
+E.g, the following snippet will fetch the most common, and least common
+color in the picture if the palette was sorted by frequency, or the darkest to lightest color if sorted by luminance:
 ```python
 most_common_color = palette[0]
 least_common_color = palette[-1]
