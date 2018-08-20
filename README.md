@@ -1,4 +1,6 @@
-# Pylette [WIP]
+# Pylette [WIP] 
+
+[![PyPI version](https://badge.fury.io/py/Pylette.svg)](https://badge.fury.io/py/Pylette)
 
 A color palette extractor written in Python using KMeans clustering.
 
