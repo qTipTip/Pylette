@@ -24,7 +24,7 @@ class Palette():
         img.show()
 
         if save_to_file:
-            img.save('jason_leung_palette.jpg')
+            img.save('jason_leung_palette_kmeans.jpg')
 
     def __getitem__(self, item):
         return self.colors[item]
