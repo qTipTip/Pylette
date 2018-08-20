@@ -87,7 +87,7 @@ Original Image  | Extracted Palette
 
 Currently, Pylette uses KMeans for the color quantization. There are plans for implementing other color quantization schemes, like:
 
-1. Median-cut
+1. Median-cut [Implemented]
 2. Octree
 3. Modified minmax
 
