@@ -32,7 +32,7 @@ def median_cut_extraction(arr, height, width, palette_size):
     return colors
 
 
-def extract_colors(image, palette_size=5, resize=True, mode='KM', sort_mode='luminance'):
+def extract_colors(image, palette_size=5, resize=True, mode='KM', sort_mode=None'):
     """
     Extracts a set of 'palette_size' colors from the given image.
     :param image: path to Image file
