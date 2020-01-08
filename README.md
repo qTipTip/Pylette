@@ -89,6 +89,37 @@ Original Image  | Extracted Palette
 <img src="https://images.unsplash.com/photo-1534547774987-e59593542e1e?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=e8e5af1676517ac1ef8067f97a206415&auto=format&fit=crop&w=1234&q=80" width=200 height=200> | ![](example_imgs/alex_perez_palette_kmeans.jpg)  ![](example_imgs/alex_perez_palette_mediancut.jpg)
 <img src="https://images.unsplash.com/photo-1534537841395-2e594ba9ed4a?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=34ad54d1ba5d88b42abf43219c905c78&auto=format&fit=crop&w=1234&q=80" width=200 height=200> | ![](example_imgs/josh_hild_palette_kmeans.jpg)   ![](example_imgs/josh_hild_palette_mediancut.jpg)
 
+## Command Line Tool
+
+The new version of Pylette also comes bundled with a command line tool, which can be used to extract color palettes from the command line.
+
+```shell script
+usage: pylette [-h] [--mode {KM,MC}] [--n N] [--sort_by {luminance,frequency}]
+               [--stdout STDOUT] [--colorspace {rgb,hsv,hls}]
+               [--out_filename OUT_FILENAME] [--display-colors DISPLAY_COLORS]
+               filename
+
+positional arguments:
+  filename              path to image file
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --mode {KM,MC}        extraction_mode (KMeans/MedianCut (default: KM)
+  --n N                 the number of colors to extract (default: 5)
+  --sort_by {luminance,frequency}
+                        sort by luminance or frequency (default: luminance)
+  --stdout STDOUT       whether to display the extracted color values in the
+                        stdout (default: True)
+  --colorspace {rgb,hsv,hls}
+                        color space to represent colors in (default: RGB)
+  --out_filename OUT_FILENAME
+                        where to save the csv file (default: None)
+  --display-colors DISPLAY_COLORS
+                        Open a window displaying the extracted palette
+                        (default: False)
+```
+
+
 ## Under the hood
 
 Currently, Pylette uses KMeans for the color quantization. There are plans for implementing other color quantization schemes, like:
