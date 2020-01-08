@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='Pylette',
-    version='0.3',
+    version='1.0',
     packages=['Pylette'],
     url='https://github.com/qTipTip/Pylette',
     license='MIT',
