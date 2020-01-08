@@ -4,6 +4,7 @@ import numpy as np
 
 luminance_weights = np.array([0.2126, 0.7152, 0.0722])
 
+
 class Color(object):
 
     def __init__(self, RGB, frequency):
@@ -22,6 +23,16 @@ class Color(object):
 
     def __lt__(self, other):
         return self.freq < other.freq
+
+    def get_colors(self, colorspace='rgb'):
+        """
+        Get the color in terms of a colorspace (string).
+
+        :param colorspace: rgb/hsv/hls
+        :return: corresponding color values
+        """
+        colors = {'rgb': self.rgb, 'hsv': self.hsv, 'hls': self.hls}
+        return colors[colorspace]
 
     @property
     def hsv(self):
