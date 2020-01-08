@@ -13,5 +13,10 @@ setup(
     Palette object facilitates displaying the palette, dumping the color palette to CSV, and picking colors from the 
     palette at random.''',
     install_requires=['numpy', 'Pillow', 'scikit-learn'],
-    python_requires='>=3'
+    python_requires='>=3',
+    entry_points={
+        'console_scripts': [
+            'pylette = cmd:main',
+        ]
+    }
 )
