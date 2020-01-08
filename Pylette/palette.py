@@ -15,6 +15,15 @@ class Palette():
         self.number_of_colors = len(colors)
 
     def display(self, w=50, h=50, save_to_file=False, filename='color_palette', extension='jpg'):
+        """
+        Displays the color-palette as an image, with an option for saving the image.
+
+        :param w: width of each color component
+        :param h: height of each color component
+        :param save_to_file: whether to save the file or not. Defaults to True
+        :param filename: filename
+        :param extension: file-extension. Defaults to jpg.
+        """
         img = Image.new('RGB', size=(w * self.number_of_colors, h))
         arr = np.asarray(img).copy()
         for i in range(self.number_of_colors):
