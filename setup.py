@@ -16,7 +16,7 @@ setup(
     python_requires='>=3',
     entry_points={
         'console_scripts': [
-            'pylette = cmd:main',
+            'pylette = Pylette.cmd:main',
         ]
     }
 )
