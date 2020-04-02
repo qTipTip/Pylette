@@ -17,6 +17,9 @@ setup(
     entry_points={
         'console_scripts': [
             'pylette = Pylette.cmd:main',
+        ],
+        'gui_scripts': [
+            'pylette_gui = Pylette.gui:main',
         ]
     }
 )
