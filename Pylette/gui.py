@@ -1,10 +1,12 @@
 import sys
 
 import PyQt5
-from PyQt5.QtGui import QPixmap, QPainter
+from PyQt5.QtGui import QPixmap, QPainter, QIcon, QColor
 
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QFileDialog, QAction, QSlider, QVBoxLayout, QHBoxLayout, \
     QWidget, QPushButton, QInputDialog, QLineEdit
+
+from Pylette import extract_colors
 
 
 class ResizingLabel(QWidget):
@@ -60,26 +62,41 @@ class MainWindow(QMainWindow):
 
     def open_image(self):
         filename = QFileDialog.getOpenFileName()
-        imagePath = filename[0]
+        image_path = filename[0]
         try:
-            self.image_label.setPixmap(QPixmap(imagePath))
+            self.image_label.setPixmap(QPixmap(image_path))
             self.image_loaded = True
-
+            self.image_path = image_path
         except FileNotFoundError():
-            print(f"Cannot open {imagePath}")
+            print(f"Cannot open {image_path}")
 
     def extract_colors(self):
 
         if not self.image_loaded:
             print("Load an Image-file first")
             return
-        self.color_layout = QHBoxLayout()
 
         try:
             n = int(self.palette_size.text().strip())
         except:
             print("Using default of 5 colors")
             n = 5
+
+        palette = extract_colors(self.image_path, palette_size=n, resize=True, mode="KM", sort_mode=None)
+
+        self.color_layout = QHBoxLayout()
+        self.color_widget = QWidget()
+        for color in palette:
+            new_color_pixmap = QPixmap(10, 10)
+            new_color_pixmap.fill(QColor(*color.rgb))
+            new_color_container = ResizingLabel()
+            new_color_container.setPixmap(new_color_pixmap)
+
+            self.color_layout.addWidget(new_color_container)
+
+        self.color_widget.setLayout(self.color_layout)
+        self.layout.addWidget(self.color_widget)
+        self.colors_extracted = True
 
 
 def main():
