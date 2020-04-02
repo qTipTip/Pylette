@@ -82,7 +82,7 @@ class MainWindow(QMainWindow):
             print("Using default of 5 colors")
             n = 5
 
-        palette = extract_colors(self.image_path, palette_size=n, resize=True, mode="KM", sort_mode=None)
+        palette = extract_colors(self.image_path, palette_size=n, resize=True, mode="KM", sort_mode="luminance")
 
         self.color_layout = QHBoxLayout()
         self.color_widget = QWidget()
@@ -91,7 +91,7 @@ class MainWindow(QMainWindow):
             new_color_pixmap.fill(QColor(*color.rgb))
             new_color_container = ResizingLabel()
             new_color_container.setPixmap(new_color_pixmap)
-
+            new_color_container.setToolTip(f"RGB: {color.rgb} \nHSV: {color.hsv} \nHLS: {color.hls}")
             self.color_layout.addWidget(new_color_container)
 
         self.color_widget.setLayout(self.color_layout)
