@@ -43,6 +43,7 @@ class MainWindow(QMainWindow):
         self.extract_button = QPushButton("Extract Colors")
         self.extract_button.setToolTip("Extracts colors using specified method")
         self.extract_button.clicked.connect(self.extract_colors)
+        self.extract_button.setStyleSheet("background-color: #87a0c9")
 
         self.image_label = ResizingLabel()
         self.image_loaded = False
@@ -83,7 +84,7 @@ class MainWindow(QMainWindow):
             print("Using default of 5 colors")
             n = 5
 
-        palette = extract_colors(self.image_path, palette_size=n, resize=False, mode="KM", sort_mode="luminance")
+        palette = extract_colors(self.image_path, palette_size=n, resize=True, mode="KM", sort_mode="luminance")
 
         self.color_layout = QHBoxLayout()
         self.color_widget = QWidget()
@@ -92,12 +93,12 @@ class MainWindow(QMainWindow):
             new_color_pixmap.fill(QColor(*color.rgb))
             new_color_container = ResizingLabel()
             new_color_container.setPixmap(new_color_pixmap)
-            new_color_container.setToolTip(f"RGB: {color.rgb} \nHSV: {color.hsv} \nHLS: {color.hls}")
+            new_color_container.setToolTip(f"RGB: {color.rgb}")
             self.color_layout.addWidget(new_color_container)
 
-        self.color_widget.setLayout(self.color_layout)
-        self.layout.addWidget(self.color_widget)
-        self.colors_extracted = True
+            self.color_widget.setLayout(self.color_layout)
+            self.layout.addWidget(self.color_widget)
+            self.colors_extracted = True
 
 
 def main():
