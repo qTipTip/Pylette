@@ -30,13 +30,14 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
 
+        self.setWindowTitle("Pylette - GUI")
         menubar = self.menuBar()
         filemenu = menubar.addMenu('File')
-        editmenu = menubar.addMenu('Edit')
+        option_menu = menubar.addMenu('Option')
 
-        dlg = QFileDialog(self)
         openAction = QAction('Open Image', self)
         openAction.triggered.connect(self.open_image)
+
         filemenu.addAction(openAction)
 
         self.extract_button = QPushButton("Extract Colors")
@@ -58,7 +59,7 @@ class MainWindow(QMainWindow):
         self.central_widget.setLayout(self.layout)
 
         self.setCentralWidget(self.central_widget)
-        self.resize(500, 500)
+        self.resize(1200, 1200)
 
     def open_image(self):
         filename = QFileDialog.getOpenFileName()
@@ -82,7 +83,7 @@ class MainWindow(QMainWindow):
             print("Using default of 5 colors")
             n = 5
 
-        palette = extract_colors(self.image_path, palette_size=n, resize=True, mode="KM", sort_mode="luminance")
+        palette = extract_colors(self.image_path, palette_size=n, resize=False, mode="KM", sort_mode="luminance")
 
         self.color_layout = QHBoxLayout()
         self.color_widget = QWidget()
