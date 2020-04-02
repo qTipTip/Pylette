@@ -51,11 +51,13 @@ class MainWindow(QMainWindow):
         self.resize(500, 500)
 
     def open_image(self):
-        label = QLabel(self)
         filename = QFileDialog.getOpenFileName()
         imagePath = filename[0]
+        try:
+            self.image_label.setPixmap(QPixmap(imagePath))
+        except FileNotFoundError():
+            print(f"Cannot open {imagePath}")
 
-        self.image_label.setPixmap(QPixmap(imagePath))
 
 
 def main():
