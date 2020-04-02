@@ -4,7 +4,7 @@ import PyQt5
 from PyQt5.QtGui import QPixmap, QPainter
 
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QFileDialog, QAction, QSlider, QVBoxLayout, QHBoxLayout, \
-    QWidget
+    QWidget, QPushButton, QInputDialog, QLineEdit
 
 
 class ResizingLabel(QWidget):
@@ -37,17 +37,25 @@ class MainWindow(QMainWindow):
         openAction.triggered.connect(self.open_image)
         filemenu.addAction(openAction)
 
+        self.extract_button = QPushButton("Extract Colors")
+        self.extract_button.setToolTip("Extracts colors using specified method")
+        self.extract_button.clicked.connect(self.extract_colors)
+
         self.image_label = ResizingLabel()
-        self.palette_size = QSlider(PyQt5.QtCore.Qt.Horizontal)
+        self.image_loaded = False
 
-        layout = QVBoxLayout()
-        layout.addWidget(self.palette_size)
-        layout.addWidget(self.image_label)
+        self.palette_size = QLineEdit("5")
+        self.extracted_colors = QWidget()
 
-        widget = QWidget()
-        widget.setLayout(layout)
+        self.layout = QVBoxLayout()
+        self.layout.addWidget(self.extract_button)
+        self.layout.addWidget(self.palette_size)
+        self.layout.addWidget(self.image_label)
 
-        self.setCentralWidget(widget)
+        self.central_widget = QWidget()
+        self.central_widget.setLayout(self.layout)
+
+        self.setCentralWidget(self.central_widget)
         self.resize(500, 500)
 
     def open_image(self):
@@ -55,9 +63,23 @@ class MainWindow(QMainWindow):
         imagePath = filename[0]
         try:
             self.image_label.setPixmap(QPixmap(imagePath))
+            self.image_loaded = True
+
         except FileNotFoundError():
             print(f"Cannot open {imagePath}")
 
+    def extract_colors(self):
+
+        if not self.image_loaded:
+            print("Load an Image-file first")
+            return
+        self.color_layout = QHBoxLayout()
+
+        try:
+            n = int(self.palette_size.text().strip())
+        except:
+            print("Using default of 5 colors")
+            n = 5
 
 
 def main():
