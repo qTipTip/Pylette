@@ -1,10 +1,12 @@
 import sys
 
-import PyQt5
-from PyQt5.QtGui import QPixmap, QPainter, QIcon, QColor
+try:
+    from PyQt5.QtGui import QPixmap, QPainter, QIcon, QColor
 
-from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QFileDialog, QAction, QSlider, QVBoxLayout, QHBoxLayout, \
-    QWidget, QPushButton, QInputDialog, QLineEdit
+    from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QFileDialog, QAction, QSlider, QVBoxLayout, QHBoxLayout, \
+        QWidget, QPushButton, QInputDialog, QLineEdit
+except ImportError as e:
+    sys.exit(f"Unable to import PyQt: {e}")
 
 from Pylette import extract_colors
 
