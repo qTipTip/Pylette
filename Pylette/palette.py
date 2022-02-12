@@ -1,4 +1,4 @@
-from typing import List, Optional, Any
+from typing import Any, List, Optional
 
 import numpy as np
 import numpy.typing as npt
@@ -19,7 +19,12 @@ class Palette:
         self.number_of_colors = len(colors)
 
     def display(
-        self, w: int=50, h:int=50, save_to_file:bool=False, filename:str="color_palette", extension:str="jpg"
+        self,
+        w: int = 50,
+        h: int = 50,
+        save_to_file: bool = False,
+        filename: str = "color_palette",
+        extension: str = "jpg",
     ) -> None:
         """
         Displays the color-palette as an image, with an option for saving the image.
@@ -48,7 +53,13 @@ class Palette:
     def __len__(self) -> int:
         return self.number_of_colors
 
-    def to_csv(self, filename: Optional[str]=None, frequency:bool=True, colorspace:str="rgb", stdout:bool=True)->None:
+    def to_csv(
+        self,
+        filename: Optional[str] = None,
+        frequency: bool = True,
+        colorspace: str = "rgb",
+        stdout: bool = True,
+    ) -> None:
         """
         Dumps the palette to stdout. Saves to file if filename is specified.
         Dumps the palette to a comma separated text file
@@ -68,7 +79,7 @@ class Palette:
                         palette_file.write(",{}".format(color.freq))
                     palette_file.write("\n")
 
-    def random_color(self, N:int, mode:str="frequency")-> List[Color]:
+    def random_color(self, N: int, mode: str = "frequency") -> List[Color]:
         """
         Returns N random colors from the palette, either using the frequency of each color, or
         choosing uniformly.
