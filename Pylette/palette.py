@@ -1,9 +1,13 @@
+from typing import List
+
 import numpy as np
 from PIL import Image
 
+from Pylette import Color
+
 
 class Palette:
-    def __init__(self, colors):
+    def __init__(self, colors: List[Color]):
         """
         Initializes a color palette with a list of Color objects.
         :param colors: a list of Color-objects
