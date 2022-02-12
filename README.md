@@ -1,4 +1,4 @@
-# Pylette [WIP] 
+# Pylette [WIP]
 
 [![PyPI version](https://badge.fury.io/py/Pylette.svg)](https://badge.fury.io/py/Pylette)
 [![Downloads](http://pepy.tech/badge/pylette)](http://pepy.tech/project/pylette)
@@ -10,13 +10,13 @@ A color palette extractor written in Python using KMeans clustering.
 Working with computer graphics and visualizations, one often needs a way of specifying a set of colors
 with a certain visual appeal. Such a set of colors is often called a *color palette*. The aim of this
 library is to easily extract a set of colors from a supplied image, with support for the various color modes (RGB, RGBa, HSV, etc).
-Dabbling in generative art, the need often arises for being able to pick colors at random from a palette. 
-Pylette supports this, both picking colors uniformly, but also using the color frequency from the original image as probabilities. 
+Dabbling in generative art, the need often arises for being able to pick colors at random from a palette.
+Pylette supports this, both picking colors uniformly, but also using the color frequency from the original image as probabilities.
 
 
 
 #### Other color palette related Python-libraries:
-1. [Color Thief](https://github.com/fengsp/color-thief-py): Extraction of color palettes using the median cut algorithm. 
+1. [Color Thief](https://github.com/fengsp/color-thief-py): Extraction of color palettes using the median cut algorithm.
 2. [Palettable](https://pypi.org/project/palettable/): Generation of matplotlib compatible color schemes
 3. [Colorgram](https://github.com/obskyr/colorgram.py): Extraction of colors from images (similar to the intended use of this library),
 however, I was unable to install this.
@@ -44,7 +44,7 @@ This yields a palette of ten colors, and the `resize` flag tells Pylette to resi
 beginning color extraction. This significantly speeds up the extraction, but reduces the faithfulness of the color palette.
 One can choose between color quantization using K-Means (default) or Median-Cut algorithms, by setting in the `mode`-parameter. One can also specify to alternatively sort the color palette by the luminance (percieved brightness).
 
-The palette object supports indexing and iteration, and the colors are sorted from highest to lowest frequency by default. 
+The palette object supports indexing and iteration, and the colors are sorted from highest to lowest frequency by default.
 E.g, the following snippet will fetch the most common, and least common
 color in the picture if the palette was sorted by frequency, or the darkest to lightest color if sorted by luminance:
 ```python
@@ -85,7 +85,7 @@ A selection of example palettes. Each palette is sorted by luminance (percieved 
 
 Original Image  | Extracted Palette
 :--------------:|:-----------------:
-<img src="https://images.unsplash.com/photo-1534535009397-1fb0a46440f1?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=0de8fee9f4e6aa3d55fef987734a0787&auto=format&fit=crop&w=1234&q=80" width=200 height=200> | ![](example_imgs/jason_leung_palette_kmeans.jpg) ![](example_imgs/jason_leung_palette_mediancut.jpg) 
+<img src="https://images.unsplash.com/photo-1534535009397-1fb0a46440f1?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=0de8fee9f4e6aa3d55fef987734a0787&auto=format&fit=crop&w=1234&q=80" width=200 height=200> | ![](example_imgs/jason_leung_palette_kmeans.jpg) ![](example_imgs/jason_leung_palette_mediancut.jpg)
 <img src="https://images.unsplash.com/photo-1534547774987-e59593542e1e?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=e8e5af1676517ac1ef8067f97a206415&auto=format&fit=crop&w=1234&q=80" width=200 height=200> | ![](example_imgs/alex_perez_palette_kmeans.jpg)  ![](example_imgs/alex_perez_palette_mediancut.jpg)
 <img src="https://images.unsplash.com/photo-1534537841395-2e594ba9ed4a?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=34ad54d1ba5d88b42abf43219c905c78&auto=format&fit=crop&w=1234&q=80" width=200 height=200> | ![](example_imgs/josh_hild_palette_kmeans.jpg)   ![](example_imgs/josh_hild_palette_mediancut.jpg)
 
@@ -128,7 +128,7 @@ From the command line, the GUI can be accessed by running
 pylette_gui
 ```
 
-opens the interface. Import an image by clicking 
+opens the interface. Import an image by clicking
 
 ```shell script
 File -> Open Image
@@ -149,9 +149,9 @@ Currently, Pylette uses KMeans for the color quantization. There are plans for i
 2. Octree
 3. Modified minmax
 
-The article [*Improving the Performance of K-Means for Color Quantization*](https://arxiv.org/pdf/1101.0395.pdf) gives a 
+The article [*Improving the Performance of K-Means for Color Quantization*](https://arxiv.org/pdf/1101.0395.pdf) gives a
 nice overview of available methods.
 
 ## Feedback
-Any feedback and suggestions is much appreciated. 
-This is very much a work in progress. 
+Any feedback and suggestions is much appreciated.
+This is very much a work in progress.

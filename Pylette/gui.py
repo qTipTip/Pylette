@@ -1,10 +1,21 @@
 import sys
 
 try:
-    from PyQt5.QtGui import QPixmap, QPainter, QIcon, QColor
-
-    from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QFileDialog, QAction, QSlider, QVBoxLayout, QHBoxLayout, \
-        QWidget, QPushButton, QInputDialog, QLineEdit
+    from PyQt5.QtGui import QColor, QIcon, QPainter, QPixmap
+    from PyQt5.QtWidgets import (
+        QAction,
+        QApplication,
+        QFileDialog,
+        QHBoxLayout,
+        QInputDialog,
+        QLabel,
+        QLineEdit,
+        QMainWindow,
+        QPushButton,
+        QSlider,
+        QVBoxLayout,
+        QWidget,
+    )
 except ImportError as e:
     sys.exit(f"Unable to import PyQt: {e}")
 
@@ -28,16 +39,15 @@ class ResizingLabel(QWidget):
 
 
 class MainWindow(QMainWindow):
-
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
 
         self.setWindowTitle("Pylette - GUI")
         menubar = self.menuBar()
-        filemenu = menubar.addMenu('File')
-        option_menu = menubar.addMenu('Option')
+        filemenu = menubar.addMenu("File")
+        option_menu = menubar.addMenu("Option")
 
-        openAction = QAction('Open Image', self)
+        openAction = QAction("Open Image", self)
         openAction.triggered.connect(self.open_image)
 
         filemenu.addAction(openAction)
@@ -86,7 +96,13 @@ class MainWindow(QMainWindow):
             print("Using default of 5 colors")
             n = 5
 
-        palette = extract_colors(self.image_path, palette_size=n, resize=True, mode="KM", sort_mode="luminance")
+        palette = extract_colors(
+            self.image_path,
+            palette_size=n,
+            resize=True,
+            mode="KM",
+            sort_mode="luminance",
+        )
 
         self.color_layout = QHBoxLayout()
         self.color_widget = QWidget()
@@ -110,5 +126,5 @@ def main():
     app.exec_()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())
