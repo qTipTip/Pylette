@@ -48,7 +48,9 @@ class ColorBox(object):
 
     @property
     def volume(self):
-        return np.prod(self.max_channel - self.min_channel, )
+        return np.prod(
+            self.max_channel - self.min_channel,
+        )
 
     def split(self):
         """
@@ -66,5 +68,5 @@ class ColorBox(object):
 
         return [
             ColorBox(self.colors[:median_index]),
-            ColorBox(self.colors[median_index:])
+            ColorBox(self.colors[median_index:]),
         ]
