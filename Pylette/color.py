@@ -13,7 +13,7 @@ class Color(object):
         self.rgb = tuple([c for c in RGB])
         self.freq = frequency
 
-    def display(self, w: int=50, h:int=50) -> None:
+    def display(self, w: int = 50, h: int = 50) -> None:
         """
         Displays the represented color in a w x h window.
         :param w: width in pixels
@@ -23,10 +23,10 @@ class Color(object):
         img = Image.new("RGB", size=(w, h), color=self.rgb)
         img.show()
 
-    def __lt__(self, other: 'Color') -> bool:
+    def __lt__(self, other: "Color") -> bool:
         return bool(self.freq < other.freq)
 
-    def get_colors(self, colorspace: str="rgb") -> Tuple[float, ...]:
+    def get_colors(self, colorspace: str = "rgb") -> Tuple[float, ...]:
         """
         Get the color in terms of a colorspace (string).
 

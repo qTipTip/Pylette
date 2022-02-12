@@ -1,6 +1,7 @@
-from typing import List
+from typing import List, Optional, Any
 
 import numpy as np
+import numpy.typing as npt
 from PIL import Image
 
 from Pylette import Color
@@ -18,8 +19,8 @@ class Palette:
         self.number_of_colors = len(colors)
 
     def display(
-        self, w=50, h=50, save_to_file=False, filename="color_palette", extension="jpg"
-    ):
+        self, w: int=50, h:int=50, save_to_file:bool=False, filename:str="color_palette", extension:str="jpg"
+    ) -> None:
         """
         Displays the color-palette as an image, with an option for saving the image.
 
@@ -30,7 +31,8 @@ class Palette:
         :param extension: file-extension. Defaults to jpg.
         """
         img = Image.new("RGB", size=(w * self.number_of_colors, h))
-        arr = np.asarray(img).copy()
+
+        arr: npt.NDArray[Any] = np.asarray(img).copy()
         for i in range(self.number_of_colors):
             c = self.colors[i]
             arr[:, i * h : (i + 1) * h, :] = c.rgb
@@ -40,13 +42,13 @@ class Palette:
         if save_to_file:
             img.save(f"{filename}.{extension}")
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: int) -> Color:
         return self.colors[item]
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.number_of_colors
 
-    def to_csv(self, filename=None, frequency=True, colorspace="rgb", stdout=True):
+    def to_csv(self, filename: Optional[str]=None, frequency:bool=True, colorspace:str="rgb", stdout:bool=True)->None:
         """
         Dumps the palette to stdout. Saves to file if filename is specified.
         Dumps the palette to a comma separated text file
@@ -66,7 +68,7 @@ class Palette:
                         palette_file.write(",{}".format(color.freq))
                     palette_file.write("\n")
 
-    def random_color(self, N, mode="frequency"):
+    def random_color(self, N:int, mode:str="frequency")-> List[Color]:
         """
         Returns N random colors from the palette, either using the frequency of each color, or
         choosing uniformly.
@@ -79,9 +81,9 @@ class Palette:
         elif mode is "uniform":
             pdf = None
 
-        return np.random.choice(self.colors, size=N, p=pdf)
+        return list(np.random.choice(self.colors, size=N, p=pdf))
 
-    def __str__(self):
+    def __str__(self) -> str:
 
         return "".join(
             [
