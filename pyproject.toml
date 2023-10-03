@@ -7,7 +7,7 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "~3.8"
-Pillow = "^9.0.1"
+Pillow = ">=9.0.1,<11.0.0"
 numpy = "^1.22.2"
 scikit-learn = "^1.0.2"
 PyQt5 = {version = "^5.15.6"}
