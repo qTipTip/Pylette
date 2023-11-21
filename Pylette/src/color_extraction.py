@@ -2,9 +2,9 @@ import numpy as np
 from PIL import Image
 from sklearn.cluster import KMeans
 
-from Pylette.aux import ColorBox
-from Pylette.color import Color
-from Pylette.palette import Palette
+from Pylette.src.color import Color
+from Pylette.src.palette import Palette
+from Pylette.src.utils import ColorBox
 
 
 def median_cut_extraction(arr, height, width, palette_size):
@@ -25,7 +25,7 @@ def median_cut_extraction(arr, height, width, palette_size):
     while len(c) < palette_size:
         largest_c_idx = np.argmax(c)
         # add the two new boxes to the list, while removing the split box.
-        c = c[:largest_c_idx] + c[largest_c_idx].split() + c[largest_c_idx + 1 :]
+        c = c[:largest_c_idx] + c[largest_c_idx].split() + c[largest_c_idx + 1:]
 
     colors = [Color(map(int, box.average), box.size / full_box_size) for box in c]
 
@@ -50,14 +50,14 @@ def extract_colors(image, palette_size=5, resize=True, mode="KM", sort_mode=None
     width, height = img.size
     arr = np.asarray(img)
 
-    if mode is "KM":
+    if mode == "KM":
         colors = k_means_extraction(arr, height, width, palette_size)
-    elif mode is "MC":
+    elif mode == "MC":
         colors = median_cut_extraction(arr, height, width, palette_size)
     else:
         raise NotImplementedError("Extraction mode not implemented")
 
-    if sort_mode is "luminance":
+    if sort_mode == "luminance":
         colors.sort(key=lambda c: c.luminance, reverse=False)
     else:
         colors.sort(reverse=True)
@@ -77,7 +77,7 @@ def k_means_extraction(arr, height, width, palette_size):
     arr = np.reshape(arr, (width * height, -1))
     model = KMeans(n_clusters=palette_size)
     labels = model.fit_predict(arr)
-    palette = np.array(model.cluster_centers_, dtype=np.int)
+    palette = np.array(model.cluster_centers_, dtype=int)
     color_count = np.bincount(labels)
     color_frequency = color_count / float(np.sum(color_count))
     colors = []

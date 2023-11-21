@@ -1,6 +1,6 @@
 import argparse
 
-from Pylette import extract_colors
+from Pylette.src.color_extraction import extract_colors
 
 
 def main():
