@@ -119,28 +119,6 @@ optional arguments:
                         (default: False)
 ```
 
-## Pylette GUI
-
-Pylette now comes bundled with a barebones graphical user interface, using PyQt5 as the backend.
-From the command line, the GUI can be accessed by running
-
-```shell script
-pylette_gui
-```
-
-opens the interface. Import an image by clicking
-
-```shell script
-File -> Open Image
-```
-select the number of colors, and hit "Extract Colors".
-Hover over each extracted color to see the corresponding RGB values.
-
-![](example_imgs/pylette_gui.png)
-
-In future versions, automatic copy of hex-values to clipboard, and additional
-options for the extraction will be available in the GUI menus.
-
 ## Under the hood
 
 Currently, Pylette uses KMeans for the color quantization. There are plans for implementing other color quantization schemes, like:
