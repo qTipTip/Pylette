@@ -23,7 +23,8 @@ jobs:
 
       - name: Poetry build with a github ref version
         run: |
-          poetry version ${{ github.ref }}
+          poetry self add poetry-git-version-plugin
+          poetry git-version
           poetry build
       - name: Publish package distributions to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
