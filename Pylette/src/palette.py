@@ -70,9 +70,9 @@ class Palette:
         :return: a color from the Palette
         """
 
-        if mode is "frequency":
+        if mode == "frequency":
             pdf = self.frequencies
-        elif mode is "uniform":
+        elif mode == "uniform":
             pdf = None
 
         return np.random.choice(self.colors, size=N, p=pdf)
