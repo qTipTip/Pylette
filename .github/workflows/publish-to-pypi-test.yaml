@@ -21,8 +21,9 @@ jobs:
         with:
           virtualenvs-create: false
 
-      - name: Poetry build
+      - name: Poetry build with a github ref version
         run: |
+          poetry version ${{ github.ref }}
           poetry build
       - name: Publish package distributions to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
