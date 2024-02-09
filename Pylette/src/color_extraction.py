@@ -2,9 +2,9 @@ import numpy as np
 from PIL import Image
 from sklearn.cluster import KMeans
 
-from Pylette.color import Color
-from Pylette.palette import Palette
-from Pylette.utils import ColorBox
+from Pylette.src.color import Color
+from Pylette.src.palette import Palette
+from Pylette.src.utils import ColorBox
 
 
 def median_cut_extraction(arr, height, width, palette_size):
@@ -25,7 +25,7 @@ def median_cut_extraction(arr, height, width, palette_size):
     while len(c) < palette_size:
         largest_c_idx = np.argmax(c)
         # add the two new boxes to the list, while removing the split box.
-        c = c[:largest_c_idx] + c[largest_c_idx].split() + c[largest_c_idx + 1:]
+        c = c[:largest_c_idx] + c[largest_c_idx].split() + c[largest_c_idx + 1 :]
 
     colors = [Color(map(int, box.average), box.size / full_box_size) for box in c]
 
@@ -75,7 +75,7 @@ def k_means_extraction(arr, height, width, palette_size):
     :return: a palette of colors sorted by frequency
     """
     arr = np.reshape(arr, (width * height, -1))
-    model = KMeans(n_clusters=palette_size)
+    model = KMeans(n_clusters=palette_size, n_init="auto", init="k-means++")
     labels = model.fit_predict(arr)
     palette = np.array(model.cluster_centers_, dtype=int)
     color_count = np.bincount(labels)

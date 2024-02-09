@@ -4,6 +4,9 @@ version = "2.0.0"
 description = "A Python library for extracting color palettes from images."
 authors = ["Ivar Stangeby"]
 license = "MIT"
+packages = [
+    { include = "Pylette", from = "." },
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
