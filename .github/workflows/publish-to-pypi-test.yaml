@@ -36,4 +36,4 @@ jobs:
       - name: Publish the package with poetry
         run: |
           poetry config repositories.test-pypi https://test.pypi.org/legacy/
-          poetry publish -u __token__ -p '${{ steps.mint.outputs.api-token }}' -r https://test.pypi.org/legacy/
+          poetry publish -u __token__ -p '${{ steps.mint.outputs.api-token }}' -r test-pypi
