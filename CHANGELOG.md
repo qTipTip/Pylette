@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- Added an `image_url` argument to the `extract_color` function, allowing the user to specify an image URL to extract colors from.
+- Added the `--image-url` argument to the CLI, allowing the user to specify an image URL to extract colors from.
+
+### Changed
+
+- Changed the positional argument `filename` to an optional argument in the CLI.
 ## [1.0.0] 09/02/2024
 
 ### Added

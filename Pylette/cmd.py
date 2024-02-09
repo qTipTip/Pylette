@@ -7,7 +7,13 @@ def main():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    parser.add_argument("filename", help="path to image file", type=str)
+    group = parser.add_mutually_exclusive_group(required=True)
+
+    group.add_argument("--filename", help="path to image file", type=str, default=None)
+    group.add_argument(
+        "--image-url", help="url to the image file", type=str, default=None
+    )
+
     parser.add_argument(
         "--mode",
         help="extraction_mode (KMeans/MedianCut",
@@ -48,7 +54,9 @@ def main():
         type=bool,
     )
     args = parser.parse_args()
-    palette = extract_colors(args.filename, palette_size=args.n, sort_mode=args.sort_by)
+    palette = extract_colors(
+        args.filename, args.image_url, palette_size=args.n, sort_mode=args.sort_by
+    )
 
     palette.to_csv(filename=args.out_filename, frequency="True", stdout=args.stdout)
     if args.display_colors:
