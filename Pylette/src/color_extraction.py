@@ -25,7 +25,7 @@ def median_cut_extraction(arr, height, width, palette_size):
     while len(c) < palette_size:
         largest_c_idx = np.argmax(c)
         # add the two new boxes to the list, while removing the split box.
-        c = c[:largest_c_idx] + c[largest_c_idx].split() + c[largest_c_idx + 1:]
+        c = c[:largest_c_idx] + c[largest_c_idx].split() + c[largest_c_idx + 1 :]
 
     colors = [Color(map(int, box.average), box.size / full_box_size) for box in c]
 
