@@ -1,4 +1,4 @@
-# Pylette [WIP]
+# Pylette
 
 [![PyPI version](https://badge.fury.io/py/Pylette.svg)](https://badge.fury.io/py/Pylette)
 [![Downloads](http://pepy.tech/badge/pylette)](http://pepy.tech/project/pylette)
