@@ -1,4 +1,4 @@
-name: Upload Python Package
+name: Upload Python Package To PyPi Test
 
 on:
   push
@@ -21,7 +21,7 @@ jobs:
         with:
           virtualenvs-create: false
 
-      - name: Update version (kept at 0.0.0) in pyproject.toml and build
+      - name: Poetry build
         run: |
           poetry build
       - name: Publish package distributions to TestPyPI

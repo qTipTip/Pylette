@@ -1,23 +1,21 @@
-name: Upload Python Package
+name: Upload Python Package To PyPi
 
 on:
   push:
+    branches:
+      - main
     tags:
     - '[0-9]+.[0-9]+.[0-9]'
 
 jobs:
-  deploy:
+  pypi-publish:
+    name: Upload release to PyPI
     runs-on: ubuntu-latest
-
     permissions:
-      # This permission is required for trusted publishing.
-      id-token: write
-      contents: read
-
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set up Python
+      - name: Set up Python 3.x
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
@@ -27,14 +25,8 @@ jobs:
         with:
           virtualenvs-create: false
 
-      - name: Build
+      - name: Poetry build
         run: |
           poetry build
-
-      - name: Mint token
-        id: mint
-        uses: tschm/token-mint-action@v1.0.2
-
-      - name: Publish the package with poetry
-        run: |
-          poetry publish -u __token__ -p '${{ steps.mint.outputs.api-token }}'
+      - name: Publish package distributions to PyPi
+        uses: pypa/gh-action-pypi-publish@release/v1
