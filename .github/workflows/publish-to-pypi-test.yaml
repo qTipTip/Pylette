@@ -4,36 +4,17 @@ on:
   push
 
 jobs:
-  deploy:
+  pypi-publish:
+    name: Upload release to PyPI
     runs-on: ubuntu-latest
-
+#    environment:
+#      name: pypi
+#      url: https://pypi.org/p/<your-pypi-project-name>
     permissions:
-      # This permission is required for trusted publishing.
-      id-token: write
-      contents: read
-
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-
-      - name: Install Poetry
-        uses: snok/install-poetry@v1.3.3
-        with:
-          virtualenvs-create: false
-
-      - name: Build
-        run: |
-          poetry build
-
-      - name: Mint token
-        id: mint
-        uses: tschm/token-mint-action@v1.0.2
-
-      - name: Publish the package with poetry
-        run: |
-          poetry config repositories.test-pypi https://test.pypi.org/legacy/
-          poetry publish -r test-pypi -u "__token__" -p '${{ steps.mint.outputs.api-token }}'
+      # retrieve your distributions here
+    - name: Publish package distributions to TestPyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/
