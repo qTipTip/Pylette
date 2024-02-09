@@ -31,13 +31,13 @@ pip install Pylette
 
 ## Basic usage
 
-A `Palette` object is created by calling the `extract_colors` function.
+A `Palette` object is created by calling the `extract_colors` function, either using a path to an image, or an image url:
 
 ```python
 from Pylette import extract_colors
 
-palette = extract_colors('image.jpg', palette_size=10, resize=True)
-palette = extract_colors('image.jpg', palette_size=10, resize=True, mode='MC', sort_mode='luminance')
+palette = extract_colors(image='image.jpg', palette_size=10, resize=True)
+palette = extract_colors(image_url='https://path.to.image', palette_size=10, resize=True, mode='MC', sort_mode='luminance')
 ```
 
 This yields a palette of ten colors, and the `resize` flag tells Pylette to resize the image to a more manageable size before
@@ -94,29 +94,25 @@ Original Image  | Extracted Palette
 The new version of Pylette also comes bundled with a command line tool, which can be used to extract color palettes from the command line.
 
 ```shell script
-usage: pylette [-h] [--mode {KM,MC}] [--n N] [--sort_by {luminance,frequency}]
-               [--stdout STDOUT] [--colorspace {rgb,hsv,hls}]
-               [--out_filename OUT_FILENAME] [--display-colors DISPLAY_COLORS]
-               filename
+usage: pylette [-h] (--filename FILENAME | --image-url IMAGE_URL) [--mode {KM,MC}] [--n N] [--sort_by {luminance,frequency}] [--stdout STDOUT] [--colorspace {rgb,hsv,hls}] [--out_filename OUT_FILENAME]
+               [--display-colors DISPLAY_COLORS]
 
-positional arguments:
-  filename              path to image file
-
-optional arguments:
+options:
   -h, --help            show this help message and exit
+  --filename FILENAME   path to image file (default: None)
+  --image-url IMAGE_URL
+                        url to the image file (default: None)
   --mode {KM,MC}        extraction_mode (KMeans/MedianCut (default: KM)
   --n N                 the number of colors to extract (default: 5)
   --sort_by {luminance,frequency}
                         sort by luminance or frequency (default: luminance)
-  --stdout STDOUT       whether to display the extracted color values in the
-                        stdout (default: True)
+  --stdout STDOUT       whether to display the extracted color values in the stdout (default: True)
   --colorspace {rgb,hsv,hls}
                         color space to represent colors in (default: RGB)
   --out_filename OUT_FILENAME
                         where to save the csv file (default: None)
   --display-colors DISPLAY_COLORS
-                        Open a window displaying the extracted palette
-                        (default: False)
+                        Open a window displaying the extracted palette (default: False)
 ```
 
 ## Under the hood

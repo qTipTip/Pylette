@@ -1,4 +1,7 @@
+from io import BytesIO
+
 import numpy as np
+import requests
 from PIL import Image
 from sklearn.cluster import KMeans
 
@@ -32,10 +35,18 @@ def median_cut_extraction(arr, height, width, palette_size):
     return colors
 
 
-def extract_colors(image, palette_size=5, resize=True, mode="KM", sort_mode=None):
+def extract_colors(
+    image=None,
+    image_url: str = None,
+    palette_size=5,
+    resize=True,
+    mode="KM",
+    sort_mode=None,
+):
     """
     Extracts a set of 'palette_size' colors from the given image.
     :param image: path to Image file
+    :param image_url: url to the image-file
     :param palette_size: number of colors to extract
     :param resize: whether to resize the image before processing, yielding faster results with lower quality
     :param mode: the color quantization algorithm to use. Currently supports K-Means (KM) and Median Cut (MC)
@@ -43,8 +54,22 @@ def extract_colors(image, palette_size=5, resize=True, mode="KM", sort_mode=None
     :return: a list of the extracted colors
     """
 
+    if image is None and image_url is None:
+        raise ValueError("No image provided")
+
+    if image is None and image_url is not None:
+        response = requests.get(image_url)
+        # Check if the request was successful and content type is an image
+        if response.status_code == 200 and "image" in response.headers.get(
+            "Content-Type", ""
+        ):
+            img = Image.open(BytesIO(response.content)).convert("RGB")
+        else:
+            raise ValueError("The URL did not point to a valid image.")
+    else:
+        img = Image.open(image).convert("RGB")
+
     # open the image
-    img = Image.open(image).convert("RGB")
     if resize:
         img = img.resize((256, 256))
     width, height = img.size
