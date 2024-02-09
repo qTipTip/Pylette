@@ -1,12 +1,13 @@
 [tool.poetry]
 name = "pylette"
-version = "2.0.0"
+version = "1.0.0"
 description = "A Python library for extracting color palettes from images."
 authors = ["Ivar Stangeby"]
 license = "MIT"
 packages = [
     { include = "Pylette", from = "." },
 ]
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
