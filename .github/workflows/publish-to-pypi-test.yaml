@@ -23,8 +23,7 @@ jobs:
 
       - name: Poetry build with a github ref version
         run: |
-          poetry self add poetry-git-version-plugin
-          PACKAGE_VERSION_VERSION_FORMAT='{version}+{commit_hash}' poetry git-version
+          poetry version 0.0.0+${github.sha}
           poetry build
       - name: Publish package distributions to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
