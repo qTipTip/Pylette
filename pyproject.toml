@@ -24,6 +24,3 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 pylette = "Pylette.cmd:main"
-
-[tool.poetry-git-version-plugin]
-version_format = '{version}+{commit_hash}'
