@@ -9,3 +9,9 @@ class SortMode(Enum):
 class ExtractionMode(Enum):
     KMeans = "k_means"
     MedianCut = "median_cut"
+
+
+class ColorSpace(Enum):
+    RGB = "rgb"
+    HSV = "hsv"
+    HLS = "hls"

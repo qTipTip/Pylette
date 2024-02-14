@@ -1,6 +1,8 @@
 import numpy as np
 from PIL import Image
 
+from Pylette.src.types import ColorSpace
+
 
 class Palette:
     def __init__(self, colors):
@@ -42,7 +44,9 @@ class Palette:
     def __len__(self):
         return self.number_of_colors
 
-    def to_csv(self, filename=None, frequency=True, colorspace="rgb", stdout=True):
+    def to_csv(
+        self, filename=None, frequency=True, color_space=ColorSpace.RGB, stdout=True
+    ):
         """
         Dumps the palette to stdout. Saves to file if filename is specified.
         Dumps the palette to a comma separated text file
@@ -52,12 +56,14 @@ class Palette:
 
         if stdout:
             for color in self.colors:
-                print(",".join(map(str, color.get_colors(colorspace))))
+                print(",".join(map(str, color.get_colors(color_space))))
 
         if filename is not None:
             with open(filename, "w") as palette_file:
                 for color in self.colors:
-                    palette_file.write(",".join(map(str, color.get_colors(colorspace))))
+                    palette_file.write(
+                        ",".join(map(str, color.get_colors(color_space)))
+                    )
                     if frequency:
                         palette_file.write(",{}".format(color.freq))
                     palette_file.write("\n")

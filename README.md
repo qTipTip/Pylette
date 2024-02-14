@@ -66,6 +66,7 @@ print(color.hsv)
 
 To display the extracted color palette, simply call the `display`-method, which optionally takes a flag for saving the palette to an image file.
 The palette can be dumped to a CSV-file as well, where each row represents the RGB values and the corresponding color frequency (optional).
+
 ```python
 palette.display(save_to_file=False)
 palette.to_csv(filename='color_palette.csv', frequency=True)

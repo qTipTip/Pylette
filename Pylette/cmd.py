@@ -8,7 +8,7 @@ from typer import Typer
 from typing_extensions import Annotated
 
 from Pylette import extract_colors
-from Pylette.src.types import ExtractionMode, SortMode
+from Pylette.src.types import ColorSpace, ExtractionMode, SortMode
 
 app = Typer()
 
@@ -26,6 +26,21 @@ def extract(
     resize: Annotated[
         bool, typer.Option(help="Whether to resize the image before processing")
     ] = True,
+    color_space: Annotated[
+        ColorSpace, typer.Option(help="Color space to represent colors in")
+    ] = ColorSpace.RGB.value,
+    save_to_directory: Annotated[
+        Optional[bool],
+        typer.Option(
+            help="Whether to save the csv file(s) to a directory. Will save to the image's directory, unless --output-directory is specified."
+        ),
+    ] = False,
+    output_directory: Annotated[
+        Optional[Path],
+        typer.Option(
+            help="Directory to save the csv file(s). Requires --save-to-directory."
+        ),
+    ] = None,
 ):
 
     for img_path in image:
@@ -36,6 +51,20 @@ def extract(
             mode=extraction_mode,
             resize=resize,
         )
+
+        if save_to_directory:
+            if output_directory is None:
+                output_directory = img_path.parent
+            if not output_directory.exists():
+                output_directory.mkdir()
+
+            palette.to_csv(
+                filename=output_directory / f"{img_path.stem}_palette.csv",
+                frequency=True,
+                color_space=color_space,
+                stdout=False,
+            )
+
         palette.display()
 
 
