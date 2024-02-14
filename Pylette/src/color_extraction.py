@@ -1,4 +1,5 @@
 from io import BytesIO
+from pathlib import Path
 
 import numpy as np
 import requests
@@ -7,6 +8,7 @@ from sklearn.cluster import KMeans
 
 from Pylette.src.color import Color
 from Pylette.src.palette import Palette
+from Pylette.src.types import SortMode
 from Pylette.src.utils import ColorBox
 
 
@@ -36,12 +38,12 @@ def median_cut_extraction(arr, height, width, palette_size):
 
 
 def extract_colors(
-    image=None,
+    image: Path = None,
     image_url: str = None,
     palette_size=5,
     resize=True,
     mode="KM",
-    sort_mode=None,
+    sort_mode=SortMode,
 ):
     """
     Extracts a set of 'palette_size' colors from the given image.
@@ -67,7 +69,8 @@ def extract_colors(
         else:
             raise ValueError("The URL did not point to a valid image.")
     else:
-        img = Image.open(image).convert("RGB")
+        absolute_path = image.resolve()
+        img = Image.open(absolute_path).convert("RGB")
 
     # open the image
     if resize:
@@ -82,7 +85,7 @@ def extract_colors(
     else:
         raise NotImplementedError("Extraction mode not implemented")
 
-    if sort_mode == "luminance":
+    if sort_mode.value == "luminance":
         colors.sort(key=lambda c: c.luminance, reverse=False)
     else:
         colors.sort(reverse=True)

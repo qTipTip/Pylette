@@ -1,9 +1,38 @@
 import argparse
+from enum import Enum
+from pathlib import Path
+from typing import List, Optional
+
+import typer
+from typer import Typer
+from typing_extensions import Annotated
 
 from Pylette import extract_colors
+from Pylette.src.types import SortMode
+
+app = Typer()
 
 
-def main():
+@app.command()
+def extract(
+    image: Annotated[List[Path], typer.Argument(help="Path(s) to the image-file(s)")],
+    palette_size: Annotated[int, typer.Option(help="Number of colors to extract")] = 5,
+    sort_by: Annotated[
+        SortMode, typer.Option(help="Sort by luminance or frequency")
+    ] = SortMode.luminance.value,
+):
+
+    for img_path in image:
+        palette = extract_colors(img_path, palette_size=palette_size, sort_mode=sort_by)
+        palette.display()
+
+
+@app.command()
+def help():
+    pass
+
+
+def old_main():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
@@ -63,5 +92,5 @@ def main():
         palette.display()
 
 
-if __name__ == "__main__":
-    main()
+def main():
+    app()
