@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [2.0.1] 14/02/2024
+
+### Fixed
+- Regression where `requests` were missing as a dependency.
+
 ## [2.0.0] 09/02/2024
 
 ### Added
