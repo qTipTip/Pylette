@@ -8,7 +8,7 @@ from sklearn.cluster import KMeans
 
 from Pylette.src.color import Color
 from Pylette.src.palette import Palette
-from Pylette.src.types import SortMode
+from Pylette.src.types import ExtractionMode, SortMode
 from Pylette.src.utils import ColorBox
 
 
@@ -78,17 +78,19 @@ def extract_colors(
     width, height = img.size
     arr = np.asarray(img)
 
-    if mode == "KM":
+    if mode == ExtractionMode.KMeans:
         colors = k_means_extraction(arr, height, width, palette_size)
-    elif mode == "MC":
+    elif mode == ExtractionMode.MedianCut:
         colors = median_cut_extraction(arr, height, width, palette_size)
     else:
         raise NotImplementedError("Extraction mode not implemented")
 
-    if sort_mode.value == "luminance":
+    if sort_mode == SortMode.luminance:
         colors.sort(key=lambda c: c.luminance, reverse=False)
-    else:
+    elif sort_mode == SortMode.frequency:
         colors.sort(reverse=True)
+    else:
+        raise NotImplementedError("Sort mode not implemented")
 
     return Palette(colors)
 

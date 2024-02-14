@@ -8,7 +8,7 @@ from typer import Typer
 from typing_extensions import Annotated
 
 from Pylette import extract_colors
-from Pylette.src.types import SortMode
+from Pylette.src.types import ExtractionMode, SortMode
 
 app = Typer()
 
@@ -20,10 +20,22 @@ def extract(
     sort_by: Annotated[
         SortMode, typer.Option(help="Sort by luminance or frequency")
     ] = SortMode.luminance.value,
+    extraction_mode: Annotated[
+        ExtractionMode, typer.Option(help="The color quantization algorithm to use")
+    ] = ExtractionMode.KMeans.value,
+    resize: Annotated[
+        bool, typer.Option(help="Whether to resize the image before processing")
+    ] = True,
 ):
 
     for img_path in image:
-        palette = extract_colors(img_path, palette_size=palette_size, sort_mode=sort_by)
+        palette = extract_colors(
+            img_path,
+            palette_size=palette_size,
+            sort_mode=sort_by,
+            mode=extraction_mode,
+            resize=resize,
+        )
         palette.display()
 
 
