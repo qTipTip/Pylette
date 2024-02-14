@@ -1,4 +1,5 @@
 import argparse
+import time
 from enum import Enum
 from pathlib import Path
 from typing import List, Optional
@@ -10,7 +11,7 @@ from typer import Typer
 from typing_extensions import Annotated
 
 from Pylette import extract_colors
-from Pylette.cmd_utils import create_rich_color_grid, create_rich_table
+from Pylette.cmd_utils import create_color_box, create_rich_table
 from Pylette.src.types import ColorSpace, ExtractionMode, SortMode
 
 app = Typer()
@@ -45,10 +46,9 @@ def extract(
         ),
     ] = None,
 ):
-    table = create_rich_table(color_space=color_space)
+    table = create_rich_table()
     with Live(table, refresh_per_second=4, transient=False):
         for img_path in image:
-            typer.echo(f"Processing {img_path}")
             palette = extract_colors(
                 img_path,
                 palette_size=palette_size,
@@ -57,7 +57,7 @@ def extract(
                 resize=resize,
             )
 
-            color_grid = create_rich_color_grid(palette, color_space)
+            color_grid = create_color_box(palette)
             table.add_row(f"{img_path.stem}", color_grid)
 
             if save_to_directory:

@@ -6,19 +6,17 @@ from rich.style import Style
 from rich.table import Table
 
 from Pylette.src.palette import Palette
-from Pylette.src.types import ColorSpace
 
 
-def create_rich_table(color_space: ColorSpace = ColorSpace.RGB):
-    table = Table(title="Extracted Palette(s)")
+def create_rich_table():
+    table = Table(title="Extracted Palette(s)", expand=False)
     table.add_column("Image", justify="center", style="white")
     table.add_column("Colors", justify="center", style="white")
 
     return table
 
 
-def create_rich_color_grid(palette: Palette, color_space: ColorSpace = ColorSpace.RGB):
-    color_grid = Table.grid(expand=True)
+def create_color_box(palette: Palette):
     rich_colors = []
     for color in palette:
         rich_color = RichColor.from_rgb(*color.rgb)
