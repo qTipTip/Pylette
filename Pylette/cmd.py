@@ -4,10 +4,13 @@ from pathlib import Path
 from typing import List, Optional
 
 import typer
+from rich.live import Live
+from rich.panel import Panel
 from typer import Typer
 from typing_extensions import Annotated
 
 from Pylette import extract_colors
+from Pylette.cmd_utils import create_rich_color_grid, create_rich_table
 from Pylette.src.types import ColorSpace, ExtractionMode, SortMode
 
 app = Typer()
@@ -42,28 +45,32 @@ def extract(
         ),
     ] = None,
 ):
-
-    for img_path in image:
-        typer.echo(f"Processing {img_path}")
-        palette = extract_colors(
-            img_path,
-            palette_size=palette_size,
-            sort_mode=sort_by,
-            mode=extraction_mode,
-            resize=resize,
-        )
-
-        if save_to_directory:
-            if output_directory is None:
-                output_directory = img_path.parent
-            if not output_directory.exists():
-                output_directory.mkdir()
-            palette.to_csv(
-                filename=output_directory / f"{img_path.stem}_palette.csv",
-                frequency=True,
-                color_space=color_space,
-                stdout=False,
+    table = create_rich_table(color_space=color_space)
+    with Live(table, refresh_per_second=4, transient=False):
+        for img_path in image:
+            typer.echo(f"Processing {img_path}")
+            palette = extract_colors(
+                img_path,
+                palette_size=palette_size,
+                sort_mode=sort_by,
+                mode=extraction_mode,
+                resize=resize,
             )
+
+            color_grid = create_rich_color_grid(palette, color_space)
+            table.add_row(f"{img_path.stem}", color_grid)
+
+            if save_to_directory:
+                if output_directory is None:
+                    output_directory = img_path.parent
+                if not output_directory.exists():
+                    output_directory.mkdir()
+                palette.to_csv(
+                    filename=output_directory / f"{img_path.stem}_palette.csv",
+                    frequency=True,
+                    color_space=color_space,
+                    stdout=False,
+                )
 
 
 @app.command()
