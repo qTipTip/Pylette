@@ -44,6 +44,7 @@ def extract(
 ):
 
     for img_path in image:
+        typer.echo(f"Processing {img_path}")
         palette = extract_colors(
             img_path,
             palette_size=palette_size,
@@ -57,15 +58,12 @@ def extract(
                 output_directory = img_path.parent
             if not output_directory.exists():
                 output_directory.mkdir()
-
             palette.to_csv(
                 filename=output_directory / f"{img_path.stem}_palette.csv",
                 frequency=True,
                 color_space=color_space,
                 stdout=False,
             )
-
-        palette.display()
 
 
 @app.command()
