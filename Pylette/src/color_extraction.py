@@ -100,7 +100,7 @@ def k_means_extraction(arr, height, width, palette_size):
     :return: a palette of colors sorted by frequency
     """
     arr = np.reshape(arr, (width * height, -1))
-    model = KMeans(n_clusters=palette_size, n_init="auto", init="k-means++")
+    model = KMeans(n_clusters=palette_size, n_init="auto", init="k-means++",random_state=2024)
     labels = model.fit_predict(arr)
     palette = np.array(model.cluster_centers_, dtype=int)
     color_count = np.bincount(labels)
