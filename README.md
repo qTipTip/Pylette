@@ -40,7 +40,7 @@ palette = extract_colors(image='image.jpg', palette_size=10, resize=True)
 palette = extract_colors(image_url='https://path.to.image', palette_size=10, resize=True, mode='MC', sort_mode='luminance')
 ```
 
-This yields a palette of ten colors, and the `resize` flag tells Pylette to resize the image to a more manageable size before
+This yields a palette of ten colors, and the `resize` flag tells Pylette to resize the image to a more manageable size (256 x 256) before
 beginning color extraction. This significantly speeds up the extraction, but reduces the faithfulness of the color palette.
 One can choose between color quantization using K-Means (default) or Median-Cut algorithms, by setting in the `mode`-parameter. One can also specify to alternatively sort the color palette by the luminance (percieved brightness).
 
@@ -117,11 +117,10 @@ options:
 
 ## Under the hood
 
-Currently, Pylette uses KMeans for the color quantization. There are plans for implementing other color quantization schemes, like:
+Currently, Pylette can use KMeans or Median-cut for the color quantization. There are plans for implementing other color quantization schemes, like:
 
-1. Median-cut [Implemented]
-2. Octree
-3. Modified minmax
+1. Octree
+2. Modified minmax
 
 The article [*Improving the Performance of K-Means for Color Quantization*](https://arxiv.org/pdf/1101.0395.pdf) gives a
 nice overview of available methods.
