@@ -1,5 +1,5 @@
 import colorsys
-from typing import Literal
+from typing import Literal, cast
 
 import numpy as np
 from PIL import Image
@@ -8,11 +8,12 @@ luminance_weights = np.array([0.2126, 0.7152, 0.0722])
 
 
 class Color(object):
-    def __init__(self, RGB, frequency):
-        self.rgb: tuple[int, int, int] = tuple([c for c in RGB])
+    def __init__(self, rgb: tuple[int, ...], frequency: float):
+        assert len(rgb) == 3, "RGB values must be a tuple of length 3"
+        self.rgb = cast(tuple[int, int, int], rgb)
         self.freq: float = frequency
 
-    def display(self, w=50, h=50) -> None:
+    def display(self, w: int = 50, h: int = 50) -> None:
         """
         Displays the represented color in a w x h window.
         :param w: width in pixels
@@ -22,7 +23,7 @@ class Color(object):
         img = Image.new("RGB", size=(w, h), color=self.rgb)
         img.show()
 
-    def __lt__(self, other) -> bool:
+    def __lt__(self, other: "Color") -> bool:
         return self.freq < other.freq
 
     def get_colors(
