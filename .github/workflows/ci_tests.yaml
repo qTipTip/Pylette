@@ -1,4 +1,4 @@
-name: Upload Python Package To PyPi Test
+name: Run automated tests
 
 on:
   push
