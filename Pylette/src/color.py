@@ -1,4 +1,5 @@
 import colorsys
+from typing import Literal
 
 import numpy as np
 from PIL import Image
@@ -24,14 +25,18 @@ class Color(object):
     def __lt__(self, other) -> bool:
         return self.freq < other.freq
 
-    def get_colors(self, colorspace="rgb") -> tuple[int, ...] | tuple[float, ...]:
+    def get_colors(
+        self, colorspace: Literal["rgb", "hsv", "hls"] = "rgb"
+    ) -> tuple[int, ...] | tuple[float, ...]:
         """
         Get the color in terms of a colorspace (string).
 
         :param colorspace: rgb/hsv/hls
         :return: corresponding color values
         """
+
         colors = {"rgb": self.rgb, "hsv": self.hsv, "hls": self.hls}
+
         return colors[colorspace]
 
     @property
