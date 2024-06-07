@@ -43,7 +43,7 @@ def extract_colors(
     palette_size=5,
     resize=True,
     mode="KM",
-    sort_mode=SortMode,
+    sort_mode=SortMode.luminance.value,
 ):
     """
     Extracts a set of 'palette_size' colors from the given image.
