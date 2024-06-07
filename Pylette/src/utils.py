@@ -44,7 +44,7 @@ class ColorBox:
         return np.mean(self.colors, axis=0)
 
     @property
-    def volume(self) -> np.uint64:
+    def volume(self) -> int:
         diff: NDArray[np.uint8, (3,)] = self.max_channel - self.min_channel
         return np.prod(diff).item()
 
