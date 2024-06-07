@@ -57,8 +57,7 @@ def main():
     palette = extract_colors(
         args.filename, args.image_url, palette_size=args.n, sort_mode=args.sort_by
     )
-
-    palette.to_csv(filename=args.out_filename, frequency="True", stdout=args.stdout)
+    palette.to_csv(filename=args.out_filename, frequency=True, stdout=args.stdout)
     if args.display_colors:
         palette.display()
 

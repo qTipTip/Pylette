@@ -12,7 +12,9 @@ from Pylette.src.palette import Palette
 from Pylette.src.utils import ColorBox
 
 
-def median_cut_extraction(arr: np.ndarray, height: int, width: int, palette_size: int):
+def median_cut_extraction(
+    arr: np.ndarray, height: int, width: int, palette_size: int
+) -> list[Color]:
     """
     Extracts a color palette using the median cut algorithm.
     :param arr:
@@ -46,7 +48,7 @@ def extract_colors(
     resize: bool = True,
     mode: Literal["KM"] | Literal["MC"] = "KM",
     sort_mode: Literal["luminance"] | None = None,
-):
+) -> Palette:
     """
     Extracts a set of 'palette_size' colors from the given image.
     :param image: path to Image file
@@ -94,7 +96,9 @@ def extract_colors(
     return Palette(colors)
 
 
-def k_means_extraction(arr: NDArray[float], height: int, width: int, palette_size: int):
+def k_means_extraction(
+    arr: NDArray[float], height: int, width: int, palette_size: int
+) -> list[Color]:
     """
     Extracts a color palette using KMeans.
     :param arr: pixel array (height, width, 3)
