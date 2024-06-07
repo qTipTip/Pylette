@@ -1,9 +1,13 @@
+from typing import List, Literal
+
 import numpy as np
 from PIL import Image
 
+from Pylette.src.color import Color
+
 
 class Palette:
-    def __init__(self, colors):
+    def __init__(self, colors: list[Color]):
         """
         Initializes a color palette with a list of Color objects.
         :param colors: a list of Color-objects
@@ -14,8 +18,13 @@ class Palette:
         self.number_of_colors = len(colors)
 
     def display(
-        self, w=50, h=50, save_to_file=False, filename="color_palette", extension="jpg"
-    ):
+        self,
+        w: int = 50,
+        h: int = 50,
+        save_to_file: bool = False,
+        filename: str = "color_palette",
+        extension: str = "jpg",
+    ) -> None:
         """
         Displays the color-palette as an image, with an option for saving the image.
 
@@ -36,13 +45,19 @@ class Palette:
         if save_to_file:
             img.save(f"{filename}.{extension}")
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: int) -> Color:
         return self.colors[item]
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.number_of_colors
 
-    def to_csv(self, filename=None, frequency=True, colorspace="rgb", stdout=True):
+    def to_csv(
+        self,
+        filename: str | None = None,
+        frequency: bool = True,
+        colorspace: Literal["rgb", "hsv", "hls"] = "rgb",
+        stdout: bool = True,
+    ):
         """
         Dumps the palette to stdout. Saves to file if filename is specified.
         Dumps the palette to a comma separated text file
