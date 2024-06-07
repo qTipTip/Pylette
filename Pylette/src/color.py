@@ -8,10 +8,10 @@ luminance_weights = np.array([0.2126, 0.7152, 0.0722])
 
 class Color(object):
     def __init__(self, RGB, frequency):
-        self.rgb = tuple([c for c in RGB])
-        self.freq = frequency
+        self.rgb: tuple[int, int, int] = tuple([c for c in RGB])
+        self.freq: float = frequency
 
-    def display(self, w=50, h=50):
+    def display(self, w=50, h=50) -> None:
         """
         Displays the represented color in a w x h window.
         :param w: width in pixels
@@ -21,10 +21,10 @@ class Color(object):
         img = Image.new("RGB", size=(w, h), color=self.rgb)
         img.show()
 
-    def __lt__(self, other):
+    def __lt__(self, other) -> bool:
         return self.freq < other.freq
 
-    def get_colors(self, colorspace="rgb"):
+    def get_colors(self, colorspace="rgb") -> tuple[int, ...] | tuple[float, ...]:
         """
         Get the color in terms of a colorspace (string).
 
@@ -35,13 +35,13 @@ class Color(object):
         return colors[colorspace]
 
     @property
-    def hsv(self):
-        return colorsys.rgb_to_hsv(*self.rgb)
+    def hsv(self) -> tuple[float, float, float]:
+        return colorsys.rgb_to_hsv(r=self.rgb[0], g=self.rgb[1], b=self.rgb[2])
 
     @property
-    def hls(self):
-        return colorsys.rgb_to_hls(*self.rgb)
+    def hls(self) -> tuple[float, float, float]:
+        return colorsys.rgb_to_hls(r=self.rgb[0], g=self.rgb[1], b=self.rgb[2])
 
     @property
-    def luminance(self):
+    def luminance(self) -> float:
         return np.dot(luminance_weights, self.rgb)

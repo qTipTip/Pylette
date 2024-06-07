@@ -19,3 +19,12 @@ repos:
       rev: 'v1.10.0'  # Use the sha / tag you want to point at
       hooks:
       -   id: mypy
+          args:
+            - --show-error-codes
+            - --pretty
+            - --warn-redundant-casts
+            - --check-untyped-defs
+            - --ignore-missing-imports
+            - --disallow-any-generics
+            - --disallow-subclassing-any
+            - --no-implicit-optional
