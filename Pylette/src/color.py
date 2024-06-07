@@ -42,11 +42,15 @@ class Color(object):
 
     @property
     def hsv(self) -> tuple[float, float, float]:
-        return colorsys.rgb_to_hsv(r=self.rgb[0], g=self.rgb[1], b=self.rgb[2])
+        return colorsys.rgb_to_hsv(
+            r=self.rgb[0] / 255, g=self.rgb[1] / 255, b=self.rgb[2] / 255
+        )
 
     @property
     def hls(self) -> tuple[float, float, float]:
-        return colorsys.rgb_to_hls(r=self.rgb[0], g=self.rgb[1], b=self.rgb[2])
+        return colorsys.rgb_to_hls(
+            r=self.rgb[0] / 255, g=self.rgb[1] / 255, b=self.rgb[2] / 255
+        )
 
     @property
     def luminance(self) -> float:

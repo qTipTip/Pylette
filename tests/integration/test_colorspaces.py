@@ -15,7 +15,7 @@ def test_image_path_as_str():
 
 
 @pytest.fixture()
-def test_image_extracted_palette(test_image_path_as_str):
+def test_kmean_extracted_palette(test_image_path_as_str):
     return extract_colors(
         image=test_image_path_as_str, palette_size=10, mode="KM", resize=True
     )
@@ -57,3 +57,27 @@ def test_palette_invariants_with_image_path(
         1.0,
         err_msg="Expected the sum of all frequencies to be 1.0",
     )
+
+
+def test_colorspace_invariants_hls(test_kmean_extracted_palette):
+    for color in test_kmean_extracted_palette:
+        h, l, s = color.get_colors(colorspace="hls")
+        assert 0 <= h <= 360, f"Expected 0 <= h <= 360, got {h}"
+        assert 0 <= l <= 1, f"Expected 0 <= l <= 1, got {l}"
+        assert 0 <= s <= 1, f"Expected 0 <= s <= 1, got {s}"
+
+
+def test_colorspace_invariants_hsv(test_kmean_extracted_palette):
+    for color in test_kmean_extracted_palette:
+        h, s, v = color.get_colors(colorspace="hsv")
+        assert 0 <= h <= 360, f"Expected 0 <= h <= 360, got {h}"
+        assert 0 <= s <= 1, f"Expected 0 <= s <= 1, got {s}"
+        assert 0 <= v <= 1, f"Expected 0 <= v <= 1, got {v}"
+
+
+def test_colorspace_invariants_rgb(test_kmean_extracted_palette):
+    for color in test_kmean_extracted_palette:
+        r, g, b = color.rgb
+        assert 0 <= r <= 255, f"Expected 0 <= r <= 255, got {r}"
+        assert 0 <= g <= 255, f"Expected 0 <= g <= 255, got {g}"
+        assert 0 <= b <= 255, f"Expected 0 <= b <= 255, got {b}"
