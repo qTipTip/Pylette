@@ -44,8 +44,8 @@ class ColorBox:
         :return: np.array([R, G, B])
         """
         avg_color = np.mean(self.colors, axis=0)
-        if avg_color.dtype != np.uint8 or avg_color.shape != (3,):
-            raise ValueError("Invalid average color")
+        if avg_color.shape != (3,):
+            raise ValueError("Invalid number of channels in average color.")
         return avg_color
 
     @property
