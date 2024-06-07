@@ -42,15 +42,17 @@ def median_cut_extraction(
 
 
 def extract_colors(
-    image=None,
+    image_bytes: bytes | None = None,
+    image: str | None = None,
     image_url: str | None = None,
     palette_size: int = 5,
     resize: bool = True,
     mode: Literal["KM"] | Literal["MC"] = "KM",
-    sort_mode: Literal["luminance"] | None = None,
+    sort_mode: Literal["luminance", "frequency"] | None = None,
 ) -> Palette:
     """
     Extracts a set of 'palette_size' colors from the given image.
+    :param image_bytes: bytes representing the image data
     :param image: path to Image file
     :param image_url: url to the image-file
     :param palette_size: number of colors to extract
@@ -60,10 +62,12 @@ def extract_colors(
     :return: a list of the extracted colors
     """
 
-    if image is None and image_url is None:
+    if image_bytes is None and image is None and image_url is None:
         raise ValueError("No image provided")
 
-    if image is None and image_url is not None:
+    if image_bytes is not None:
+        img = Image.open(BytesIO(image_bytes)).convert("RGB")
+    elif image is None and image_url is not None:
         response = requests.get(image_url)
         # Check if the request was successful and content type is an image
         if response.status_code == 200 and "image" in response.headers.get(
