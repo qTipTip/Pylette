@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Added type hints for the methods in the `Pylette` package.
+- Added integration tests for color extraction. Make sure certain invariants hold for the extracted colors.
+
+### Fixed
+- Fixed the color conversion from RGB to HLS, and RGB to HSV, which was incorrect.
 
 ## [2.0.1] 14/02/2024
 
