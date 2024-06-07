@@ -14,8 +14,7 @@ python = "^3.10"
 Pillow = "^9.3.0"
 numpy = "^1.26.4"
 scikit-learn = "^1.2"
-requests = "^2.31.0"
-types-requests = "^2.32.0.20240602"
+requests = "^2.32.3"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.10.0"
