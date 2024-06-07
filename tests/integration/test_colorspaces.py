@@ -14,13 +14,23 @@ def test_image_path_as_str():
     yield str(test_image.absolute().resolve())
 
 
-@pytest.mark.parametrize("palette_size", [1, 5, 10])
+@pytest.fixture()
+def test_image_extracted_palette(test_image_path_as_str):
+    return extract_colors(
+        image=test_image_path_as_str, palette_size=10, mode="KM", resize=True
+    )
+
+
+@pytest.mark.parametrize("palette_size", [1, 5, 10, 100])
 @pytest.mark.parametrize("extraction_mode", ["KM", "MC"])
 def test_palette_invariants_with_image_path(
     test_image_path_as_str, palette_size, extraction_mode
 ):
     palette = extract_colors(
-        image=test_image_path_as_str, palette_size=palette_size, mode=extraction_mode
+        image=test_image_path_as_str,
+        palette_size=palette_size,
+        mode=extraction_mode,
+        resize=True,
     )
 
     assert (
