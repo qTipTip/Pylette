@@ -1,2 +1,5 @@
 .tool-versions
 .venv/
+.DS_Store
+.idea
+**/**__pycache__
