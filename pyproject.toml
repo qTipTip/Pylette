@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pylette"
-version = "2.1.0"
+version = "2.1.1"
 description = "A Python library for extracting color palettes from images."
 authors = ["Ivar Stangeby"]
 license = "MIT"

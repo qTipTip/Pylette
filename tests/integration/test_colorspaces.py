@@ -1,6 +1,5 @@
 import pathlib
 
-import numpy as np
 import pytest
 from numpy.testing import assert_approx_equal
 
@@ -92,3 +91,33 @@ def test_colorspace_invariants_rgb(test_kmean_extracted_palette):
         assert 0 <= r <= 255, f"Expected 0 <= r <= 255, got {r}"
         assert 0 <= g <= 255, f"Expected 0 <= g <= 255, got {g}"
         assert 0 <= b <= 255, f"Expected 0 <= b <= 255, got {b}"
+
+
+@pytest.mark.parametrize(
+    "resize, sort_mode", [(True, "luminance"), (False, "frequency")]
+)
+def test_color_extraction_deterministic_kmeans(
+    test_image_path_as_str, resize, sort_mode
+):
+    palette1 = extract_colors(
+        image=test_image_path_as_str,
+        palette_size=5,
+        mode="KM",
+        resize=resize,
+        sort_mode=sort_mode,
+    )
+    palette2 = extract_colors(
+        image=test_image_path_as_str,
+        palette_size=5,
+        mode="KM",
+        resize=resize,
+        sort_mode=sort_mode,
+    )
+    for c1, c2 in zip(palette1.colors, palette2.colors):
+        r, g, b, freq = c1.rgb[0], c1.rgb[1], c1.rgb[2], c1.freq
+        r2, g2, b2, freq2 = c2.rgb[0], c2.rgb[1], c2.rgb[2], c2.freq
+
+        assert r == r2, f"Expected r1 == r2, got {r} != {r2}"
+        assert g == g2, f"Expected g1 == g2, got {g} != {g2}"
+        assert b == b2, f"Expected b1 == b2, got {b} != {b2}"
+        assert freq == freq2, f"Expected freq1 == freq2, got {freq} != {freq2}"
