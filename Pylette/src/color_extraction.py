@@ -1,7 +1,9 @@
 from io import BytesIO
+from typing import Literal
 
 import numpy as np
-import requests
+import requests  # type: ignore
+from numpy.typing import NDArray
 from PIL import Image
 from sklearn.cluster import KMeans
 
@@ -10,7 +12,9 @@ from Pylette.src.palette import Palette
 from Pylette.src.utils import ColorBox
 
 
-def median_cut_extraction(arr, height, width, palette_size):
+def median_cut_extraction(
+    arr: np.ndarray, height: int, width: int, palette_size: int
+) -> list[Color]:
     """
     Extracts a color palette using the median cut algorithm.
     :param arr:
@@ -30,19 +34,21 @@ def median_cut_extraction(arr, height, width, palette_size):
         # add the two new boxes to the list, while removing the split box.
         c = c[:largest_c_idx] + c[largest_c_idx].split() + c[largest_c_idx + 1 :]
 
-    colors = [Color(map(int, box.average), box.size / full_box_size) for box in c]
+    colors = [
+        Color(tuple(map(int, box.average)), box.size / full_box_size) for box in c
+    ]
 
     return colors
 
 
 def extract_colors(
     image=None,
-    image_url: str = None,
-    palette_size=5,
-    resize=True,
-    mode="KM",
-    sort_mode=None,
-):
+    image_url: str | None = None,
+    palette_size: int = 5,
+    resize: bool = True,
+    mode: Literal["KM"] | Literal["MC"] = "KM",
+    sort_mode: Literal["luminance"] | None = None,
+) -> Palette:
     """
     Extracts a set of 'palette_size' colors from the given image.
     :param image: path to Image file
@@ -90,7 +96,9 @@ def extract_colors(
     return Palette(colors)
 
 
-def k_means_extraction(arr, height, width, palette_size):
+def k_means_extraction(
+    arr: NDArray[float], height: int, width: int, palette_size: int
+) -> list[Color]:
     """
     Extracts a color palette using KMeans.
     :param arr: pixel array (height, width, 3)
