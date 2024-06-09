@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Released
 
+## [2.1.1] 09/06/2024
+
+### Changed
+- Added `random_state` to the `KMeans` algorithm to ensure reproducibility. Two separate KMeans extractions now yield the same palettes. Thanks to @opeyemibami for fixing.
+
 ## [2.1.0] 07/06/2024
 
 ### Added
