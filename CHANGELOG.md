@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Released
 
+## [2.3.0] 19/06/2024
+
+- Added `image_array` to the `extract_color` function, allowing the user to specify an image as a numpy array.
+
 ## [2.2.0] 10/06/2024
 
 ### Changed
