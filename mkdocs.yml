@@ -16,10 +16,10 @@ theme:
 
 plugins:
   - mkdocstrings
+  - glightbox
 
 nav:
   - Home: index.md
-  - Reference: reference.md
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -29,3 +29,7 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - pymdownx.details
+  - admonition
+  - attr_list
+  - md_in_html

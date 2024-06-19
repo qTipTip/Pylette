@@ -26,6 +26,7 @@ opencv-python = "^4.10.0.84"
 mkdocs = {version = "^1.6.0", extras = ["python"]}
 mkdocs-material = "^9.5.27"
 mkdocstrings = {extras = ["python"], version = "^0.25.1"}
+mkdocs-glightbox = "^0.4.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
