@@ -43,6 +43,7 @@ def median_cut_extraction(
 
 def extract_colors(
     image_bytes: bytes | None = None,
+    image_array: NDArray[float] | None = None,
     image: str | None = None,
     image_url: str | None = None,
     palette_size: int = 5,
@@ -62,7 +63,12 @@ def extract_colors(
     :return: a list of the extracted colors
     """
 
-    if image_bytes is None and image is None and image_url is None:
+    if (
+        image_bytes is None
+        and image is None
+        and image_url is None
+        and image_array is None
+    ):
         raise ValueError("No image provided")
 
     if image_bytes is not None:
@@ -76,6 +82,8 @@ def extract_colors(
             img = Image.open(BytesIO(response.content)).convert("RGB")
         else:
             raise ValueError("The URL did not point to a valid image.")
+    elif image_array is not None:
+        img = Image.fromarray(image_array.astype(np.uint8))
     else:
         img = Image.open(image).convert("RGB")
 

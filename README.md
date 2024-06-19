@@ -37,7 +37,8 @@ A `Palette` object is created by calling the `extract_colors` function, either u
 from Pylette import extract_colors
 
 palette = extract_colors(image='image.jpg', palette_size=10, resize=True)
-palette = extract_colors(image_url='https://path.to.image', palette_size=10, resize=True, mode='MC', sort_mode='luminance')
+palette = extract_colors(image_url='https://path.to.image', palette_size=10, resize=True, mode='MC',
+                         sort_mode='luminance')
 ```
 
 This yields a palette of ten colors, and the `resize` flag tells Pylette to resize the image to a more manageable size (256 x 256) before
