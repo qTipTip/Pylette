@@ -3,3 +3,4 @@
 .DS_Store
 .idea
 **/**__pycache__
+site/
