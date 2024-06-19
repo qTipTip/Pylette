@@ -23,6 +23,10 @@ types-pillow = "^10.2.0.20240520"
 pre-commit = "^3.7.1"
 pytest = "^8.2.2"
 opencv-python = "^4.10.0.84"
+mkdocs = {version = "^1.6.0", extras = ["python"]}
+mkdocs-material = "^9.5.27"
+mkdocstrings = {extras = ["python"], version = "^0.25.1"}
+mkdocs-glightbox = "^0.4.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -1,9 +1,12 @@
-# Pylette
+# Pylette: The friendly Python color extraction library
+
+!!! note
+    The documentation is under construction. It will eventually contain a more detailed description of the library, and how
+    to use it, along with a complete API-reference. Stay tuned!
 
 [![PyPI version](https://badge.fury.io/py/Pylette.svg)](https://badge.fury.io/py/Pylette)
 [![Downloads](http://pepy.tech/badge/pylette)](http://pepy.tech/project/pylette)
-
-A color palette extractor written in Python using KMeans clustering.
+[![Built with Material for MkDocs](https://img.shields.io/badge/Material_for_MkDocs-526CFE?logo=MaterialForMkDocs&logoColor=white)](https://squidfunk.github.io/mkdocs-material/)
 
 ## Motivation
 
@@ -39,6 +42,7 @@ from Pylette import extract_colors
 palette = extract_colors(image='image.jpg', palette_size=10, resize=True)
 palette = extract_colors(image_url='https://path.to.image', palette_size=10, resize=True, mode='MC',
                          sort_mode='luminance')
+
 ```
 
 This yields a palette of ten colors, and the `resize` flag tells Pylette to resize the image to a more manageable size (256 x 256) before
@@ -86,15 +90,15 @@ A selection of example palettes. Each palette is sorted by luminance (percieved 
 
 Original Image  | Extracted Palette
 :--------------:|:-----------------:
-<img src="https://images.unsplash.com/photo-1534535009397-1fb0a46440f1?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=0de8fee9f4e6aa3d55fef987734a0787&auto=format&fit=crop&w=1234&q=80" width=200 height=200> | ![](docs/example_imgs/jason_leung_palette_kmeans.jpg) ![](docs/example_imgs/jason_leung_palette_mediancut.jpg)
-<img src="https://images.unsplash.com/photo-1534547774987-e59593542e1e?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=e8e5af1676517ac1ef8067f97a206415&auto=format&fit=crop&w=1234&q=80" width=200 height=200> | ![](docs/example_imgs/alex_perez_palette_kmeans.jpg)  ![](docs/example_imgs/alex_perez_palette_mediancut.jpg)
-<img src="https://images.unsplash.com/photo-1534537841395-2e594ba9ed4a?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=34ad54d1ba5d88b42abf43219c905c78&auto=format&fit=crop&w=1234&q=80" width=200 height=200> | ![](docs/example_imgs/josh_hild_palette_kmeans.jpg)   ![](docs/example_imgs/josh_hild_palette_mediancut.jpg)
+![](https://images.unsplash.com/photo-1534535009397-1fb0a46440f1?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=0de8fee9f4e6aa3d55fef987734a0787&auto=format&fit=crop&w=1234&q=80) | ![](example_imgs/jason_leung_palette_kmeans.jpg) ![](example_imgs/jason_leung_palette_mediancut.jpg)
+![](https://images.unsplash.com/photo-1534547774987-e59593542e1e?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=e8e5af1676517ac1ef8067f97a206415&auto=format&fit=crop&w=1234&q=80) | ![](example_imgs/alex_perez_palette_kmeans.jpg)  ![](example_imgs/alex_perez_palette_mediancut.jpg)
+![](https://images.unsplash.com/photo-1534537841395-2e594ba9ed4a?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=34ad54d1ba5d88b42abf43219c905c78&auto=format&fit=crop&w=1234&q=80) | ![](example_imgs/josh_hild_palette_kmeans.jpg)   ![](example_imgs/josh_hild_palette_mediancut.jpg)
 
 ## Command Line Tool
 
 The new version of Pylette also comes bundled with a command line tool, which can be used to extract color palettes from the command line.
 
-```shell script
+```bash
 usage: pylette [-h] (--filename FILENAME | --image-url IMAGE_URL) [--mode {KM,MC}] [--n N] [--sort_by {luminance,frequency}] [--stdout STDOUT] [--colorspace {rgb,hsv,hls}] [--out_filename OUT_FILENAME]
                [--display-colors DISPLAY_COLORS]
 
