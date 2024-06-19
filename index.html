@@ -1,0 +1,624 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.27">
+    
+    
+      
+        <title>Pylette</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.6543a935.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+   <link href="assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#pylette-the-friendly-python-color-extraction-library" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="Pylette" class="md-header__button md-logo" aria-label="Pylette" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Pylette
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Home
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="Pylette" class="md-nav__button md-logo" aria-label="Pylette" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Pylette
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Motivation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Motivation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#other-color-palette-related-python-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Other color palette related Python-libraries:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic usage
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-palettes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Palettes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-line-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Line Tool
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#under-the-hood" class="md-nav__link">
+    <span class="md-ellipsis">
+      Under the hood
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feedback" class="md-nav__link">
+    <span class="md-ellipsis">
+      Feedback
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Motivation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Motivation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#other-color-palette-related-python-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Other color palette related Python-libraries:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic usage
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-palettes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Palettes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#command-line-tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Line Tool
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#under-the-hood" class="md-nav__link">
+    <span class="md-ellipsis">
+      Under the hood
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feedback" class="md-nav__link">
+    <span class="md-ellipsis">
+      Feedback
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="pylette-the-friendly-python-color-extraction-library">Pylette: The friendly Python color extraction library</h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The documentation is under construction. It will eventually contain a more detailed description of the library, and how
+to use it, along with a complete API-reference. Stay tuned!</p>
+</div>
+<p><a href="https://badge.fury.io/py/Pylette"><img alt="PyPI version" src="https://badge.fury.io/py/Pylette.svg" /></a>
+<a href="http://pepy.tech/project/pylette"><img alt="Downloads" src="http://pepy.tech/badge/pylette" /></a>
+<a href="https://squidfunk.github.io/mkdocs-material/"><img alt="Built with Material for MkDocs" src="https://img.shields.io/badge/Material_for_MkDocs-526CFE?logo=MaterialForMkDocs&amp;logoColor=white" /></a></p>
+<h2 id="motivation">Motivation</h2>
+<p>Working with computer graphics and visualizations, one often needs a way of specifying a set of colors
+with a certain visual appeal. Such a set of colors is often called a <em>color palette</em>. The aim of this
+library is to easily extract a set of colors from a supplied image, with support for the various color modes (RGB, RGBa, HSV, etc).
+Dabbling in generative art, the need often arises for being able to pick colors at random from a palette.
+Pylette supports this, both picking colors uniformly, but also using the color frequency from the original image as probabilities.</p>
+<h4 id="other-color-palette-related-python-libraries">Other color palette related Python-libraries:</h4>
+<ol>
+<li><a href="https://github.com/fengsp/color-thief-py">Color Thief</a>: Extraction of color palettes using the median cut algorithm.</li>
+<li><a href="https://pypi.org/project/palettable/">Palettable</a>: Generation of matplotlib compatible color schemes</li>
+<li><a href="https://github.com/obskyr/colorgram.py">Colorgram</a>: Extraction of colors from images (similar to the intended use of this library),
+however, I was unable to install this.</li>
+</ol>
+<h2 id="installation">Installation</h2>
+<p>Pylette is available in the python package index (PyPi), and can be installed using <code>pip</code>:</p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>Pylette
+</span></code></pre></div>
+<h2 id="basic-usage">Basic usage</h2>
+<p>A <code>Palette</code> object is created by calling the <code>extract_colors</code> function, either using a path to an image, or an image url:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">Pylette</span> <span class="kn">import</span> <span class="n">extract_colors</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">palette</span> <span class="o">=</span> <span class="n">extract_colors</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="s1">&#39;image.jpg&#39;</span><span class="p">,</span> <span class="n">palette_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">resize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">palette</span> <span class="o">=</span> <span class="n">extract_colors</span><span class="p">(</span><span class="n">image_url</span><span class="o">=</span><span class="s1">&#39;https://path.to.image&#39;</span><span class="p">,</span> <span class="n">palette_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">resize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;MC&#39;</span><span class="p">,</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>                         <span class="n">sort_mode</span><span class="o">=</span><span class="s1">&#39;luminance&#39;</span><span class="p">)</span>
+</span></code></pre></div>
+<p>This yields a palette of ten colors, and the <code>resize</code> flag tells Pylette to resize the image to a more manageable size (256 x 256) before
+beginning color extraction. This significantly speeds up the extraction, but reduces the faithfulness of the color palette.
+One can choose between color quantization using K-Means (default) or Median-Cut algorithms, by setting in the <code>mode</code>-parameter. One can also specify to alternatively sort the color palette by the luminance (percieved brightness).</p>
+<p>The palette object supports indexing and iteration, and the colors are sorted from highest to lowest frequency by default.
+E.g, the following snippet will fetch the most common, and least common
+color in the picture if the palette was sorted by frequency, or the darkest to lightest color if sorted by luminance:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">most_common_color</span> <span class="o">=</span> <span class="n">palette</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">least_common_color</span> <span class="o">=</span> <span class="n">palette</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">three_most_common_colors</span> <span class="o">=</span> <span class="n">palette</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+</span></code></pre></div>
+As seen, slicing is also supported.</p>
+<p>The Palette object contains a list of Color objects, which contains a representation of the color in various color modes, with RGB being the default. Accessing the color attributes is easy:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">color</span> <span class="o">=</span> <span class="n">palette</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nb">print</span><span class="p">(</span><span class="n">color</span><span class="o">.</span><span class="n">rgb</span><span class="p">)</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">color</span><span class="o">.</span><span class="n">hls</span><span class="p">)</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">color</span><span class="o">.</span><span class="n">hsv</span><span class="p">)</span>
+</span></code></pre></div>
+<p>To display the extracted color palette, simply call the <code>display</code>-method, which optionally takes a flag for saving the palette to an image file.
+The palette can be dumped to a CSV-file as well, where each row represents the RGB values and the corresponding color frequency (optional).
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">palette</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">save_to_file</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">palette</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;color_palette.csv&#39;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></code></pre></div></p>
+<p>In order to pick colors from the palette at random, Pylette offers the <code>random_color</code>-method, which supports both drawing
+uniformly, and from the original color distribution, given by the frequencies of the extracted colors:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">random_color</span> <span class="o">=</span> <span class="n">palette</span><span class="o">.</span><span class="n">random_color</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;uniform&#39;</span><span class="p">)</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">random_colors</span> <span class="o">=</span> <span class="n">palette</span><span class="o">.</span><span class="n">random_color</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;frequency&#39;</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="example-palettes">Example Palettes</h2>
+<p>A selection of example palettes. Each palette is sorted by luminance (percieved brightness). The top row corresponds to extraction using K-Means, and the bottom row corresponds to Median-Cut extraction.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Original Image</th>
+<th style="text-align: center;">Extracted Palette</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><a class="glightbox" href="https://images.unsplash.com/photo-1534535009397-1fb0a46440f1?ixlib=rb-0.3.5&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;s=0de8fee9f4e6aa3d55fef987734a0787&amp;auto=format&amp;fit=crop&amp;w=1234&amp;q=80" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img alt="" src="https://images.unsplash.com/photo-1534535009397-1fb0a46440f1?ixlib=rb-0.3.5&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;s=0de8fee9f4e6aa3d55fef987734a0787&amp;auto=format&amp;fit=crop&amp;w=1234&amp;q=80" /></a></td>
+<td style="text-align: center;"><a class="glightbox" href="example_imgs/jason_leung_palette_kmeans.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img alt="" src="example_imgs/jason_leung_palette_kmeans.jpg" /></a> <a class="glightbox" href="example_imgs/jason_leung_palette_mediancut.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img alt="" src="example_imgs/jason_leung_palette_mediancut.jpg" /></a></td>
+</tr>
+<tr>
+<td style="text-align: center;"><a class="glightbox" href="https://images.unsplash.com/photo-1534547774987-e59593542e1e?ixlib=rb-0.3.5&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;s=e8e5af1676517ac1ef8067f97a206415&amp;auto=format&amp;fit=crop&amp;w=1234&amp;q=80" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img alt="" src="https://images.unsplash.com/photo-1534547774987-e59593542e1e?ixlib=rb-0.3.5&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;s=e8e5af1676517ac1ef8067f97a206415&amp;auto=format&amp;fit=crop&amp;w=1234&amp;q=80" /></a></td>
+<td style="text-align: center;"><a class="glightbox" href="example_imgs/alex_perez_palette_kmeans.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img alt="" src="example_imgs/alex_perez_palette_kmeans.jpg" /></a>  <a class="glightbox" href="example_imgs/alex_perez_palette_mediancut.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img alt="" src="example_imgs/alex_perez_palette_mediancut.jpg" /></a></td>
+</tr>
+<tr>
+<td style="text-align: center;"><a class="glightbox" href="https://images.unsplash.com/photo-1534537841395-2e594ba9ed4a?ixlib=rb-0.3.5&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;s=34ad54d1ba5d88b42abf43219c905c78&amp;auto=format&amp;fit=crop&amp;w=1234&amp;q=80" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img alt="" src="https://images.unsplash.com/photo-1534537841395-2e594ba9ed4a?ixlib=rb-0.3.5&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;s=34ad54d1ba5d88b42abf43219c905c78&amp;auto=format&amp;fit=crop&amp;w=1234&amp;q=80" /></a></td>
+<td style="text-align: center;"><a class="glightbox" href="example_imgs/josh_hild_palette_kmeans.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img alt="" src="example_imgs/josh_hild_palette_kmeans.jpg" /></a>   <a class="glightbox" href="example_imgs/josh_hild_palette_mediancut.jpg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img alt="" src="example_imgs/josh_hild_palette_mediancut.jpg" /></a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="command-line-tool">Command Line Tool</h2>
+<p>The new version of Pylette also comes bundled with a command line tool, which can be used to extract color palettes from the command line.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>usage:<span class="w"> </span>pylette<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span><span class="o">(</span>--filename<span class="w"> </span>FILENAME<span class="w"> </span><span class="p">|</span><span class="w"> </span>--image-url<span class="w"> </span>IMAGE_URL<span class="o">)</span><span class="w"> </span><span class="o">[</span>--mode<span class="w"> </span><span class="o">{</span>KM,MC<span class="o">}]</span><span class="w"> </span><span class="o">[</span>--n<span class="w"> </span>N<span class="o">]</span><span class="w"> </span><span class="o">[</span>--sort_by<span class="w"> </span><span class="o">{</span>luminance,frequency<span class="o">}]</span><span class="w"> </span><span class="o">[</span>--stdout<span class="w"> </span>STDOUT<span class="o">]</span><span class="w"> </span><span class="o">[</span>--colorspace<span class="w"> </span><span class="o">{</span>rgb,hsv,hls<span class="o">}]</span><span class="w"> </span><span class="o">[</span>--out_filename<span class="w"> </span>OUT_FILENAME<span class="o">]</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">               </span><span class="o">[</span>--display-colors<span class="w"> </span>DISPLAY_COLORS<span class="o">]</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>options:
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">            </span>show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span>--filename<span class="w"> </span>FILENAME<span class="w">   </span>path<span class="w"> </span>to<span class="w"> </span>image<span class="w"> </span>file<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span>None<span class="o">)</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span>--image-url<span class="w"> </span>IMAGE_URL
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">                        </span>url<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>image<span class="w"> </span>file<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span>None<span class="o">)</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">  </span>--mode<span class="w"> </span><span class="o">{</span>KM,MC<span class="o">}</span><span class="w">        </span>extraction_mode<span class="w"> </span><span class="o">(</span>KMeans/MedianCut<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span>KM<span class="o">)</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">  </span>--n<span class="w"> </span>N<span class="w">                 </span>the<span class="w"> </span>number<span class="w"> </span>of<span class="w"> </span>colors<span class="w"> </span>to<span class="w"> </span>extract<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span><span class="m">5</span><span class="o">)</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">  </span>--sort_by<span class="w"> </span><span class="o">{</span>luminance,frequency<span class="o">}</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">                        </span>sort<span class="w"> </span>by<span class="w"> </span>luminance<span class="w"> </span>or<span class="w"> </span>frequency<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span>luminance<span class="o">)</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">  </span>--stdout<span class="w"> </span>STDOUT<span class="w">       </span>whether<span class="w"> </span>to<span class="w"> </span>display<span class="w"> </span>the<span class="w"> </span>extracted<span class="w"> </span>color<span class="w"> </span>values<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>stdout<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span>True<span class="o">)</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">  </span>--colorspace<span class="w"> </span><span class="o">{</span>rgb,hsv,hls<span class="o">}</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">                        </span>color<span class="w"> </span>space<span class="w"> </span>to<span class="w"> </span>represent<span class="w"> </span>colors<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">(</span>default:<span class="w"> </span>RGB<span class="o">)</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">  </span>--out_filename<span class="w"> </span>OUT_FILENAME
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="w">                        </span>where<span class="w"> </span>to<span class="w"> </span>save<span class="w"> </span>the<span class="w"> </span>csv<span class="w"> </span>file<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span>None<span class="o">)</span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">  </span>--display-colors<span class="w"> </span>DISPLAY_COLORS
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="w">                        </span>Open<span class="w"> </span>a<span class="w"> </span>window<span class="w"> </span>displaying<span class="w"> </span>the<span class="w"> </span>extracted<span class="w"> </span>palette<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span>False<span class="o">)</span>
+</span></code></pre></div>
+<h2 id="under-the-hood">Under the hood</h2>
+<p>Currently, Pylette can use KMeans or Median-cut for the color quantization. There are plans for implementing other color quantization schemes, like:</p>
+<ol>
+<li>Octree</li>
+<li>Modified minmax</li>
+</ol>
+<p>The article <a href="https://arxiv.org/pdf/1101.0395.pdf"><em>Improving the Performance of K-Means for Color Quantization</em></a> gives a
+nice overview of available methods.</p>
+<h2 id="feedback">Feedback</h2>
+<p>Any feedback and suggestions is much appreciated.
+This is very much a work in progress.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="assets/javascripts/bundle.ad660dcc.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>
