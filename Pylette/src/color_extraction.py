@@ -45,11 +45,12 @@ def extract_colors(
     image_bytes: bytes | None = None,
     image_array: NDArray[float] | None = None,
     image: str | None = None,
-    image_url: str | None = None,
+    image_path: str | None = None,
     palette_size: int = 5,
     resize: bool = True,
     mode: Literal["KM"] | Literal["MC"] = "KM",
     sort_mode: Literal["luminance", "frequency"] | None = None,
+    image_url: str | None = None,
 ) -> Palette:
     """
     Extracts a set of 'palette_size' colors from the given image.
@@ -66,6 +67,7 @@ def extract_colors(
     if (
         image_bytes is None
         and image is None
+        and image_path is None
         and image_url is None
         and image_array is None
     ):
@@ -73,7 +75,7 @@ def extract_colors(
 
     if image_bytes is not None:
         img = Image.open(BytesIO(image_bytes)).convert("RGB")
-    elif image is None and image_url is not None:
+    elif image_path is None and image_url is not None:
         response = requests.get(image_url)
         # Check if the request was successful and content type is an image
         if response.status_code == 200 and "image" in response.headers.get(
@@ -85,7 +87,7 @@ def extract_colors(
     elif image_array is not None:
         img = Image.fromarray(image_array.astype(np.uint8))
     else:
-        img = Image.open(image).convert("RGB")
+        img = Image.open(image_path).convert("RGB")
 
     # open the image
     if resize:

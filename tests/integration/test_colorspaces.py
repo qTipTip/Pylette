@@ -31,7 +31,7 @@ def test_image_from_opencv():
 @pytest.fixture()
 def test_kmean_extracted_palette(test_image_path_as_str):
     return extract_colors(
-        image=test_image_path_as_str, palette_size=10, resize=True, mode="KM"
+        image_path=test_image_path_as_str, palette_size=10, resize=True, mode="KM"
     )
 
 
@@ -52,7 +52,7 @@ def test_palette_invariants_with_image_path(
     test_image_path_as_str, palette_size, extraction_mode
 ):
     palette = extract_colors(
-        image=test_image_path_as_str,
+        image_path=test_image_path_as_str,
         palette_size=palette_size,
         resize=True,
         mode=extraction_mode,
@@ -213,14 +213,14 @@ def test_color_extraction_deterministic_kmeans(
     test_image_path_as_str, resize, sort_mode
 ):
     palette1 = extract_colors(
-        image=test_image_path_as_str,
+        image_path=test_image_path_as_str,
         palette_size=5,
         resize=resize,
         mode="KM",
         sort_mode=sort_mode,
     )
     palette2 = extract_colors(
-        image=test_image_path_as_str,
+        image_path=test_image_path_as_str,
         palette_size=5,
         resize=resize,
         mode="KM",
