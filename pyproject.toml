@@ -12,6 +12,13 @@ readme = "README.md"
 [tool.ruff]
 line-length = 120
 
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I"
+]
+
 [tool.poetry.dependencies]
 python = "^3.10"
 Pillow = ">=9.3,<11.0"
