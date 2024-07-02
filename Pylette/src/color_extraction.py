@@ -1,5 +1,8 @@
+import os
+import urllib.parse
+from enum import Enum
 from io import BytesIO
-from typing import Literal
+from typing import Any, Literal, Union
 
 import numpy as np
 import requests  # type: ignore
@@ -11,10 +14,18 @@ from Pylette.src.color import Color
 from Pylette.src.palette import Palette
 from Pylette.src.utils import ColorBox
 
+ImageType_T = Union["os.PathLike[Any]", bytes, NDArray[float], str]
 
-def median_cut_extraction(
-    arr: np.ndarray, height: int, width: int, palette_size: int
-) -> list[Color]:
+
+class ImageType(str, Enum):
+    PATH = "path"
+    BYTES = "bytes"
+    ARRAY = "array"
+    URL = "url"
+    NONE = "none"
+
+
+def median_cut_extraction(arr: np.ndarray, height: int, width: int, palette_size: int) -> list[Color]:
     """
     Extracts a color palette using the median cut algorithm.
     :param arr:
@@ -34,18 +45,35 @@ def median_cut_extraction(
         # add the two new boxes to the list, while removing the split box.
         c = c[:largest_c_idx] + c[largest_c_idx].split() + c[largest_c_idx + 1 :]
 
-    colors = [
-        Color(tuple(map(int, box.average)), box.size / full_box_size) for box in c
-    ]
+    colors = [Color(tuple(map(int, box.average)), box.size / full_box_size) for box in c]
 
     return colors
 
 
+def _parse_image_type(image: ImageType_T) -> ImageType:
+    match image:
+        case np.ndarray():
+            image_type = ImageType.ARRAY
+        case os.PathLike():
+            image_type = ImageType.PATH
+        case bytes():
+            image_type = ImageType.BYTES
+        case str():
+            try:
+                result = urllib.parse.urlparse(image)
+                if all([result.scheme, result.netloc]):
+                    image_type = ImageType.URL
+                else:
+                    image_type = ImageType.PATH
+            except ValueError:
+                image_type = ImageType.PATH
+        case _:
+            image_type = ImageType.NONE
+    return image_type
+
+
 def extract_colors(
-    image_bytes: bytes | None = None,
-    image_array: NDArray[float] | None = None,
-    image: str | None = None,
-    image_url: str | None = None,
+    image: ImageType_T | None = None,
     palette_size: int = 5,
     resize: bool = True,
     mode: Literal["KM"] | Literal["MC"] = "KM",
@@ -63,29 +91,21 @@ def extract_colors(
     :return: a list of the extracted colors
     """
 
-    if (
-        image_bytes is None
-        and image is None
-        and image_url is None
-        and image_array is None
-    ):
-        raise ValueError("No image provided")
+    image_type = _parse_image_type(image)
 
-    if image_bytes is not None:
-        img = Image.open(BytesIO(image_bytes)).convert("RGB")
-    elif image is None and image_url is not None:
-        response = requests.get(image_url)
-        # Check if the request was successful and content type is an image
-        if response.status_code == 200 and "image" in response.headers.get(
-            "Content-Type", ""
-        ):
-            img = Image.open(BytesIO(response.content)).convert("RGB")
-        else:
-            raise ValueError("The URL did not point to a valid image.")
-    elif image_array is not None:
-        img = Image.fromarray(image_array.astype(np.uint8))
-    else:
-        img = Image.open(image).convert("RGB")
+    match image_type:
+        case ImageType.PATH:
+            img = Image.open(image).convert("RGB")
+        case ImageType.BYTES:
+            assert isinstance(image, bytes)
+            img = Image.open(BytesIO(image)).convert("RGB")
+        case ImageType.URL:
+            assert isinstance(image, str)
+            img = request_image(image)
+        case ImageType.ARRAY:
+            img = Image.fromarray(image).convert("RGB")
+        case ImageType.NONE:
+            raise ValueError(f"Unable to parse image source. Got image type {type(image)}")
 
     # open the image
     if resize:
@@ -108,9 +128,17 @@ def extract_colors(
     return Palette(colors)
 
 
-def k_means_extraction(
-    arr: NDArray[float], height: int, width: int, palette_size: int
-) -> list[Color]:
+def request_image(image_url: str) -> Image.Image:
+    response = requests.get(image_url)
+    # Check if the request was successful and content type is an image
+    if response.status_code == 200 and "image" in response.headers.get("Content-Type", ""):
+        img = Image.open(BytesIO(response.content)).convert("RGB")
+        return img
+    else:
+        raise ValueError("The URL did not point to a valid image.")
+
+
+def k_means_extraction(arr: NDArray[float], height: int, width: int, palette_size: int) -> list[Color]:
     """
     Extracts a color palette using KMeans.
     :param arr: pixel array (height, width, 3)
@@ -120,9 +148,7 @@ def k_means_extraction(
     :return: a palette of colors sorted by frequency
     """
     arr = np.reshape(arr, (width * height, -1))
-    model = KMeans(
-        n_clusters=palette_size, n_init="auto", init="k-means++", random_state=2024
-    )
+    model = KMeans(n_clusters=palette_size, n_init="auto", init="k-means++", random_state=2024)
     labels = model.fit_predict(arr)
     palette = np.array(model.cluster_centers_, dtype=int)
     color_count = np.bincount(labels)
