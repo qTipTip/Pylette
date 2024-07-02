@@ -12,7 +12,7 @@ class ColorBox:
         Initializes a ColorBox with a numpy array of RGB colors.
 
         Parameters:
-        colors (ArrayLike): A numpy array of RGB colors with shape (width * height, 3).
+            colors (ArrayLike): A numpy array of RGB colors with shape (width * height, 3).
         """
         self.colors = np.asarray(colors, dtype=np.uint8)
         if self.colors.ndim < 2 or self.colors.shape[-1] != 3:
@@ -31,7 +31,7 @@ class ColorBox:
         Compares two ColorBoxes based on their volume.
 
         Parameters:
-        other (ColorBox): The other ColorBox to compare with.
+            other (ColorBox): The other ColorBox to compare with.
 
         Returns:
         bool: True if the volume of this ColorBox is less than the volume of the other ColorBox, False otherwise.
@@ -44,7 +44,7 @@ class ColorBox:
         Returns the volume of the ColorBox.
 
         Returns:
-        np.uint64: The volume of the ColorBox.
+            np.uint64: The volume of the ColorBox.
         """
         return self.volume
 
@@ -53,7 +53,7 @@ class ColorBox:
         Determines the dominant color channel in the ColorBox.
 
         Returns:
-        int: The index of the dominant color channel.
+            int: The index of the dominant color channel.
         """
         diff: NDArray[np.uint8, (3,)] = self.max_channel - self.min_channel
         dominant_channel = np.argmax(diff)
@@ -65,7 +65,7 @@ class ColorBox:
         Calculates the average color contained in the ColorBox.
 
         Returns:
-        np.ndarray: The average color as an array [R, G, B].
+            np.ndarray: The average color as an array [R, G, B].
         """
         avg_color = np.mean(self.colors, axis=0)
         if avg_color.shape != (3,):
@@ -78,7 +78,7 @@ class ColorBox:
         Calculates the volume of the ColorBox.
 
         Returns:
-        int: The volume of the ColorBox.
+            int: The volume of the ColorBox.
         """
         diff: NDArray[np.uint8, (3,)] = self.max_channel - self.min_channel
         return np.prod(diff).item()
@@ -88,7 +88,7 @@ class ColorBox:
         Splits the ColorBox into two ColorBoxes at the median of the dominant color channel.
 
         Returns:
-        list[ColorBox]: A list containing the two new ColorBoxes.
+            list[ColorBox]: A list containing the two new ColorBoxes.
         """
         dominant_channel = self._get_dominant_channel()
         self.colors = self.colors[self.colors[:, dominant_channel].argsort()]

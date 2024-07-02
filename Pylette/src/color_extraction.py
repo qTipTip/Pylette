@@ -30,13 +30,13 @@ def median_cut_extraction(arr: np.ndarray, height: int, width: int, palette_size
     Extracts a color palette using the median cut algorithm.
 
     Parameters:
-    arr (np.ndarray): The input array.
-    height (int): The height of the image.
-    width (int): The width of the image.
-    palette_size (int): The number of colors to extract from the image.
+        arr (np.ndarray): The input array.
+        height (int): The height of the image.
+        width (int): The width of the image.
+        palette_size (int): The number of colors to extract from the image.
 
     Returns:
-    list[Color]: A list of colors extracted from the image.
+        list[Color]: A list of colors extracted from the image.
     """
 
     arr = arr.reshape((width * height, -1))
@@ -86,7 +86,7 @@ def _parse_image_type(image: ImageType_T) -> ImageType:
 
 
 def extract_colors(
-    image: ImageType_T | None = None,
+    image: ImageType_T,
     palette_size: int = 5,
     resize: bool = True,
     mode: Literal["KM"] | Literal["MC"] = "KM",
@@ -96,14 +96,14 @@ def extract_colors(
     Extracts a set of 'palette_size' colors from the given image.
 
     Parameters:
-    image (ImageType_T | None): The input image. Default is None.
-    palette_size (int): The number of colors to extract. Default is 5.
-    resize (bool): Whether to resize the image before processing. Default is True.
-    mode (Literal["KM"] | Literal["MC"]): The color quantization algorithm to use. Default is "KM".
-    sort_mode (Literal["luminance", "frequency"] | None): The mode to sort colors. Default is None.
+        image (ImageType_T | None): The input image.
+        palette_size (int): The number of colors to extract.
+        resize (bool): Whether to resize the image before processing.
+        mode (Literal["KM"] | Literal["MC"]): The color quantization algorithm to use.
+        sort_mode (Literal["luminance", "frequency"] | None): The mode to sort colors.
 
     Returns:
-    Palette: A palette of the extracted colors.
+        Palette: A palette of the extracted colors.
     """
 
     image_type = _parse_image_type(image)
@@ -148,13 +148,13 @@ def request_image(image_url: str) -> Image.Image:
     Requests an image from a given URL.
 
     Parameters:
-    image_url (str): The URL of the image.
+        image_url (str): The URL of the image.
 
     Returns:
-    Image.Image: The requested image.
+        Image.Image: The requested image.
 
     Raises:
-    ValueError: If the URL does not point to a valid image.
+        ValueError: If the URL does not point to a valid image.
     """
     response = requests.get(image_url)
     # Check if the request was successful and content type is an image
@@ -170,13 +170,13 @@ def k_means_extraction(arr: NDArray[float], height: int, width: int, palette_siz
     Extracts a color palette using KMeans.
 
     Parameters:
-    arr (NDArray[float]): The input array.
-    height (int): The height of the image.
-    width (int): The width of the image.
-    palette_size (int): The number of colors to extract from the image.
+        arr (NDArray[float]): The input array.
+        height (int): The height of the image.
+        width (int): The width of the image.
+        palette_size (int): The number of colors to extract from the image.
 
     Returns:
-    list[Color]: A palette of colors sorted by frequency.
+        list[Color]: A palette of colors sorted by frequency.
     """
     arr = np.reshape(arr, (width * height, -1))
     model = KMeans(n_clusters=palette_size, n_init="auto", init="k-means++", random_state=2024)

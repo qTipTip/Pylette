@@ -12,7 +12,7 @@ class Palette:
         Initializes a color palette with a list of Color objects.
 
         Parameters:
-        colors (list[Color]): A list of Color objects.
+            colors (list[Color]): A list of Color objects.
         """
 
         self.colors = colors
@@ -31,11 +31,11 @@ class Palette:
         Displays the color palette as an image, with an option for saving the image.
 
         Parameters:
-        w (int): Width of each color component. Default is 50.
-        h (int): Height of each color component. Default is 50.
-        save_to_file (bool): Whether to save the file or not. Default is False.
-        filename (str): Filename. Default is "color_palette".
-        extension (str): File extension. Default is "jpg".
+            w (int): Width of each color component.
+            h (int): Height of each color component.
+            save_to_file (bool): Whether to save the file or not.
+            filename (str): Filename.
+            extension (str): File extension.
         """
         img = Image.new("RGB", size=(w * self.number_of_colors, h))
         arr = np.asarray(img).copy()
@@ -65,10 +65,10 @@ class Palette:
         Dumps the palette to stdout. Saves to file if filename is specified.
 
         Parameters:
-        filename (str | None): File to dump to. Default is None.
-        frequency (bool): Whether to dump the corresponding frequency of each color. Default is True.
-        colorspace (Literal["rgb", "hsv", "hls"]): Color space to use. Default is "rgb".
-        stdout (bool): Whether to dump to stdout. Default is True.
+            filename (str | None): File to dump to.
+            frequency (bool): Whether to dump the corresponding frequency of each color.
+            colorspace (Literal["rgb", "hsv", "hls"]): Color space to use.
+            stdout (bool): Whether to dump to stdout.
         """
 
         if stdout:
@@ -88,11 +88,11 @@ class Palette:
         Returns N random colors from the palette, either using the frequency of each color, or choosing uniformly.
 
         Parameters:
-        N (int): Number of random colors to return.
-        mode (str): Mode to use for selection. Can be "frequency" or "uniform". Default is "frequency".
+            N (int): Number of random colors to return.
+            mode (str): Mode to use for selection. Can be "frequency" or "uniform".
 
         Returns:
-        list[Color]: List of N random colors from the palette.
+            list[Color]: List of N random colors from the palette.
         """
 
         if mode == "frequency":

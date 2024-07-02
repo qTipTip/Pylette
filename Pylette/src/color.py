@@ -14,8 +14,8 @@ class Color(object):
         Initializes a Color object with RGB values and frequency.
 
         Parameters:
-        rgb (tuple[int, ...]): A tuple of RGB values.
-        frequency (float): The frequency of the color.
+            rgb (tuple[int, ...]): A tuple of RGB values.
+            frequency (float): The frequency of the color.
         """
         assert len(rgb) == 3, "RGB values must be a tuple of length 3"
         self.rgb = cast(tuple[int, int, int], rgb)
@@ -26,8 +26,8 @@ class Color(object):
         Displays the color in a window of specified width and height.
 
         Parameters:
-        w (int): Width of the window in pixels. Default is 50.
-        h (int): Height of the window in pixels. Default is 50.
+        w (int): Width of the window in pixels.
+        h (int): Height of the window in pixels.
         """
         img = Image.new("RGB", size=(w, h), color=self.rgb)
         img.show()
@@ -37,10 +37,10 @@ class Color(object):
         Compares the frequency of this color with another color.
 
         Parameters:
-        other (Color): The other Color object to compare with.
+            other (Color): The other Color object to compare with.
 
         Returns:
-        bool: True if the frequency of this color is less than the frequency of the other color, False otherwise.
+            bool: True if the frequency of this color is less than the frequency of the other color, False otherwise.
         """
         return self.freq < other.freq
 
@@ -49,10 +49,10 @@ class Color(object):
         Returns the color values in the specified color space.
 
         Parameters:
-        colorspace (Literal["rgb", "hsv", "hls"]): The color space to use. Default is "rgb".
+            colorspace (Literal["rgb", "hsv", "hls"]): The color space to use.
 
         Returns:
-        tuple[int, ...] | tuple[float, ...]: The color values in the specified color space.
+            tuple[int, ...] | tuple[float, ...]: The color values in the specified color space.
         """
         colors = {"rgb": self.rgb, "hsv": self.hsv, "hls": self.hls}
 
@@ -64,7 +64,7 @@ class Color(object):
         Converts the RGB color to HSV color space.
 
         Returns:
-        tuple[float, float, float]: The color values in HSV color space.
+            tuple[float, float, float]: The color values in HSV color space.
         """
         return colorsys.rgb_to_hsv(r=self.rgb[0] / 255, g=self.rgb[1] / 255, b=self.rgb[2] / 255)
 
@@ -74,7 +74,7 @@ class Color(object):
         Converts the RGB color to HLS color space.
 
         Returns:
-        tuple[float, float, float]: The color values in HLS color space.
+            tuple[float, float, float]: The color values in HLS color space.
         """
         return colorsys.rgb_to_hls(r=self.rgb[0] / 255, g=self.rgb[1] / 255, b=self.rgb[2] / 255)
 
