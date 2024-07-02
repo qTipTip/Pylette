@@ -81,9 +81,7 @@ def extract_colors(
 ) -> Palette:
     """
     Extracts a set of 'palette_size' colors from the given image.
-    :param image_bytes: bytes representing the image data
     :param image: path to Image file
-    :param image_url: url to the image-file
     :param palette_size: number of colors to extract
     :param resize: whether to resize the image before processing, yielding faster results with lower quality
     :param mode: the color quantization algorithm to use. Currently supports K-Means (KM) and Median Cut (MC)
