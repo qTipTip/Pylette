@@ -2,7 +2,7 @@ import os
 import urllib.parse
 from enum import Enum
 from io import BytesIO
-from typing import TYPE_CHECKING, Any, AnyStr, Literal, Union
+from typing import Any, Literal, Union
 
 import numpy as np
 import requests  # type: ignore
@@ -25,9 +25,7 @@ class ImageType(str, Enum):
     NONE = "none"
 
 
-def median_cut_extraction(
-    arr: np.ndarray, height: int, width: int, palette_size: int
-) -> list[Color]:
+def median_cut_extraction(arr: np.ndarray, height: int, width: int, palette_size: int) -> list[Color]:
     """
     Extracts a color palette using the median cut algorithm.
     :param arr:
@@ -47,9 +45,7 @@ def median_cut_extraction(
         # add the two new boxes to the list, while removing the split box.
         c = c[:largest_c_idx] + c[largest_c_idx].split() + c[largest_c_idx + 1 :]
 
-    colors = [
-        Color(tuple(map(int, box.average)), box.size / full_box_size) for box in c
-    ]
+    colors = [Color(tuple(map(int, box.average)), box.size / full_box_size) for box in c]
 
     return colors
 
@@ -109,9 +105,7 @@ def extract_colors(
         case ImageType.ARRAY:
             img = Image.fromarray(image).convert("RGB")
         case ImageType.NONE:
-            raise ValueError(
-                f"Unable to parse image source. Got image type {type(image)}"
-            )
+            raise ValueError(f"Unable to parse image source. Got image type {type(image)}")
 
     # open the image
     if resize:
@@ -137,18 +131,14 @@ def extract_colors(
 def request_image(image_url: str) -> Image.Image:
     response = requests.get(image_url)
     # Check if the request was successful and content type is an image
-    if response.status_code == 200 and "image" in response.headers.get(
-        "Content-Type", ""
-    ):
+    if response.status_code == 200 and "image" in response.headers.get("Content-Type", ""):
         img = Image.open(BytesIO(response.content)).convert("RGB")
         return img
     else:
         raise ValueError("The URL did not point to a valid image.")
 
 
-def k_means_extraction(
-    arr: NDArray[float], height: int, width: int, palette_size: int
-) -> list[Color]:
+def k_means_extraction(arr: NDArray[float], height: int, width: int, palette_size: int) -> list[Color]:
     """
     Extracts a color palette using KMeans.
     :param arr: pixel array (height, width, 3)
@@ -158,9 +148,7 @@ def k_means_extraction(
     :return: a palette of colors sorted by frequency
     """
     arr = np.reshape(arr, (width * height, -1))
-    model = KMeans(
-        n_clusters=palette_size, n_init="auto", init="k-means++", random_state=2024
-    )
+    model = KMeans(n_clusters=palette_size, n_init="auto", init="k-means++", random_state=2024)
     labels = model.fit_predict(arr)
     palette = np.array(model.cluster_centers_, dtype=int)
     color_count = np.bincount(labels)

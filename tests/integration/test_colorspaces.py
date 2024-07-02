@@ -1,11 +1,8 @@
-import io
 import pathlib
 
 import cv2
 import pytest
-import requests_mock
 from numpy.testing import assert_approx_equal
-from PIL.Image import Image
 
 from Pylette.src.color_extraction import extract_colors
 
@@ -37,9 +34,7 @@ def test_image_as_url(requests_mock):
     test_image = pathlib.Path(__file__).parent.parent / "data/test_image.png"
     test_image_url = "https://my-test-image.com/test_image.png"
     with open(test_image, "rb") as f:
-        requests_mock.get(
-            test_image_url, content=f.read(), headers={"Content-Type": "image/png"}
-        )
+        requests_mock.get(test_image_url, content=f.read(), headers={"Content-Type": "image/png"})
 
         yield test_image_url
 
@@ -52,9 +47,7 @@ def test_image_from_opencv():
 
 @pytest.fixture()
 def test_kmean_extracted_palette(test_image_path_as_str):
-    return extract_colors(
-        image=test_image_path_as_str, palette_size=10, resize=True, mode="KM"
-    )
+    return extract_colors(image=test_image_path_as_str, palette_size=10, resize=True, mode="KM")
 
 
 @pytest.mark.parametrize("palette_size", [1, 5, 10, 100])
@@ -64,15 +57,11 @@ def test_kmean_extracted_palette(test_image_path_as_str):
         "KM",
         pytest.param(
             "MC",
-            marks=pytest.mark.skip(
-                "Currently a bug in the MC algorithm, causing frequencies not summing to one"
-            ),
+            marks=pytest.mark.skip("Currently a bug in the MC algorithm, causing frequencies not summing to one"),
         ),
     ],
 )
-def test_palette_invariants_with_image_path(
-    test_image_path_as_str, palette_size, extraction_mode
-):
+def test_palette_invariants_with_image_path(test_image_path_as_str, palette_size, extraction_mode):
     palette = extract_colors(
         image=test_image_path_as_str,
         palette_size=palette_size,
@@ -80,21 +69,15 @@ def test_palette_invariants_with_image_path(
         mode=extraction_mode,
     )
 
-    assert (
-        len(palette) == palette_size
-    ), f"Expected {palette_size} colors in palette, got {len(palette)}"
+    assert len(palette) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette)}"
     assert (
         palette.number_of_colors == palette_size
     ), f"Expected {palette_size} colors in palette, got {palette.number_of_colors}"
-    assert (
-        len(palette.colors) == palette_size
-    ), f"Expected {palette_size} colors in palette, got {len(palette.colors)}"
+    assert len(palette.colors) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette.colors)}"
     assert (
         palette.colors[0].freq >= palette.colors[-1].freq
     ), "Expected colors to be sorted by frequency in descending order"
-    assert (
-        palette.colors[0].freq > 0.0
-    ), "Expected the most frequent color to have a frequency greater than 0.0"
+    assert palette.colors[0].freq > 0.0, "Expected the most frequent color to have a frequency greater than 0.0"
     assert (
         palette.colors[0].freq <= 1.0
     ), "Expected the most frequent color to have a frequency less than or equal to 1.0"
@@ -113,15 +96,11 @@ def test_palette_invariants_with_image_path(
         "KM",
         pytest.param(
             "MC",
-            marks=pytest.mark.skip(
-                "Currently a bug in the MC algorithm, causing frequencies not summing to one"
-            ),
+            marks=pytest.mark.skip("Currently a bug in the MC algorithm, causing frequencies not summing to one"),
         ),
     ],
 )
-def test_palette_invariants_with_image_pathlike(
-    test_image_path_as_pathlike, palette_size, extraction_mode
-):
+def test_palette_invariants_with_image_pathlike(test_image_path_as_pathlike, palette_size, extraction_mode):
     palette = extract_colors(
         image=test_image_path_as_pathlike,
         palette_size=palette_size,
@@ -129,21 +108,15 @@ def test_palette_invariants_with_image_pathlike(
         mode=extraction_mode,
     )
 
-    assert (
-        len(palette) == palette_size
-    ), f"Expected {palette_size} colors in palette, got {len(palette)}"
+    assert len(palette) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette)}"
     assert (
         palette.number_of_colors == palette_size
     ), f"Expected {palette_size} colors in palette, got {palette.number_of_colors}"
-    assert (
-        len(palette.colors) == palette_size
-    ), f"Expected {palette_size} colors in palette, got {len(palette.colors)}"
+    assert len(palette.colors) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette.colors)}"
     assert (
         palette.colors[0].freq >= palette.colors[-1].freq
     ), "Expected colors to be sorted by frequency in descending order"
-    assert (
-        palette.colors[0].freq > 0.0
-    ), "Expected the most frequent color to have a frequency greater than 0.0"
+    assert palette.colors[0].freq > 0.0, "Expected the most frequent color to have a frequency greater than 0.0"
     assert (
         palette.colors[0].freq <= 1.0
     ), "Expected the most frequent color to have a frequency less than or equal to 1.0"
@@ -162,15 +135,11 @@ def test_palette_invariants_with_image_pathlike(
         "KM",
         pytest.param(
             "MC",
-            marks=pytest.mark.skip(
-                "Currently a bug in the MC algorithm, causing frequencies not summing to one"
-            ),
+            marks=pytest.mark.skip("Currently a bug in the MC algorithm, causing frequencies not summing to one"),
         ),
     ],
 )
-def test_palette_invariants_with_image_bytes(
-    test_image_as_bytes, palette_size, extraction_mode
-):
+def test_palette_invariants_with_image_bytes(test_image_as_bytes, palette_size, extraction_mode):
     palette = extract_colors(
         image=test_image_as_bytes,
         palette_size=palette_size,
@@ -178,21 +147,15 @@ def test_palette_invariants_with_image_bytes(
         mode=extraction_mode,
     )
 
-    assert (
-        len(palette) == palette_size
-    ), f"Expected {palette_size} colors in palette, got {len(palette)}"
+    assert len(palette) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette)}"
     assert (
         palette.number_of_colors == palette_size
     ), f"Expected {palette_size} colors in palette, got {palette.number_of_colors}"
-    assert (
-        len(palette.colors) == palette_size
-    ), f"Expected {palette_size} colors in palette, got {len(palette.colors)}"
+    assert len(palette.colors) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette.colors)}"
     assert (
         palette.colors[0].freq >= palette.colors[-1].freq
     ), "Expected colors to be sorted by frequency in descending order"
-    assert (
-        palette.colors[0].freq > 0.0
-    ), "Expected the most frequent color to have a frequency greater than 0.0"
+    assert palette.colors[0].freq > 0.0, "Expected the most frequent color to have a frequency greater than 0.0"
     assert (
         palette.colors[0].freq <= 1.0
     ), "Expected the most frequent color to have a frequency less than or equal to 1.0"
@@ -211,15 +174,11 @@ def test_palette_invariants_with_image_bytes(
         "KM",
         pytest.param(
             "MC",
-            marks=pytest.mark.skip(
-                "Currently a bug in the MC algorithm, causing frequencies not summing to one"
-            ),
+            marks=pytest.mark.skip("Currently a bug in the MC algorithm, causing frequencies not summing to one"),
         ),
     ],
 )
-def test_palette_invariants_with_opencv(
-    test_image_from_opencv, palette_size, extraction_mode
-):
+def test_palette_invariants_with_opencv(test_image_from_opencv, palette_size, extraction_mode):
     palette = extract_colors(
         image=test_image_from_opencv,
         palette_size=palette_size,
@@ -227,21 +186,15 @@ def test_palette_invariants_with_opencv(
         mode=extraction_mode,
     )
 
-    assert (
-        len(palette) == palette_size
-    ), f"Expected {palette_size} colors in palette, got {len(palette)}"
+    assert len(palette) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette)}"
     assert (
         palette.number_of_colors == palette_size
     ), f"Expected {palette_size} colors in palette, got {palette.number_of_colors}"
-    assert (
-        len(palette.colors) == palette_size
-    ), f"Expected {palette_size} colors in palette, got {len(palette.colors)}"
+    assert len(palette.colors) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette.colors)}"
     assert (
         palette.colors[0].freq >= palette.colors[-1].freq
     ), "Expected colors to be sorted by frequency in descending order"
-    assert (
-        palette.colors[0].freq > 0.0
-    ), "Expected the most frequent color to have a frequency greater than 0.0"
+    assert palette.colors[0].freq > 0.0, "Expected the most frequent color to have a frequency greater than 0.0"
     assert (
         palette.colors[0].freq <= 1.0
     ), "Expected the most frequent color to have a frequency less than or equal to 1.0"
@@ -260,15 +213,11 @@ def test_palette_invariants_with_opencv(
         "KM",
         pytest.param(
             "MC",
-            marks=pytest.mark.skip(
-                "Currently a bug in the MC algorithm, causing frequencies not summing to one"
-            ),
+            marks=pytest.mark.skip("Currently a bug in the MC algorithm, causing frequencies not summing to one"),
         ),
     ],
 )
-def test_palette_invariants_with_image_url(
-    test_image_as_url, palette_size, extraction_mode
-):
+def test_palette_invariants_with_image_url(test_image_as_url, palette_size, extraction_mode):
     palette = extract_colors(
         image=test_image_as_url,
         palette_size=palette_size,
@@ -276,21 +225,15 @@ def test_palette_invariants_with_image_url(
         mode=extraction_mode,
     )
 
-    assert (
-        len(palette) == palette_size
-    ), f"Expected {palette_size} colors in palette, got {len(palette)}"
+    assert len(palette) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette)}"
     assert (
         palette.number_of_colors == palette_size
     ), f"Expected {palette_size} colors in palette, got {palette.number_of_colors}"
-    assert (
-        len(palette.colors) == palette_size
-    ), f"Expected {palette_size} colors in palette, got {len(palette.colors)}"
+    assert len(palette.colors) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette.colors)}"
     assert (
         palette.colors[0].freq >= palette.colors[-1].freq
     ), "Expected colors to be sorted by frequency in descending order"
-    assert (
-        palette.colors[0].freq > 0.0
-    ), "Expected the most frequent color to have a frequency greater than 0.0"
+    assert palette.colors[0].freq > 0.0, "Expected the most frequent color to have a frequency greater than 0.0"
     assert (
         palette.colors[0].freq <= 1.0
     ), "Expected the most frequent color to have a frequency less than or equal to 1.0"
@@ -304,18 +247,18 @@ def test_palette_invariants_with_image_url(
 
 def test_colorspace_invariants_hls(test_kmean_extracted_palette):
     for color in test_kmean_extracted_palette:
-        h, l, s = color.get_colors(colorspace="hls")
-        assert 0 <= h <= 360, f"Expected 0 <= h <= 360, got {h}"
-        assert 0 <= l <= 1, f"Expected 0 <= l <= 1, got {l}"
-        assert 0 <= s <= 1, f"Expected 0 <= s <= 1, got {s}"
+        H, L, S = color.get_colors(colorspace="hls")
+        assert 0 <= H <= 360, f"Expected 0 <= h <= 360, got {H}"
+        assert 0 <= L <= 1, f"Expected 0 <= l <= 1, got {L}"
+        assert 0 <= S <= 1, f"Expected 0 <= s <= 1, got {S}"
 
 
 def test_colorspace_invariants_hsv(test_kmean_extracted_palette):
     for color in test_kmean_extracted_palette:
-        h, s, v = color.get_colors(colorspace="hsv")
-        assert 0 <= h <= 360, f"Expected 0 <= h <= 360, got {h}"
-        assert 0 <= s <= 1, f"Expected 0 <= s <= 1, got {s}"
-        assert 0 <= v <= 1, f"Expected 0 <= v <= 1, got {v}"
+        H, L, V = color.get_colors(colorspace="hls")
+        assert 0 <= H <= 360, f"Expected 0 <= h <= 360, got {H}"
+        assert 0 <= L <= 1, f"Expected 0 <= l <= 1, got {L}"
+        assert 0 <= V <= 1, f"Expected 0 <= s <= 1, got {V}"
 
 
 def test_colorspace_invariants_rgb(test_kmean_extracted_palette):
@@ -326,12 +269,8 @@ def test_colorspace_invariants_rgb(test_kmean_extracted_palette):
         assert 0 <= b <= 255, f"Expected 0 <= b <= 255, got {b}"
 
 
-@pytest.mark.parametrize(
-    "resize, sort_mode", [(True, "luminance"), (False, "frequency")]
-)
-def test_color_extraction_deterministic_kmeans(
-    test_image_path_as_str, resize, sort_mode
-):
+@pytest.mark.parametrize("resize, sort_mode", [(True, "luminance"), (False, "frequency")])
+def test_color_extraction_deterministic_kmeans(test_image_path_as_str, resize, sort_mode):
     palette1 = extract_colors(
         image=test_image_path_as_str,
         palette_size=5,

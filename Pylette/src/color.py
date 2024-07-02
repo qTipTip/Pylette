@@ -26,9 +26,7 @@ class Color(object):
     def __lt__(self, other: "Color") -> bool:
         return self.freq < other.freq
 
-    def get_colors(
-        self, colorspace: Literal["rgb", "hsv", "hls"] = "rgb"
-    ) -> tuple[int, ...] | tuple[float, ...]:
+    def get_colors(self, colorspace: Literal["rgb", "hsv", "hls"] = "rgb") -> tuple[int, ...] | tuple[float, ...]:
         """
         Get the color in terms of a colorspace (string).
 
@@ -42,15 +40,11 @@ class Color(object):
 
     @property
     def hsv(self) -> tuple[float, float, float]:
-        return colorsys.rgb_to_hsv(
-            r=self.rgb[0] / 255, g=self.rgb[1] / 255, b=self.rgb[2] / 255
-        )
+        return colorsys.rgb_to_hsv(r=self.rgb[0] / 255, g=self.rgb[1] / 255, b=self.rgb[2] / 255)
 
     @property
     def hls(self) -> tuple[float, float, float]:
-        return colorsys.rgb_to_hls(
-            r=self.rgb[0] / 255, g=self.rgb[1] / 255, b=self.rgb[2] / 255
-        )
+        return colorsys.rgb_to_hls(r=self.rgb[0] / 255, g=self.rgb[1] / 255, b=self.rgb[2] / 255)
 
     @property
     def luminance(self) -> float:

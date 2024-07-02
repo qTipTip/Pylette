@@ -4,15 +4,11 @@ from Pylette import extract_colors
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
-    )
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     group = parser.add_mutually_exclusive_group(required=True)
 
     group.add_argument("--filename", help="path to image file", type=str, default=None)
-    group.add_argument(
-        "--image-url", help="url to the image file", type=str, default=None
-    )
+    group.add_argument("--image-url", help="url to the image file", type=str, default=None)
 
     parser.add_argument(
         "--mode",
@@ -21,9 +17,7 @@ def main():
         default="KM",
         choices=["KM", "MC"],
     )
-    parser.add_argument(
-        "--n", help="the number of colors to extract", type=int, default=5
-    )
+    parser.add_argument("--n", help="the number of colors to extract", type=int, default=5)
     parser.add_argument(
         "--sort_by",
         help="sort by luminance or frequency",
@@ -44,9 +38,7 @@ def main():
         type=str,
         choices=["rgb", "hsv", "hls"],
     )
-    parser.add_argument(
-        "--out_filename", help="where to save the csv file", default=None, type=str
-    )
+    parser.add_argument("--out_filename", help="where to save the csv file", default=None, type=str)
     parser.add_argument(
         "--display-colors",
         help="Open a window displaying the extracted palette",
