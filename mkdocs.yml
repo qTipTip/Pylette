@@ -27,9 +27,7 @@ plugins:
             allow_inspection: true
             show_bases: false
             show_root_heading: true
-            docstring_style: sphinx
-
-
+            docstring_style: google
   - glightbox
 
 nav:

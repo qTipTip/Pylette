@@ -2,7 +2,7 @@ import os
 import urllib.parse
 from enum import Enum
 from io import BytesIO
-from typing import Any, Literal, Union
+from typing import Any, Literal, TypeAlias, Union
 
 import numpy as np
 import requests  # type: ignore
@@ -14,7 +14,7 @@ from Pylette.src.color import Color
 from Pylette.src.palette import Palette
 from Pylette.src.utils import ColorBox
 
-ImageType_T = Union["os.PathLike[Any]", bytes, NDArray[float], str]
+ImageType_T: TypeAlias = Union["os.PathLike[Any]", bytes, NDArray[float], str]
 
 
 class ImageType(str, Enum):
@@ -28,11 +28,15 @@ class ImageType(str, Enum):
 def median_cut_extraction(arr: np.ndarray, height: int, width: int, palette_size: int) -> list[Color]:
     """
     Extracts a color palette using the median cut algorithm.
-    :param arr:
-    :param height:
-    :param width:
-    :param palette_size:
-    :return:
+
+    Parameters:
+    arr (np.ndarray): The input array.
+    height (int): The height of the image.
+    width (int): The width of the image.
+    palette_size (int): The number of colors to extract from the image.
+
+    Returns:
+    list[Color]: A list of colors extracted from the image.
     """
 
     arr = arr.reshape((width * height, -1))
@@ -51,6 +55,15 @@ def median_cut_extraction(arr: np.ndarray, height: int, width: int, palette_size
 
 
 def _parse_image_type(image: ImageType_T) -> ImageType:
+    """
+    Determines the type of the input image.
+
+    Parameters:
+    image (ImageType_T): The input image.
+
+    Returns:
+    ImageType: The type of the input image.
+    """
     match image:
         case np.ndarray():
             image_type = ImageType.ARRAY
@@ -81,12 +94,16 @@ def extract_colors(
 ) -> Palette:
     """
     Extracts a set of 'palette_size' colors from the given image.
-    :param image: path to Image file
-    :param palette_size: number of colors to extract
-    :param resize: whether to resize the image before processing, yielding faster results with lower quality
-    :param mode: the color quantization algorithm to use. Currently supports K-Means (KM) and Median Cut (MC)
-    :param sort_mode: sort colors by luminance, or by frequency
-    :return: a list of the extracted colors
+
+    Parameters:
+    image (ImageType_T | None): The input image. Default is None.
+    palette_size (int): The number of colors to extract. Default is 5.
+    resize (bool): Whether to resize the image before processing. Default is True.
+    mode (Literal["KM"] | Literal["MC"]): The color quantization algorithm to use. Default is "KM".
+    sort_mode (Literal["luminance", "frequency"] | None): The mode to sort colors. Default is None.
+
+    Returns:
+    Palette: A palette of the extracted colors.
     """
 
     image_type = _parse_image_type(image)
@@ -127,6 +144,18 @@ def extract_colors(
 
 
 def request_image(image_url: str) -> Image.Image:
+    """
+    Requests an image from a given URL.
+
+    Parameters:
+    image_url (str): The URL of the image.
+
+    Returns:
+    Image.Image: The requested image.
+
+    Raises:
+    ValueError: If the URL does not point to a valid image.
+    """
     response = requests.get(image_url)
     # Check if the request was successful and content type is an image
     if response.status_code == 200 and "image" in response.headers.get("Content-Type", ""):
@@ -139,11 +168,15 @@ def request_image(image_url: str) -> Image.Image:
 def k_means_extraction(arr: NDArray[float], height: int, width: int, palette_size: int) -> list[Color]:
     """
     Extracts a color palette using KMeans.
-    :param arr: pixel array (height, width, 3)
-    :param height: height
-    :param width: width
-    :param palette_size: number of colors
-    :return: a palette of colors sorted by frequency
+
+    Parameters:
+    arr (NDArray[float]): The input array.
+    height (int): The height of the image.
+    width (int): The width of the image.
+    palette_size (int): The number of colors to extract from the image.
+
+    Returns:
+    list[Color]: A palette of colors sorted by frequency.
     """
     arr = np.reshape(arr, (width * height, -1))
     model = KMeans(n_clusters=palette_size, n_init="auto", init="k-means++", random_state=2024)
