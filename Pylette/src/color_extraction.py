@@ -1,5 +1,8 @@
+import os
+import urllib.parse
+from enum import Enum
 from io import BytesIO
-from typing import Literal
+from typing import TYPE_CHECKING, AnyStr, Literal
 
 import numpy as np
 import requests  # type: ignore
@@ -10,6 +13,19 @@ from sklearn.cluster import KMeans
 from Pylette.src.color import Color
 from Pylette.src.palette import Palette
 from Pylette.src.utils import ColorBox
+
+if TYPE_CHECKING:
+    PathLike = os.PathLike[AnyStr]
+else:
+    PathLike = os.PathLike
+
+
+class ImageType(str, Enum):
+    PATH = "path"
+    BYTES = "bytes"
+    ARRAY = "array"
+    URL = "url"
+    NONE = "none"
 
 
 def median_cut_extraction(
@@ -41,16 +57,34 @@ def median_cut_extraction(
     return colors
 
 
+def _parse_image_type(image: PathLike | bytes | NDArray[float] | str) -> ImageType:
+    match image:
+        case np.ndarray():
+            image_type = ImageType.ARRAY
+        case PathLike():
+            image_type = ImageType.PATH
+        case bytes():
+            image_type = ImageType.BYTES
+        case str():
+            try:
+                result = urllib.parse.urlparse(image)
+                if all([result.scheme, result.netloc]):
+                    image_type = ImageType.URL
+                else:
+                    image_type = ImageType.PATH
+            except ValueError:
+                image_type = ImageType.PATH
+        case _:
+            image_type = ImageType.NONE
+    return image_type
+
+
 def extract_colors(
-    image_bytes: bytes | None = None,
-    image_array: NDArray[float] | None = None,
-    image: str | None = None,
-    image_path: str | None = None,
+    image: PathLike | bytes | NDArray[float] | str = None,
     palette_size: int = 5,
     resize: bool = True,
     mode: Literal["KM"] | Literal["MC"] = "KM",
     sort_mode: Literal["luminance", "frequency"] | None = None,
-    image_url: str | None = None,
 ) -> Palette:
     """
     Extracts a set of 'palette_size' colors from the given image.
@@ -64,30 +98,21 @@ def extract_colors(
     :return: a list of the extracted colors
     """
 
-    if (
-        image_bytes is None
-        and image is None
-        and image_path is None
-        and image_url is None
-        and image_array is None
-    ):
-        raise ValueError("No image provided")
+    image_type = _parse_image_type(image)
 
-    if image_bytes is not None:
-        img = Image.open(BytesIO(image_bytes)).convert("RGB")
-    elif image_path is None and image_url is not None:
-        response = requests.get(image_url)
-        # Check if the request was successful and content type is an image
-        if response.status_code == 200 and "image" in response.headers.get(
-            "Content-Type", ""
-        ):
-            img = Image.open(BytesIO(response.content)).convert("RGB")
-        else:
-            raise ValueError("The URL did not point to a valid image.")
-    elif image_array is not None:
-        img = Image.fromarray(image_array.astype(np.uint8))
-    else:
-        img = Image.open(image_path).convert("RGB")
+    match image_type:
+        case ImageType.PATH:
+            img = Image.open(image).convert("RGB")
+        case ImageType.BYTES:
+            img = Image.open(BytesIO(image)).convert("RGB")
+        case ImageType.URL:
+            img = request_image(image)
+        case ImageType.ARRAY:
+            img = Image.fromarray(image).convert("RGB")
+        case ImageType.NONE:
+            raise ValueError(
+                f"Unable to parse image source. Got image type {type(image)}"
+            )
 
     # open the image
     if resize:
@@ -108,6 +133,18 @@ def extract_colors(
         colors.sort(reverse=True)
 
     return Palette(colors)
+
+
+def request_image(image_url: str) -> Image.Image:
+    response = requests.get(image_url)
+    # Check if the request was successful and content type is an image
+    if response.status_code == 200 and "image" in response.headers.get(
+        "Content-Type", ""
+    ):
+        img = Image.open(BytesIO(response.content)).convert("RGB")
+        return img
+    else:
+        raise ValueError("The URL did not point to a valid image.")
 
 
 def k_means_extraction(

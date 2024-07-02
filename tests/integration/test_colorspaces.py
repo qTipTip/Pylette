@@ -15,6 +15,13 @@ def test_image_path_as_str():
 
 
 @pytest.fixture
+def test_image_path_as_pathlike():
+    test_image = pathlib.Path(__file__).parent.parent / "data/test_image.png"
+
+    yield test_image
+
+
+@pytest.fixture
 def test_image_as_bytes():
     test_image = pathlib.Path(__file__).parent.parent / "data/test_image.png"
 
@@ -31,7 +38,7 @@ def test_image_from_opencv():
 @pytest.fixture()
 def test_kmean_extracted_palette(test_image_path_as_str):
     return extract_colors(
-        image_path=test_image_path_as_str, palette_size=10, resize=True, mode="KM"
+        image=test_image_path_as_str, palette_size=10, resize=True, mode="KM"
     )
 
 
@@ -52,7 +59,56 @@ def test_palette_invariants_with_image_path(
     test_image_path_as_str, palette_size, extraction_mode
 ):
     palette = extract_colors(
-        image_path=test_image_path_as_str,
+        image=test_image_path_as_str,
+        palette_size=palette_size,
+        resize=True,
+        mode=extraction_mode,
+    )
+
+    assert (
+        len(palette) == palette_size
+    ), f"Expected {palette_size} colors in palette, got {len(palette)}"
+    assert (
+        palette.number_of_colors == palette_size
+    ), f"Expected {palette_size} colors in palette, got {palette.number_of_colors}"
+    assert (
+        len(palette.colors) == palette_size
+    ), f"Expected {palette_size} colors in palette, got {len(palette.colors)}"
+    assert (
+        palette.colors[0].freq >= palette.colors[-1].freq
+    ), "Expected colors to be sorted by frequency in descending order"
+    assert (
+        palette.colors[0].freq > 0.0
+    ), "Expected the most frequent color to have a frequency greater than 0.0"
+    assert (
+        palette.colors[0].freq <= 1.0
+    ), "Expected the most frequent color to have a frequency less than or equal to 1.0"
+
+    assert_approx_equal(
+        sum(c.freq for c in palette.colors),
+        1.0,
+        err_msg="Expected the sum of all frequencies to be 1.0",
+    )
+
+
+@pytest.mark.parametrize("palette_size", [1, 5, 10, 100])
+@pytest.mark.parametrize(
+    "extraction_mode",
+    [
+        "KM",
+        pytest.param(
+            "MC",
+            marks=pytest.mark.skip(
+                "Currently a bug in the MC algorithm, causing frequencies not summing to one"
+            ),
+        ),
+    ],
+)
+def test_palette_invariants_with_image_pathlike(
+    test_image_path_as_pathlike, palette_size, extraction_mode
+):
+    palette = extract_colors(
+        image=test_image_path_as_pathlike,
         palette_size=palette_size,
         resize=True,
         mode=extraction_mode,
@@ -101,7 +157,7 @@ def test_palette_invariants_with_image_bytes(
     test_image_as_bytes, palette_size, extraction_mode
 ):
     palette = extract_colors(
-        image_bytes=test_image_as_bytes,
+        image=test_image_as_bytes,
         palette_size=palette_size,
         resize=True,
         mode=extraction_mode,
@@ -150,7 +206,7 @@ def test_palette_invariants_with_opencv(
     test_image_from_opencv, palette_size, extraction_mode
 ):
     palette = extract_colors(
-        image_array=test_image_from_opencv,
+        image=test_image_from_opencv,
         palette_size=palette_size,
         resize=True,
         mode=extraction_mode,
@@ -213,14 +269,14 @@ def test_color_extraction_deterministic_kmeans(
     test_image_path_as_str, resize, sort_mode
 ):
     palette1 = extract_colors(
-        image_path=test_image_path_as_str,
+        image=test_image_path_as_str,
         palette_size=5,
         resize=resize,
         mode="KM",
         sort_mode=sort_mode,
     )
     palette2 = extract_colors(
-        image_path=test_image_path_as_str,
+        image=test_image_path_as_str,
         palette_size=5,
         resize=resize,
         mode="KM",
