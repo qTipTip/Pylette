@@ -96,14 +96,20 @@ def extract_colors(
     Extracts a set of 'palette_size' colors from the given image.
 
     Parameters:
-        image (ImageType_T | None): The input image.
-        palette_size (int): The number of colors to extract.
-        resize (bool): Whether to resize the image before processing.
-        mode (Literal["KM"] | Literal["MC"]): The color quantization algorithm to use.
-        sort_mode (Literal["luminance", "frequency"] | None): The mode to sort colors.
+        image: The input image.
+        palette_size: The number of colors to extract.
+        resize: Whether to resize the image before processing.
+        mode: The color quantization algorithm to use.
+        sort_mode: The mode to sort colors.
 
     Returns:
         Palette: A palette of the extracted colors.
+
+    Examples:
+        Colors can be extracted from a variety of sources, including local files, byte streams, URLs, and numpy arrays.
+
+        >>> extract_colors("path/to/image.jpg", palette_size=5, resize=True, mode="KM", sort_mode="luminance")
+        >>> extract_colors(b"image_bytes", palette_size=5, resize=True, mode="KM", sort_mode="luminance")
     """
 
     image_type = _parse_image_type(image)
