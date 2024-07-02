@@ -27,6 +27,7 @@ mkdocs = {version = "^1.6.0", extras = ["python"]}
 mkdocs-material = "^9.5.27"
 mkdocstrings = {extras = ["python"], version = "^0.25.1"}
 mkdocs-glightbox = "^0.4.0"
+requests-mock = "^1.12.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
