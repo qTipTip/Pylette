@@ -2,7 +2,7 @@ import os
 import urllib.parse
 from enum import Enum
 from io import BytesIO
-from typing import TYPE_CHECKING, AnyStr, Literal
+from typing import TYPE_CHECKING, Any, AnyStr, Literal, Union
 
 import numpy as np
 import requests  # type: ignore
@@ -14,10 +14,7 @@ from Pylette.src.color import Color
 from Pylette.src.palette import Palette
 from Pylette.src.utils import ColorBox
 
-if TYPE_CHECKING:
-    PathLike = os.PathLike[AnyStr]
-else:
-    PathLike = os.PathLike
+ImageType_T = Union["os.PathLike[Any]", bytes, NDArray[float], str]
 
 
 class ImageType(str, Enum):
@@ -57,11 +54,11 @@ def median_cut_extraction(
     return colors
 
 
-def _parse_image_type(image: PathLike | bytes | NDArray[float] | str) -> ImageType:
+def _parse_image_type(image: ImageType_T) -> ImageType:
     match image:
         case np.ndarray():
             image_type = ImageType.ARRAY
-        case PathLike():
+        case os.PathLike():
             image_type = ImageType.PATH
         case bytes():
             image_type = ImageType.BYTES
@@ -80,7 +77,7 @@ def _parse_image_type(image: PathLike | bytes | NDArray[float] | str) -> ImageTy
 
 
 def extract_colors(
-    image: PathLike | bytes | NDArray[float] | str = None,
+    image: ImageType_T | None = None,
     palette_size: int = 5,
     resize: bool = True,
     mode: Literal["KM"] | Literal["MC"] = "KM",
@@ -104,8 +101,10 @@ def extract_colors(
         case ImageType.PATH:
             img = Image.open(image).convert("RGB")
         case ImageType.BYTES:
+            assert isinstance(image, bytes)
             img = Image.open(BytesIO(image)).convert("RGB")
         case ImageType.URL:
+            assert isinstance(image, str)
             img = request_image(image)
         case ImageType.ARRAY:
             img = Image.fromarray(image).convert("RGB")
