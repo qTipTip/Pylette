@@ -76,7 +76,7 @@ Here's how to extract a color palette from an image and work with it in Python:
 
 This will give you a palette of 10 colors, sorted by frequency.
 The image is automatically resized to 256x256 pixels for faster processing.
-See the [reference documentation](https://qtiptip.github.io/Pylette/reference) for a complete list of available methods and attributes.
+See the [reference documentation](https://qtiptip.github.io/Pylette/reference/) for a complete list of available methods and attributes.
 
 ## Command Line Tool
 
