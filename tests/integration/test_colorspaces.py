@@ -53,13 +53,7 @@ def test_kmean_extracted_palette(test_image_path_as_str):
 @pytest.mark.parametrize("palette_size", [1, 5, 10, 100])
 @pytest.mark.parametrize(
     "extraction_mode",
-    [
-        "KM",
-        pytest.param(
-            "MC",
-            marks=pytest.mark.skip("Currently a bug in the MC algorithm, causing frequencies not summing to one"),
-        ),
-    ],
+    ["KM", "MC"],
 )
 def test_palette_invariants_with_image_path(test_image_path_as_str, palette_size, extraction_mode):
     palette = extract_colors(
@@ -92,13 +86,7 @@ def test_palette_invariants_with_image_path(test_image_path_as_str, palette_size
 @pytest.mark.parametrize("palette_size", [1, 5, 10, 100])
 @pytest.mark.parametrize(
     "extraction_mode",
-    [
-        "KM",
-        pytest.param(
-            "MC",
-            marks=pytest.mark.skip("Currently a bug in the MC algorithm, causing frequencies not summing to one"),
-        ),
-    ],
+    ["KM", "MC"],
 )
 def test_palette_invariants_with_image_pathlike(test_image_path_as_pathlike, palette_size, extraction_mode):
     palette = extract_colors(
@@ -131,13 +119,7 @@ def test_palette_invariants_with_image_pathlike(test_image_path_as_pathlike, pal
 @pytest.mark.parametrize("palette_size", [1, 5, 10, 100])
 @pytest.mark.parametrize(
     "extraction_mode",
-    [
-        "KM",
-        pytest.param(
-            "MC",
-            marks=pytest.mark.skip("Currently a bug in the MC algorithm, causing frequencies not summing to one"),
-        ),
-    ],
+    ["KM", "MC"],
 )
 def test_palette_invariants_with_image_bytes(test_image_as_bytes, palette_size, extraction_mode):
     palette = extract_colors(
@@ -170,13 +152,7 @@ def test_palette_invariants_with_image_bytes(test_image_as_bytes, palette_size, 
 @pytest.mark.parametrize("palette_size", [1, 5, 10, 100])
 @pytest.mark.parametrize(
     "extraction_mode",
-    [
-        "KM",
-        pytest.param(
-            "MC",
-            marks=pytest.mark.skip("Currently a bug in the MC algorithm, causing frequencies not summing to one"),
-        ),
-    ],
+    ["KM", "MC"],
 )
 def test_palette_invariants_with_opencv(test_image_from_opencv, palette_size, extraction_mode):
     palette = extract_colors(
@@ -209,13 +185,7 @@ def test_palette_invariants_with_opencv(test_image_from_opencv, palette_size, ex
 @pytest.mark.parametrize("palette_size", [1, 5, 10, 100])
 @pytest.mark.parametrize(
     "extraction_mode",
-    [
-        "KM",
-        pytest.param(
-            "MC",
-            marks=pytest.mark.skip("Currently a bug in the MC algorithm, causing frequencies not summing to one"),
-        ),
-    ],
+    ["KM", "MC"],
 )
 def test_palette_invariants_with_image_url(test_image_as_url, palette_size, extraction_mode):
     palette = extract_colors(

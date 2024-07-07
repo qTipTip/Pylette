@@ -41,7 +41,6 @@ def median_cut_extraction(arr: np.ndarray, height: int, width: int, palette_size
 
     arr = arr.reshape((width * height, -1))
     c = [ColorBox(arr)]
-    full_box_size = c[0].size
 
     # Each iteration, find the largest box, split it, remove original box from list of boxes, and add the two new boxes.
     while len(c) < palette_size:
@@ -49,7 +48,8 @@ def median_cut_extraction(arr: np.ndarray, height: int, width: int, palette_size
         # add the two new boxes to the list, while removing the split box.
         c = c[:largest_c_idx] + c[largest_c_idx].split() + c[largest_c_idx + 1 :]
 
-    colors = [Color(tuple(map(int, box.average)), box.size / full_box_size) for box in c]
+    total_pixels = width * height
+    colors = [Color(tuple(map(int, box.average)), box.pixel_count / total_pixels) for box in c]
 
     return colors
 

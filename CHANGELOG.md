@@ -5,7 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-# Unreleased
+
+
+
+# Released
+
+## [3.0.1] 07/07/2024
+
+### Fixed
+- Fixed a bug where the color frequencies of colors in a palette were not summing to one when using the Median Cut algorithm.
 
 ## [3.0.0] 02/07/2024
 
@@ -15,10 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - An URL to an image file, as a string.
   - A byte stream of an image file, as a bytes object.
   - A numpy array of an image file, as a numpy array.
-
-
-# Released
-
+  -
 ## [2.3.0] 19/06/2024
 
 - Added `image_array` to the `extract_color` function, allowing the user to specify an image as a numpy array.
