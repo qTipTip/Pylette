@@ -98,3 +98,13 @@ class ColorBox:
             ColorBox(self.colors[:median_index]),
             ColorBox(self.colors[median_index:]),
         ]
+
+    @property
+    def pixel_count(self) -> int:
+        """
+        Returns the number of pixels in the ColorBox.
+
+        Returns:
+            int: The number of pixels in the ColorBox.
+        """
+        return len(self.colors)
