@@ -2,6 +2,8 @@
 
 [![PyPI version](https://badge.fury.io/py/Pylette.svg)](https://badge.fury.io/py/Pylette)
 [![Downloads](http://pepy.tech/badge/pylette)](http://pepy.tech/project/pylette)
+[![Built with Material for MkDocs](https://img.shields.io/badge/Material_for_MkDocs-526CFE?logo=MaterialForMkDocs&logoColor=white)](https://squidfunk.github.io/mkdocs-material/)
+![Dependabot](https://img.shields.io/badge/dependabot-enabled-025E8C?logo=dependabot&logoColor=white)
 
 A color palette extractor written in Python using KMeans clustering.
 

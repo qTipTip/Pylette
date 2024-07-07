@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pylette"
-version = "2.3.0"
+version = "3.0.0"
 description = "A Python library for extracting color palettes from images."
 authors = ["Ivar Stangeby"]
 license = "MIT"
@@ -8,6 +8,16 @@ packages = [
     { include = "Pylette", from = "." },
 ]
 readme = "README.md"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I"
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -27,10 +37,13 @@ mkdocs = {version = "^1.6.0", extras = ["python"]}
 mkdocs-material = "^9.5.27"
 mkdocstrings = {extras = ["python"], version = "^0.25.1"}
 mkdocs-glightbox = "^0.4.0"
+requests-mock = "^1.12.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+
 
 [tool.poetry.scripts]
 pylette = "Pylette.cmd:main"

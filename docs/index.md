@@ -1,92 +1,117 @@
-# Pylette: The friendly Python color extraction library
+# Pylette: Your Friendly Python Color Extraction Library
 
-!!! note
-    The documentation is under construction. It will eventually contain a more detailed description of the library, and how
-    to use it, along with a complete API-reference. Stay tuned!
+Welcome to Pylette, the easy-to-use Python library for extracting color palettes from images!
 
 [![PyPI version](https://badge.fury.io/py/Pylette.svg)](https://badge.fury.io/py/Pylette)
 [![Downloads](http://pepy.tech/badge/pylette)](http://pepy.tech/project/pylette)
 [![Built with Material for MkDocs](https://img.shields.io/badge/Material_for_MkDocs-526CFE?logo=MaterialForMkDocs&logoColor=white)](https://squidfunk.github.io/mkdocs-material/)
+![Dependabot](https://img.shields.io/badge/dependabot-enabled-025E8C?logo=dependabot&logoColor=white)
 
-## Motivation
+## What is Pylette?
 
-Working with computer graphics and visualizations, one often needs a way of specifying a set of colors
-with a certain visual appeal. Such a set of colors is often called a *color palette*. The aim of this
-library is to easily extract a set of colors from a supplied image, with support for the various color modes (RGB, RGBa, HSV, etc).
-Dabbling in generative art, the need often arises for being able to pick colors at random from a palette.
-Pylette supports this, both picking colors uniformly, but also using the color frequency from the original image as probabilities.
+Pylette is a powerful yet user-friendly library designed to help you extract color palettes from images. Whether you're working on computer graphics, visualizations, or generative art, Pylette makes it easy to create visually appealing color sets.
 
+Key features:
 
+* Extract color palettes from images
+* Support for various color modes (RGB, RGBa, HSV, etc.)
+* Random color selection from palettes
+* Command-line interface for quick palette extraction
 
-#### Other color palette related Python-libraries:
-1. [Color Thief](https://github.com/fengsp/color-thief-py): Extraction of color palettes using the median cut algorithm.
-2. [Palettable](https://pypi.org/project/palettable/): Generation of matplotlib compatible color schemes
-3. [Colorgram](https://github.com/obskyr/colorgram.py): Extraction of colors from images (similar to the intended use of this library),
-however, I was unable to install this.
+## Getting Started
 
-## Installation
+### Installation
 
-Pylette is available in the python package index (PyPi), and can be installed using `pip`:
+You can easily install Pylette using pip:
 
 ```shell
 pip install Pylette
 ```
 
-## Basic usage
+Or if you prefer using Poetry:
 
-A `Palette` object is created by calling the `extract_colors` function, either using a path to an image, or an image url:
-
-```python
-from Pylette import extract_colors
-
-palette = extract_colors(image='image.jpg', palette_size=10, resize=True)
-palette = extract_colors(image_url='https://path.to.image', palette_size=10, resize=True, mode='MC',
-                         sort_mode='luminance')
-
+```shell
+poetry add Pylette
 ```
 
-This yields a palette of ten colors, and the `resize` flag tells Pylette to resize the image to a more manageable size (256 x 256) before
-beginning color extraction. This significantly speeds up the extraction, but reduces the faithfulness of the color palette.
-One can choose between color quantization using K-Means (default) or Median-Cut algorithms, by setting in the `mode`-parameter. One can also specify to alternatively sort the color palette by the luminance (percieved brightness).
+### Quick Start Guide
 
-The palette object supports indexing and iteration, and the colors are sorted from highest to lowest frequency by default.
-E.g, the following snippet will fetch the most common, and least common
-color in the picture if the palette was sorted by frequency, or the darkest to lightest color if sorted by luminance:
-```python
-most_common_color = palette[0]
-least_common_color = palette[-1]
-three_most_common_colors = palette[:3]
-```
-As seen, slicing is also supported.
+Here's how to extract a color palette from an image and work with it in Python:
 
-The Palette object contains a list of Color objects, which contains a representation of the color in various color modes, with RGB being the default. Accessing the color attributes is easy:
+!!! example "Extracting a Color Palette"
 
-```python
-color = palette[0]
+    ```python
+    from Pylette import extract_colors
 
-print(color.rgb)
-print(color.hls)
-print(color.hsv)
-```
+    palette = extract_colors(image='image.jpg', palette_size=10)
+    # Access colors by index
+    most_common_color = palette[0]
+    least_common_color = palette[-1]
 
-To display the extracted color palette, simply call the `display`-method, which optionally takes a flag for saving the palette to an image file.
-The palette can be dumped to a CSV-file as well, where each row represents the RGB values and the corresponding color frequency (optional).
-```python
-palette.display(save_to_file=False)
-palette.to_csv(filename='color_palette.csv', frequency=True)
-```
+    # Get color information
+    print(most_common_color.rgb)
+    print(most_common_color.hls)
+    print(most_common_color.hsv)
 
-In order to pick colors from the palette at random, Pylette offers the `random_color`-method, which supports both drawing
-uniformly, and from the original color distribution, given by the frequencies of the extracted colors:
+    # Display the palette, and save the image to file
+    palette.display(save_to_file=True)
 
-```python
-random_color = palette.random_color(N=1, mode='uniform')
-random_colors = palette.random_color(N=100, mode='frequency')
-```
+    # Save palette's color values to CSV
+    palette.to_csv(filename='color_palette.csv', frequency=True)
+
+    # Pick random colors
+    random_color = palette.random_color(N=1, mode='uniform')
+    random_colors = palette.random_color(N=100, mode='frequency')
+    ```
+
+
+
+This will give you a palette of 10 colors, sorted by frequency.
+The image is automatically resized to 256x256 pixels for faster processing.
+
+## Command Line Tool
+
+Pylette also comes with a handy command-line tool. Here's a quick overview of its usage:
+
+!!! example "Command Line Usage"
+
+    === "Extracting a Color Palette using the CLI"
+
+        ```bash
+        pylette --filename image.jpg --mode KM --n 5 --sort_by luminance --colorspace rgb --display-colors True
+        ```
+
+    === "Options"
+
+        ```bash
+        ╰─❯ pylette --help
+        usage: pylette [-h] (--filename FILENAME | --image-url IMAGE_URL) [--mode {KM,MC}] [--n N] [--sort_by {luminance,frequency}] [--stdout STDOUT] [--colorspace {rgb,hsv,hls}] [--out_filename OUT_FILENAME]
+                       [--display-colors DISPLAY_COLORS]
+
+        options:
+          -h, --help            show this help message and exit
+          --filename FILENAME   path to image file (default: None)
+          --image-url IMAGE_URL
+                                url to the image file (default: None)
+          --mode {KM,MC}        extraction_mode (KMeans/MedianCut (default: KM)
+          --n N                 the number of colors to extract (default: 5)
+          --sort_by {luminance,frequency}
+                                sort by luminance or frequency (default: luminance)
+          --stdout STDOUT       whether to display the extracted color values in the stdout (default: True)
+          --colorspace {rgb,hsv,hls}
+                                color space to represent colors in (default: RGB)
+          --out_filename OUT_FILENAME
+                                where to save the csv file (default: None)
+          --display-colors DISPLAY_COLORS
+                                Open a window displaying the extracted palette (default: False)
+
+        ```
 
 ## Example Palettes
 
-A selection of example palettes. Each palette is sorted by luminance (percieved brightness). The top row corresponds to extraction using K-Means, and the bottom row corresponds to Median-Cut extraction.
+Check out these palettes extracted using Pylette! The top row corresponds to extraction using K-Means, and the bottom row corresponds to Median-Cut extraction.
+The colors are sorted by luminosity.
+
 
 Original Image  | Extracted Palette
 :--------------:|:-----------------:
@@ -94,42 +119,20 @@ Original Image  | Extracted Palette
 ![](https://images.unsplash.com/photo-1534547774987-e59593542e1e?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=e8e5af1676517ac1ef8067f97a206415&auto=format&fit=crop&w=1234&q=80) | ![](example_imgs/alex_perez_palette_kmeans.jpg)  ![](example_imgs/alex_perez_palette_mediancut.jpg)
 ![](https://images.unsplash.com/photo-1534537841395-2e594ba9ed4a?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=34ad54d1ba5d88b42abf43219c905c78&auto=format&fit=crop&w=1234&q=80) | ![](example_imgs/josh_hild_palette_kmeans.jpg)   ![](example_imgs/josh_hild_palette_mediancut.jpg)
 
-## Command Line Tool
 
-The new version of Pylette also comes bundled with a command line tool, which can be used to extract color palettes from the command line.
+## How Pylette Works
 
-```bash
-usage: pylette [-h] (--filename FILENAME | --image-url IMAGE_URL) [--mode {KM,MC}] [--n N] [--sort_by {luminance,frequency}] [--stdout STDOUT] [--colorspace {rgb,hsv,hls}] [--out_filename OUT_FILENAME]
-               [--display-colors DISPLAY_COLORS]
+Pylette uses various color quantization algorithms to extract the most representative colors from your images.
+Currently, it supports:
 
-options:
-  -h, --help            show this help message and exit
-  --filename FILENAME   path to image file (default: None)
-  --image-url IMAGE_URL
-                        url to the image file (default: None)
-  --mode {KM,MC}        extraction_mode (KMeans/MedianCut (default: KM)
-  --n N                 the number of colors to extract (default: 5)
-  --sort_by {luminance,frequency}
-                        sort by luminance or frequency (default: luminance)
-  --stdout STDOUT       whether to display the extracted color values in the stdout (default: True)
-  --colorspace {rgb,hsv,hls}
-                        color space to represent colors in (default: RGB)
-  --out_filename OUT_FILENAME
-                        where to save the csv file (default: None)
-  --display-colors DISPLAY_COLORS
-                        Open a window displaying the extracted palette (default: False)
-```
+1. K-Means clustering
+2. Median-Cut algorithm
 
-## Under the hood
 
-Currently, Pylette can use KMeans or Median-cut for the color quantization. There are plans for implementing other color quantization schemes, like:
+## We'd Love Your Feedback And Contributions!
 
-1. Octree
-2. Modified minmax
+Pylette is an ongoing project, and we're always looking to improve it.
+If you have any suggestions, questions, or just want to share how you're using Pylette, please don't hesitate to reach out, or make a pull request on our GitHub repository.
 
-The article [*Improving the Performance of K-Means for Color Quantization*](https://arxiv.org/pdf/1101.0395.pdf) gives a
-nice overview of available methods.
 
-## Feedback
-Any feedback and suggestions is much appreciated.
-This is very much a work in progress.
+Happy color extracting!

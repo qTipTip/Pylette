@@ -1,4 +1,4 @@
-from typing import List, Literal
+from typing import Literal
 
 import numpy as np
 from PIL import Image
@@ -10,7 +10,9 @@ class Palette:
     def __init__(self, colors: list[Color]):
         """
         Initializes a color palette with a list of Color objects.
-        :param colors: a list of Color-objects
+
+        Parameters:
+            colors (list[Color]): A list of Color objects.
         """
 
         self.colors = colors
@@ -26,13 +28,14 @@ class Palette:
         extension: str = "jpg",
     ) -> None:
         """
-        Displays the color-palette as an image, with an option for saving the image.
+        Displays the color palette as an image, with an option for saving the image.
 
-        :param w: width of each color component
-        :param h: height of each color component
-        :param save_to_file: whether to save the file or not. Defaults to True
-        :param filename: filename
-        :param extension: file-extension. Defaults to jpg.
+        Parameters:
+            w (int): Width of each color component.
+            h (int): Height of each color component.
+            save_to_file (bool): Whether to save the file or not.
+            filename (str): Filename.
+            extension (str): File extension.
         """
         img = Image.new("RGB", size=(w * self.number_of_colors, h))
         arr = np.asarray(img).copy()
@@ -60,9 +63,12 @@ class Palette:
     ):
         """
         Dumps the palette to stdout. Saves to file if filename is specified.
-        Dumps the palette to a comma separated text file
-        :param filename: file to dump to
-        :param frequency: whether to dump the corresponding frequency of each color
+
+        Parameters:
+            filename (str | None): File to dump to.
+            frequency (bool): Whether to dump the corresponding frequency of each color.
+            colorspace (Literal["rgb", "hsv", "hls"]): Color space to use.
+            stdout (bool): Whether to dump to stdout.
         """
 
         if stdout:
@@ -79,10 +85,14 @@ class Palette:
 
     def random_color(self, N, mode="frequency"):
         """
-        Returns N random colors from the palette, either using the frequency of each color, or
-        choosing uniformly.
-        :param mode: frequency/uniform
-        :return: a color from the Palette
+        Returns N random colors from the palette, either using the frequency of each color, or choosing uniformly.
+
+        Parameters:
+            N (int): Number of random colors to return.
+            mode (str): Mode to use for selection. Can be "frequency" or "uniform".
+
+        Returns:
+            list[Color]: List of N random colors from the palette.
         """
 
         if mode == "frequency":
@@ -93,10 +103,4 @@ class Palette:
         return np.random.choice(self.colors, size=N, p=pdf)
 
     def __str__(self):
-
-        return "".join(
-            [
-                "({}, {}, {}, {}) \n".format(c.rgb[0], c.rgb[1], c.rgb[2], c.freq)
-                for c in self.colors
-            ]
-        )
+        return "".join(["({}, {}, {}, {}) \n".format(c.rgb[0], c.rgb[1], c.rgb[2], c.freq) for c in self.colors])
