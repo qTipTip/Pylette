@@ -1,4 +1,4 @@
-# Pylette: Your Friendly Python Color Extraction Library
+# Pylette
 
 Welcome to Pylette, the easy-to-use Python library for extracting color palettes from images!
 
@@ -7,9 +7,19 @@ Welcome to Pylette, the easy-to-use Python library for extracting color palettes
 [![Built with Material for MkDocs](https://img.shields.io/badge/Material_for_MkDocs-526CFE?logo=MaterialForMkDocs&logoColor=white)](https://squidfunk.github.io/mkdocs-material/)
 ![Dependabot](https://img.shields.io/badge/dependabot-enabled-025E8C?logo=dependabot&logoColor=white)
 
+---
+
+**:material-book-open-page-variant: Documentation**: [https://qtiptip.github.io/Pylette/](https://qtiptip.github.io/Pylette/)
+
+**:fontawesome-brands-github: Source code:** [qTipTip/Pylette](https://github.com/qTipTip/Pylette)
+
+---
+
 ## What is Pylette?
 
-Pylette is a powerful yet user-friendly library designed to help you extract color palettes from images. Whether you're working on computer graphics, visualizations, or generative art, Pylette makes it easy to create visually appealing color sets.
+Pylette is a powerful yet user-friendly library designed to help you extract color palettes from images. Whether you're
+working on computer graphics, visualizations, or generative art, Pylette makes it easy to create visually appealing
+color sets.
 
 Key features:
 
@@ -64,10 +74,9 @@ Here's how to extract a color palette from an image and work with it in Python:
     random_colors = palette.random_color(N=100, mode='frequency')
     ```
 
-
-
 This will give you a palette of 10 colors, sorted by frequency.
 The image is automatically resized to 256x256 pixels for faster processing.
+See the [reference documentation](reference.md) for a complete list of available methods and attributes.
 
 ## Command Line Tool
 
@@ -109,7 +118,8 @@ Pylette also comes with a handy command-line tool. Here's a quick overview of it
 
 ## Example Palettes
 
-Check out these palettes extracted using Pylette! The top row corresponds to extraction using K-Means, and the bottom row corresponds to Median-Cut extraction.
+Check out these palettes extracted using Pylette! The top row corresponds to extraction using K-Means, and the bottom
+row corresponds to Median-Cut extraction.
 The colors are sorted by luminosity.
 
 
@@ -119,7 +129,6 @@ Original Image  | Extracted Palette
 ![](https://images.unsplash.com/photo-1534547774987-e59593542e1e?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=e8e5af1676517ac1ef8067f97a206415&auto=format&fit=crop&w=1234&q=80) | ![](example_imgs/alex_perez_palette_kmeans.jpg)  ![](example_imgs/alex_perez_palette_mediancut.jpg)
 ![](https://images.unsplash.com/photo-1534537841395-2e594ba9ed4a?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=34ad54d1ba5d88b42abf43219c905c78&auto=format&fit=crop&w=1234&q=80) | ![](example_imgs/josh_hild_palette_kmeans.jpg)   ![](example_imgs/josh_hild_palette_mediancut.jpg)
 
-
 ## How Pylette Works
 
 Pylette uses various color quantization algorithms to extract the most representative colors from your images.
@@ -128,11 +137,10 @@ Currently, it supports:
 1. K-Means clustering
 2. Median-Cut algorithm
 
-
 ## We'd Love Your Feedback And Contributions!
 
 Pylette is an ongoing project, and we're always looking to improve it.
-If you have any suggestions, questions, or just want to share how you're using Pylette, please don't hesitate to reach out, or make a pull request on our GitHub repository.
-
+If you have any suggestions, questions, or just want to share how you're using Pylette, please don't hesitate to reach
+out, or make a pull request on our GitHub repository.
 
 Happy color extracting!

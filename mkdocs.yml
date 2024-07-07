@@ -28,6 +28,8 @@ plugins:
             show_bases: false
             show_root_heading: true
             docstring_style: google
+  - search:
+      enabled: true
   - glightbox
 
 nav:
@@ -48,3 +50,6 @@ markdown_extensions:
   - admonition
   - attr_list
   - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
