@@ -9,9 +9,9 @@ Welcome to Pylette, the easy-to-use Python library for extracting color palettes
 
 ---
 
-**Documentation**: [https://qtiptip.github.io/Pylette/](https://qtiptip.github.io/Pylette/)
+**:material-book-open-page-variant: Documentation**: [https://qtiptip.github.io/Pylette/](https://qtiptip.github.io/Pylette/)
 
-**Source Code**: [https://github.com/qTipTip/Pylette](https://github.com/qTipTip/Pylette)
+**:fontawesome-brands-github: Source code:** [qTipTip/Pylette](https://github.com/qTipTip/Pylette)
 
 ---
 
