@@ -7,6 +7,14 @@
 
 A color palette extractor written in Python using KMeans clustering.
 
+---
+
+**Documentation**: [https://qtiptip.github.io/Pylette/](https://qtiptip.github.io/Pylette/)
+
+**Source Code**: [https://github.com/qTipTip/Pylette](https://github.com/qTipTip/Pylette)
+
+---
+
 ## Motivation
 
 Working with computer graphics and visualizations, one often needs a way of specifying a set of colors

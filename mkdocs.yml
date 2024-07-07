@@ -28,6 +28,8 @@ plugins:
             show_bases: false
             show_root_heading: true
             docstring_style: google
+  - search:
+      enabled: true
   - glightbox
 
 nav:
