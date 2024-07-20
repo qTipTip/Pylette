@@ -1,5 +1,5 @@
 import colorsys
-from typing import Literal, cast, Self
+from typing import Literal, cast
 
 import numpy as np
 from PIL import Image
@@ -87,10 +87,11 @@ class Color(object):
         """
 
         def conversion_function(x: int) -> float:
-            x = x / 255
-            return x / 12.92 if x <= 0.04045 else ((x + 0.055) / 1.055) ** 2.4
+            c = x / 255
+            return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
 
-        return tuple(map(conversion_function, self.rgb))
+        _xyz = list(map(conversion_function, self.rgb))
+        return (_xyz[0], _xyz[1], _xyz[2])
 
     @property
     def xyz(self):
@@ -102,10 +103,18 @@ class Color(object):
         """
 
         # Compute the linear values ("gamma expanded values")
-        color_linear = np.array(self._xyz_linearize(self))
+        color_linear = np.array(self._xyz_linearize())
+
+        # Conversion matrix from: http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
+        # from SRGB to D65.
+        # 0.4124564  0.3575761  0.1804375
+        # 0.2126729  0.7151522  0.0721750
+        # 0.0193339  0.1191920  0.9503041
 
         # Convert to xyz
-        conversion_matrix = np.array([[0.4124, 0.3576, 0.1805], [0.2126, 0.7152, 0.0722], [0.0193, 0.1192, 0.9505]])
+        conversion_matrix = np.array(
+            [[0.4124564, 0.3575761, 0.1804375], [0.2126729, 0.7151522, 0.0721750], [0.0193339, 0.1191920, 0.9503041]]
+        )
 
         return tuple(conversion_matrix.dot(color_linear))
 
@@ -117,7 +126,8 @@ class Color(object):
         Returns:
             tuple[float, float, float]: The color values in LMS color space.
         """
-        pass
+
+        return (0.0, 0.0, 0.0)
 
     @property
     def luminance(self) -> float:

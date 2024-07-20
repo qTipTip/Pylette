@@ -4,7 +4,10 @@ import cv2
 import pytest
 from numpy.testing import assert_approx_equal
 
+from Pylette.src.color import Color
 from Pylette.src.color_extraction import extract_colors
+
+COLOR_EQUALITY_THRESHOLD = 1.0e-5
 
 
 @pytest.fixture
@@ -237,6 +240,26 @@ def test_colorspace_invariants_rgb(test_kmean_extracted_palette):
         assert 0 <= r <= 255, f"Expected 0 <= r <= 255, got {r}"
         assert 0 <= g <= 255, f"Expected 0 <= g <= 255, got {g}"
         assert 0 <= b <= 255, f"Expected 0 <= b <= 255, got {b}"
+
+
+def test_colorspace_invariants_xyz(test_kmean_extracted_palette):
+    for color in test_kmean_extracted_palette:
+        X, Y, Z = color.xyz
+
+        assert X >= 0 and Y >= 0 and Z >= 0
+        # chromaticity coordinates
+        # https://www.kernel.org/doc/Documentation/userspace-api/media/v4l/colorspaces.rst
+        x = X / (X + Y + Z)
+        y = Y / (X + Y + Z)
+
+        assert x + y <= 1
+
+    # neutral colors preserved:
+    for i in range(255):
+        color = Color((i, i, i), frequency=0)
+
+        X, Y, Z = color.xyz
+        assert abs(X - Y) < COLOR_EQUALITY_THRESHOLD and abs(X - Z) < COLOR_EQUALITY_THRESHOLD
 
 
 @pytest.mark.parametrize("resize, sort_mode", [(True, "luminance"), (False, "frequency")])
