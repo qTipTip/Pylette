@@ -1,5 +1,5 @@
 import colorsys
-from typing import Literal, cast
+from typing import Literal, cast, Self
 
 import numpy as np
 from PIL import Image
@@ -77,6 +77,47 @@ class Color(object):
             tuple[float, float, float]: The color values in HLS color space.
         """
         return colorsys.rgb_to_hls(r=self.rgb[0] / 255, g=self.rgb[1] / 255, b=self.rgb[2] / 255)
+
+    def _xyz_linearize(self) -> tuple[float, float, float]:
+        """
+        Performs the linearization step from https://en.wikipedia.org/wiki/SRGB#From_sRGB_to_CIE_XYZ
+
+        Returns:
+            The linearized RGB value.
+        """
+
+        def conversion_function(x: int) -> float:
+            x = x / 255
+            return x / 12.92 if x <= 0.04045 else ((x + 0.055) / 1.055) ** 2.4
+
+        return tuple(map(conversion_function, self.rgb))
+
+    @property
+    def xyz(self):
+        """
+        Converts the RGB color to the XYZ color space.
+
+        Returns:
+            tuple[float, float, float]: The color values used in XYZ color space.
+        """
+
+        # Compute the linear values ("gamma expanded values")
+        color_linear = np.array(self._xyz_linearize(self))
+
+        # Convert to xyz
+        conversion_matrix = np.array([[0.4124, 0.3576, 0.1805], [0.2126, 0.7152, 0.0722], [0.0193, 0.1192, 0.9505]])
+
+        return tuple(conversion_matrix.dot(color_linear))
+
+    @property
+    def lms(self) -> tuple[float, float, float]:
+        """
+        Converts the RGB color to LMS color space (long, medium, short).
+
+        Returns:
+            tuple[float, float, float]: The color values in LMS color space.
+        """
+        pass
 
     @property
     def luminance(self) -> float:

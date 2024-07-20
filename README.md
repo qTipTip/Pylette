@@ -28,6 +28,11 @@ Key features:
 * Random color selection from palettes
 * Command-line interface for quick palette extraction
 
+> [!NOTE] Whenever we're talking about "RGB" here, we are specifically talking
+> about the
+> [sRGB](https://en.wikipedia.org/wiki/SRGB)
+> color space. 
+
 ## Getting Started
 
 ### Installation
