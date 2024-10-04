@@ -34,7 +34,7 @@ def main():
     parser.add_argument(
         "--colorspace",
         help="color space to represent colors in",
-        default="RGB",
+        default="rgb",
         type=str,
         choices=["rgb", "hsv", "hls"],
     )
@@ -59,7 +59,7 @@ def main():
         image = args.image_url
 
     palette = extract_colors(image=image, palette_size=args.n, sort_mode=args.sort_by)
-    palette.to_csv(filename=args.out_filename, frequency=True, stdout=args.stdout)
+    palette.to_csv(filename=args.out_filename, frequency=True, stdout=args.stdout, colorspace=args.colorspace)
     if args.display_colors:
         palette.display()
 

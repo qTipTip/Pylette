@@ -55,7 +55,6 @@ class Color(object):
             tuple[int, ...] | tuple[float, ...]: The color values in the specified color space.
         """
         colors = {"rgb": self.rgb, "hsv": self.hsv, "hls": self.hls}
-
         return colors[colorspace]
 
     @property
