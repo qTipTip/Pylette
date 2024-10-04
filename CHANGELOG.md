@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Released
 
+## [3.0.2] 04/10/2024
+
+### Fixed
+
+- Fixed a bug where the CLI did not respect the `--colorspace` argument when extracting colors.
 ## [3.0.1] 07/07/2024
 
 ### Fixed
