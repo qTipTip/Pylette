@@ -1,6 +1,11 @@
-# Pylette
+<p align="center">
+  <a href="https://qtiptip.github.io/Pylette/"><img src="docs/example_imgs/pylette_logo.jpg" alt="Pylette"></a>
+</p>
+<p align="center">
+    <em>Welcome to Pylette, the easy-to-use Python library for extracting color palettes from images!
+</em>
+</p>
 
-Welcome to Pylette, the easy-to-use Python library for extracting color palettes from images!
 
 [![PyPI version](https://badge.fury.io/py/Pylette.svg)](https://badge.fury.io/py/Pylette)
 [![Downloads](http://pepy.tech/badge/pylette)](http://pepy.tech/project/pylette)
