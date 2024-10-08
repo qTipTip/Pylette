@@ -5,10 +5,13 @@ from Pylette.cmd import pylette_app
 runner = CliRunner()
 
 
-def test_cli_no_input():
+def test_cli_no_input_is_help():
     result = runner.invoke(pylette_app, [])
-    assert result.exit_code == 1
-    assert "Please provide either a filename or an image-url" in result.stdout
+    assert result.exit_code == 0
+
+    result_help = runner.invoke(pylette_app, ["--help"])
+    assert result_help.exit_code == 0
+    assert result_help.stdout == result.stdout
 
 
 def test_cli_both_input():
@@ -58,3 +61,8 @@ def test_cli_all_options(test_image_path_as_str, tmp_path):
 
     with tmp_output_file.open() as f:
         assert len(f.readlines()) == 10
+
+
+def test_pylette_help():
+    result = runner.invoke(pylette_app, ["--help"])
+    assert result.exit_code == 0

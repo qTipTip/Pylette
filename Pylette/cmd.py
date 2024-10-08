@@ -22,6 +22,10 @@ class ColorSpace(str, Enum):
     hls = "hls"
 
 
+pylette_app = typer.Typer()
+
+
+@pylette_app.command(no_args_is_help=True)
 def main(
     filename: pathlib.Path | None = None,
     image_url: str | None = None,
@@ -54,9 +58,9 @@ def main(
         palette.display()
 
 
-pylette_app = typer.Typer()
-pylette_app.command()(main)
+def docs():
+    typer.launch("https://qtiptip.github.io/Pylette/")
 
 
-def main_typer():
+def main_typer() -> None:
     pylette_app()
