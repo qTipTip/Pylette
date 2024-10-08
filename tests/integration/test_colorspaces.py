@@ -8,38 +8,6 @@ from Pylette.src.color_extraction import extract_colors
 
 
 @pytest.fixture
-def test_image_path_as_str():
-    test_image = pathlib.Path(__file__).parent.parent / "data/test_image.png"
-
-    yield str(test_image.absolute().resolve())
-
-
-@pytest.fixture
-def test_image_path_as_pathlike():
-    test_image = pathlib.Path(__file__).parent.parent / "data/test_image.png"
-
-    yield test_image
-
-
-@pytest.fixture
-def test_image_as_bytes():
-    test_image = pathlib.Path(__file__).parent.parent / "data/test_image.png"
-
-    with open(test_image, "rb") as f:
-        yield f.read()
-
-
-@pytest.fixture
-def test_image_as_url(requests_mock):
-    test_image = pathlib.Path(__file__).parent.parent / "data/test_image.png"
-    test_image_url = "https://my-test-image.com/test_image.png"
-    with open(test_image, "rb") as f:
-        requests_mock.get(test_image_url, content=f.read(), headers={"Content-Type": "image/png"})
-
-        yield test_image_url
-
-
-@pytest.fixture
 def test_image_from_opencv():
     test_image = pathlib.Path(__file__).parent.parent / "data/test_image.png"
     return cv2.imread(str(test_image.absolute().resolve()))

@@ -89,38 +89,42 @@ See the [reference documentation](reference.md) for a complete list of available
 Pylette also comes with a handy command-line tool. Here's a quick overview of its usage:
 
 !!! example "Command Line Usage"
-
-    === "Extracting a Color Palette using the CLI"
-
-        ```bash
-        pylette --filename image.jpg --mode KM --n 5 --sort_by luminance --colorspace rgb --display-colors True
-        ```
-
     === "Options"
 
         ```bash
-        ╰─❯ pylette --help
-        usage: pylette [-h] (--filename FILENAME | --image-url IMAGE_URL) [--mode {KM,MC}] [--n N] [--sort_by {luminance,frequency}] [--stdout STDOUT] [--colorspace {rgb,hsv,hls}] [--out_filename OUT_FILENAME]
-                       [--display-colors DISPLAY_COLORS]
 
-        options:
-          -h, --help            show this help message and exit
-          --filename FILENAME   path to image file (default: None)
-          --image-url IMAGE_URL
-                                url to the image file (default: None)
-          --mode {KM,MC}        extraction_mode (KMeans/MedianCut (default: KM)
-          --n N                 the number of colors to extract (default: 5)
-          --sort_by {luminance,frequency}
-                                sort by luminance or frequency (default: luminance)
-          --stdout STDOUT       whether to display the extracted color values in the stdout (default: True)
-          --colorspace {rgb,hsv,hls}
-                                color space to represent colors in (default: RGB)
-          --out_filename OUT_FILENAME
-                                where to save the csv file (default: None)
-          --display-colors DISPLAY_COLORS
-                                Open a window displaying the extracted palette (default: False)
+         pylette --help
 
+         Usage: pylette [OPTIONS]
+
+        ╭─ Options ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+        │ --filename                                     PATH                   [default: None]                                                                                                                                                  │
+        │ --image-url                                    TEXT                   [default: None]                                                                                                                                                  │
+        │ --mode                                         [KM|MC]                [default: KM]                                                                                                                                                    │
+        │ --n                                            INTEGER                [default: 5]                                                                                                                                                     │
+        │ --sort-by                                      [frequency|luminance]  [default: luminance]                                                                                                                                             │
+        │ --stdout                --no-stdout                                   [default: stdout]                                                                                                                                                │
+        │ --out-filename                                 PATH                   [default: None]                                                                                                                                                  │
+        │ --display-colors        --no-display-colors                           [default: no-display-colors]                                                                                                                                     │
+        │ --colorspace                                   [rgb|hsv|hls]          [default: rgb]                                                                                                                                                   │
+        │ --install-completion                                                  Install completion for the current shell.                                                                                                                        │
+        │ --show-completion                                                     Show completion for the current shell, to copy it or customize the installation.                                                                                 │
+        │ --help                                                                Show this message and exit.                                                                                                                                      │
+        ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
         ```
+    === "Example"
+
+        ```bash
+
+        pylette --filename image.jpg \
+                --mode KM \
+                --n 5 \
+                --sort-by luminance \
+                --colorspace rgb \
+                --display-colors
+        ```
+
+
 
 ## Example Palettes
 

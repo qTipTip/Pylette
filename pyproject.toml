@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pylette"
-version = "3.0.2"
+version = "4.0.0"
 description = "A Python library for extracting color palettes from images."
 authors = ["Ivar Stangeby"]
 license = "MIT"
@@ -25,6 +25,7 @@ Pillow = ">=9.3,<11.0"
 numpy = "^1.26.4"
 scikit-learn = "^1.2"
 requests = "^2.32.3"
+typer = "^0.12.5"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.10.0"
@@ -43,9 +44,5 @@ requests-mock = "^1.12.1"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-
-
-
-
 [tool.poetry.scripts]
-pylette = "Pylette.cmd:main"
+pylette = "Pylette.cmd:main_typer"

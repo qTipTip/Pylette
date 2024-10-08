@@ -1,68 +1,66 @@
-import argparse
+import pathlib
+from enum import Enum
+
+import typer
 
 from Pylette import extract_colors
 
 
-def main():
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    group = parser.add_mutually_exclusive_group(required=True)
+class ExtractionMode(str, Enum):
+    KM = "KM"
+    MC = "MC"
 
-    group.add_argument("--filename", help="path to image file", type=str, default=None)
-    group.add_argument("--image-url", help="url to the image file", type=str, default=None)
 
-    parser.add_argument(
-        "--mode",
-        help="extraction_mode (KMeans/MedianCut",
-        type=str,
-        default="KM",
-        choices=["KM", "MC"],
-    )
-    parser.add_argument("--n", help="the number of colors to extract", type=int, default=5)
-    parser.add_argument(
-        "--sort_by",
-        help="sort by luminance or frequency",
-        default="luminance",
-        type=str,
-        choices=["luminance", "frequency"],
-    )
-    parser.add_argument(
-        "--stdout",
-        help="whether to display the extracted color values in the stdout",
-        type=bool,
-        default=True,
-    )
-    parser.add_argument(
-        "--colorspace",
-        help="color space to represent colors in",
-        default="rgb",
-        type=str,
-        choices=["rgb", "hsv", "hls"],
-    )
-    parser.add_argument("--out_filename", help="where to save the csv file", default=None, type=str)
-    parser.add_argument(
-        "--display-colors",
-        help="Open a window displaying the extracted palette",
-        default=False,
-        type=bool,
-    )
-    args = parser.parse_args()
+class SortBy(str, Enum):
+    frequency = "frequency"
+    luminance = "luminance"
 
-    if args.filename is None and args.image_url is None:
-        raise ValueError("Please provide either a filename or an image-url.")
 
-    if args.filename is not None and args.image_url is not None:
-        raise ValueError("Please provide either a filename or an image-url, not both.")
+class ColorSpace(str, Enum):
+    rgb = "rgb"
+    hsv = "hsv"
+    hls = "hls"
 
-    if args.filename is not None and args.image_url is None:
-        image = args.filename
+
+pylette_app = typer.Typer()
+
+
+@pylette_app.command(no_args_is_help=True)
+def main(
+    filename: pathlib.Path | None = None,
+    image_url: str | None = None,
+    mode: ExtractionMode = ExtractionMode.KM,
+    n: int = 5,
+    sort_by: SortBy = SortBy.luminance,
+    stdout: bool = True,
+    out_filename: pathlib.Path | None = None,
+    display_colors: bool = False,
+    colorspace: ColorSpace = ColorSpace.rgb,
+):
+    if filename is None and image_url is None:
+        typer.echo("Please provide either a filename or an image-url.")
+        raise typer.Exit(code=1)
+
+    if filename is not None and image_url is not None:
+        typer.echo("Please provide either a filename or an image-url, but not both.")
+        raise typer.Exit(code=1)
+
+    image: pathlib.Path | str | None
+    if filename is not None and image_url is None:
+        image = filename
     else:
-        image = args.image_url
+        image = image_url
 
-    palette = extract_colors(image=image, palette_size=args.n, sort_mode=args.sort_by)
-    palette.to_csv(filename=args.out_filename, frequency=True, stdout=args.stdout, colorspace=args.colorspace)
-    if args.display_colors:
+    output_file_path = str(out_filename) if out_filename is not None else None
+    palette = extract_colors(image=image, palette_size=n, sort_mode=sort_by.value, mode=mode.value)
+    palette.to_csv(filename=output_file_path, frequency=True, stdout=stdout, colorspace=colorspace.value)
+    if display_colors:
         palette.display()
 
 
-if __name__ == "__main__":
-    main()
+def docs():
+    typer.launch("https://qtiptip.github.io/Pylette/")
+
+
+def main_typer() -> None:
+    pylette_app()

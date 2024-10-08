@@ -80,3 +80,28 @@ random_colors = palette.random_color(N=100, mode='frequency')
 This will give you a palette of 10 colors, sorted by frequency.
 The image is automatically resized to 256x256 pixels for faster processing.
 See the [documentation](https://qtiptip.github.io/Pylette) for a complete list of available methods and attributes.
+
+## Command Line Interface:
+
+Pylette also comes with a command-line interface for quick palette extraction:
+
+```shell
+ pylette --help
+
+ Usage: pylette [OPTIONS]
+
+╭─ Options ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --filename                                     PATH                   [default: None]                                                                                                                                                  │
+│ --image-url                                    TEXT                   [default: None]                                                                                                                                                  │
+│ --mode                                         [KM|MC]                [default: KM]                                                                                                                                                    │
+│ --n                                            INTEGER                [default: 5]                                                                                                                                                     │
+│ --sort-by                                      [frequency|luminance]  [default: luminance]                                                                                                                                             │
+│ --stdout                --no-stdout                                   [default: stdout]                                                                                                                                                │
+│ --out-filename                                 PATH                   [default: None]                                                                                                                                                  │
+│ --display-colors        --no-display-colors                           [default: no-display-colors]                                                                                                                                     │
+│ --colorspace                                   [rgb|hsv|hls]          [default: rgb]                                                                                                                                                   │
+│ --install-completion                                                  Install completion for the current shell.                                                                                                                        │
+│ --show-completion                                                     Show completion for the current shell, to copy it or customize the installation.                                                                                 │
+│ --help                                                                Show this message and exit.                                                                                                                                      │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
