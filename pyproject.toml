@@ -50,5 +50,6 @@ build-backend = "poetry.core.masonry.api"
 
 
 
+
 [tool.poetry.scripts]
 pylette = "Pylette.cmd:main_typer"
