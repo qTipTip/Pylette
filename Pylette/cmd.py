@@ -54,5 +54,9 @@ def main(
         palette.display()
 
 
+pylette_app = typer.Typer()
+pylette_app.command()(main)
+
+
 def main_typer():
-    typer.run(main)
+    pylette_app()
