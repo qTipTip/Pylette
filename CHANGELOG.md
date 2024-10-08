@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Released
 
+## [4.0.0] 08/10/2024
+
+### Changed
+
+- Overhauled the CLI to use the `typer` library for a more user-friendly experience. Note this is a breaking change for CLI users. Run `pylette --help` for more information.
+
 ## [3.0.2] 04/10/2024
 
 ### Fixed
