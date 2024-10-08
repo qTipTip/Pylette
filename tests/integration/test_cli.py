@@ -1,46 +1,60 @@
-import pathlib
-
-import pytest
 from typer.testing import CliRunner
 
 from Pylette.cmd import pylette_app
 
-
-@pytest.fixture
-def test_image_as_url(requests_mock):
-    test_image = pathlib.Path(__file__).parent.parent / "data/test_image.png"
-    test_image_url = "https://my-test-image.com/test_image.png"
-    with open(test_image, "rb") as f:
-        requests_mock.get(test_image_url, content=f.read(), headers={"Content-Type": "image/png"})
-
-        yield test_image_url
-
-
 runner = CliRunner()
 
 
-def test_app_no_input():
+def test_cli_no_input():
     result = runner.invoke(pylette_app, [])
     assert result.exit_code == 1
     assert "Please provide either a filename or an image-url" in result.stdout
 
 
-def test_app_both_input():
+def test_cli_both_input():
     result = runner.invoke(pylette_app, ["--filename", "test.jpg", "--image-url", "https://test.com/image.jpg"])
     assert result.exit_code == 1
     assert "Please provide either a filename or an image-url, but not both" in result.stdout
 
 
-def test_app_filename_nonexistent():
+def test_cli_filename_nonexistent():
     result = runner.invoke(pylette_app, ["--filename", "this-file-does-definitely-not-exist.jpg"])
     assert result.exit_code == 1
 
 
-def test_app_image_url(test_image_as_url):
-    result = runner.invoke(pylette_app, ["--image-url", "https://my-test-image.com/test_image.png"])
+def test_cli_image_url(test_image_as_url):
+    result = runner.invoke(pylette_app, ["--image-url", test_image_as_url])
     assert result.exit_code == 0
 
 
-def test_app_image_path():
-    result = runner.invoke(pylette_app, ["--filename", "tests/data/test_image.png"])
+def test_cli_image_path(test_image_path_as_str):
+    result = runner.invoke(pylette_app, ["--filename", test_image_path_as_str])
     assert result.exit_code == 0
+
+
+def test_cli_all_options(test_image_path_as_str, tmp_path):
+    tmp_output_file = tmp_path / "output.csv"
+
+    result = runner.invoke(
+        pylette_app,
+        [
+            "--filename",
+            test_image_path_as_str,
+            "--n",
+            "10",
+            "--sort-by",
+            "frequency",
+            "--stdout",
+            "--out-filename",
+            tmp_output_file,
+            "--no-display-colors",
+            "--colorspace",
+            "hsv",
+        ],
+    )
+    assert result.exit_code == 0
+    assert len(result.stdout.splitlines()) == 10
+    assert tmp_output_file.exists()
+
+    with tmp_output_file.open() as f:
+        assert len(f.readlines()) == 10
