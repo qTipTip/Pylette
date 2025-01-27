@@ -1,0 +1,40 @@
+version: 2
+updates:
+  # Poetry/Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "UTC"
+
+    versioning-strategy: "lockfile-only"
+
+    # This helps manage the number of open PRs at any time
+    open-pull-requests-limit: 5
+
+    labels:
+      - "dependencies"
+      - "python"
+      - "poetry"
+
+    # Optional: Group minor and patch updates together to reduce PR noise
+    groups:
+      minor-patch-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "UTC"
+    labels:
+      - "dependencies"
+      - "github-actions"
