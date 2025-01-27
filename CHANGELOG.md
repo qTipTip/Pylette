@@ -10,6 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Released
 
+## 4.0.1 27/01/2025
+
+### Added
+
+- A `ColorExtractor`-protocol that defines an interface for color extractors.
+- Create a `ColorExtractorBase` abstract class that extractors can inherit from to implement the interface.
+
+### Changed
+- The implementation of `median_cut_extraction` and `k_means_extraction` is now
+implemented as in terms of subclasses of the `ColorExtractorBase`
+
 ## [4.0.0] 08/10/2024
 
 ### Changed
