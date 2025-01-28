@@ -23,8 +23,8 @@ class ColorBox:
         """
         Calculates the minimum and maximum values for each color channel in the ColorBox.
         """
-        self.min_channel: NDArray[np.uint8, (3,)] = np.min(self.colors, axis=0)
-        self.max_channel: NDArray[np.uint8, (3,)] = np.max(self.colors, axis=0)
+        self.min_channel: NDArray[np.uint8] = np.min(self.colors, axis=0)
+        self.max_channel: NDArray[np.uint8] = np.max(self.colors, axis=0)
 
     def __lt__(self, other: "ColorBox") -> bool:
         """
@@ -36,10 +36,10 @@ class ColorBox:
         Returns:
         bool: True if the volume of this ColorBox is less than the volume of the other ColorBox, False otherwise.
         """
-        return self.size < other.size
+        return bool(self.size < other.size)
 
     @property
-    def size(self) -> np.uint64:
+    def size(self) -> int:
         """
         Returns the volume of the ColorBox.
 
@@ -55,12 +55,12 @@ class ColorBox:
         Returns:
             int: The index of the dominant color channel.
         """
-        diff: NDArray[np.uint8, (3,)] = self.max_channel - self.min_channel
+        diff: NDArray[np.uint8] = self.max_channel - self.min_channel
         dominant_channel = np.argmax(diff)
-        return dominant_channel
+        return int(dominant_channel)
 
     @property
-    def average(self) -> np.ndarray:
+    def average(self) -> NDArray[np.uint8]:
         """
         Calculates the average color contained in the ColorBox.
 
@@ -80,7 +80,7 @@ class ColorBox:
         Returns:
             int: The volume of the ColorBox.
         """
-        diff: NDArray[np.uint8, (3,)] = self.max_channel - self.min_channel
+        diff: NDArray[np.uint8] = self.max_channel - self.min_channel
         return np.prod(diff).item()
 
     def split(self) -> list["ColorBox"]:
