@@ -31,7 +31,7 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - name: Install poetry
-        uses: abatilo/actions-poetry@v2
+        uses: abatilo/actions-poetry@v4
         with:
           poetry-version: ${{ matrix.poetry-version }}
       - name: Setup a local virtual environment (if no poetry.toml file)
