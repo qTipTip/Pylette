@@ -4,27 +4,28 @@ from numpy.typing import ArrayLike, NDArray
 
 class ColorBox:
     """
-    Represents a box in the RGB color space, with associated attributes, used in the Median Cut algorithm.
+    Represents a box in the RGBA color space, with associated attributes, used in the Median Cut algorithm.
     """
 
     def __init__(self, colors: ArrayLike):
         """
-        Initializes a ColorBox with a numpy array of RGB colors.
+        Initializes a ColorBox with a numpy array of RGBA colors.
 
         Parameters:
-            colors (ArrayLike): A numpy array of RGB colors with shape (width * height, 3).
+            colors (ArrayLike): A numpy array of RGBA colors with shape (width * height, 4).
         """
         self.colors = np.asarray(colors, dtype=np.uint8)
-        if self.colors.ndim < 2 or self.colors.shape[-1] != 3:
+        if self.colors.ndim < 2 or self.colors.shape[-1] != 4:
             raise ValueError("Invalid color array")
+        self.alpha = self.colors[:, 3:4]
         self._get_min_max()
 
     def _get_min_max(self) -> None:
         """
         Calculates the minimum and maximum values for each color channel in the ColorBox.
         """
-        self.min_channel: NDArray[np.uint8] = np.min(self.colors, axis=0)
-        self.max_channel: NDArray[np.uint8] = np.max(self.colors, axis=0)
+        self.min_channel: NDArray[np.uint8] = np.min(self.colors[:, :3], axis=0)
+        self.max_channel: NDArray[np.uint8] = np.max(self.colors[:, :3], axis=0)
 
     def __lt__(self, other: "ColorBox") -> bool:
         """
@@ -65,12 +66,15 @@ class ColorBox:
         Calculates the average color contained in the ColorBox.
 
         Returns:
-            np.ndarray: The average color as an array [R, G, B].
+            np.ndarray: The average color as an array [R, G, B, A].
         """
-        avg_color = np.mean(self.colors, axis=0)
-        if avg_color.shape != (3,):
+        avg_rgb = np.mean(self.colors[:, :3], axis=0)
+        avg_alpha = np.mean(self.alpha)
+        if avg_rgb.shape != (3,):
             raise ValueError("Invalid number of channels in average color.")
-        return avg_color
+
+        avg_color = np.append(avg_rgb, avg_alpha)
+        return np.round(avg_color)
 
     @property
     def volume(self) -> int:
@@ -91,7 +95,9 @@ class ColorBox:
             list[ColorBox]: A list containing the two new ColorBoxes.
         """
         dominant_channel = self._get_dominant_channel()
-        self.colors = self.colors[self.colors[:, dominant_channel].argsort()]
+        sort_indices = self.colors[:, dominant_channel].argsort()
+        self.colors = self.colors[sort_indices]
+        self.alpha = self.alpha[sort_indices]
         median_index = len(self.colors) // 2
 
         return [
