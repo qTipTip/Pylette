@@ -5,6 +5,7 @@ from io import BytesIO
 from typing import Any, Literal, TypeAlias, Union
 
 import numpy as np
+import numpy.ma as ma
 import requests  # type: ignore
 from numpy.typing import NDArray
 from PIL import Image
@@ -61,6 +62,7 @@ def extract_colors(
     resize: bool = True,
     mode: Literal["KM"] | Literal["MC"] = "KM",
     sort_mode: Literal["luminance", "frequency"] | None = None,
+    alpha_mask_threshold: int = 0,
 ) -> Palette:
     """
     Extracts a set of 'palette_size' colors from the given image.
@@ -71,7 +73,8 @@ def extract_colors(
         resize: Whether to resize the image before processing.
         mode: The color quantization algorithm to use.
         sort_mode: The mode to sort colors.
-
+        alpha_mask_threshold: Integer between 0, 255.
+            Any pixel with alpha less than this threshold will be discarded from calculations.
     Returns:
         Palette: A palette of the extracted colors.
 
@@ -86,23 +89,28 @@ def extract_colors(
 
     match image_type:
         case ImageType.PATH:
-            img = Image.open(image).convert("RGB")
+            img_obj = Image.open(image)
         case ImageType.BYTES:
             assert isinstance(image, bytes)
-            img = Image.open(BytesIO(image)).convert("RGB")
+            img_obj = Image.open(BytesIO(image))
         case ImageType.URL:
             assert isinstance(image, str)
-            img = request_image(image)
+            img_obj = request_image(image)
         case ImageType.ARRAY:
-            img = Image.fromarray(image).convert("RGB")
+            img_obj = Image.fromarray(image)
         case ImageType.NONE:
             raise ValueError(f"Unable to parse image source. Got image type {type(image)}")
+
+    # Convert to RGBa where RGB values are pre-multiplied by the alpha channel
+    # then drop the alpha channel.
+    img = img_obj.convert("RGBA")
 
     # open the image
     if resize:
         img = img.resize((256, 256))
     width, height = img.size
     arr = np.asarray(img)
+    arr = ma.masked_less(arr, alpha_mask_threshold)
 
     if mode == "KM":
         colors = k_means_extraction(arr, height, width, palette_size)
@@ -135,7 +143,7 @@ def request_image(image_url: str) -> Image.Image:
     response = requests.get(image_url)
     # Check if the request was successful and content type is an image
     if response.status_code == 200 and "image" in response.headers.get("Content-Type", ""):
-        img = Image.open(BytesIO(response.content)).convert("RGB")
+        img = Image.open(BytesIO(response.content))
         return img
     else:
         raise ValueError("The URL did not point to a valid image.")
