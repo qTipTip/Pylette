@@ -61,7 +61,7 @@ def extract_colors(
     resize: bool = True,
     mode: Literal["KM"] | Literal["MC"] = "KM",
     sort_mode: Literal["luminance", "frequency"] | None = None,
-    alpha_mask_threshold: int = 0,
+    alpha_mask_threshold: int | None = None,
 ) -> Palette:
     """
     Extracts a set of 'palette_size' colors from the given image.
@@ -72,7 +72,7 @@ def extract_colors(
         resize: Whether to resize the image before processing.
         mode: The color quantization algorithm to use.
         sort_mode: The mode to sort colors.
-        alpha_mask_threshold: Integer between 0, 255.
+        alpha_mask_threshold: Optional integer between 0, 255.
             Any pixel with alpha less than this threshold will be discarded from calculations.
     Returns:
         Palette: A palette of the extracted colors.
@@ -106,9 +106,14 @@ def extract_colors(
     # open the image
     if resize:
         img = img.resize((256, 256))
+
     width, height = img.size
     arr = np.asarray(img)
-    alpha_mask = arr[:, :, 3] < alpha_mask_threshold
+
+    if alpha_mask_threshold is None:
+        alpha_mask_threshold = 0
+
+    alpha_mask = arr[:, :, 3] <= alpha_mask_threshold
     valid_pixels = arr[~alpha_mask]
 
     if mode == "KM":
