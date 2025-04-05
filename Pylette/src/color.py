@@ -9,7 +9,7 @@ luminance_weights = np.array([0.2126, 0.7152, 0.0722])
 
 
 class Color(object):
-    def __init__(self, rgb: tuple[int, ...], frequency: float):
+    def __init__(self, rgb: tuple[int, ...], frequency: float, alpha: int = 255):
         """
         Initializes a Color object with RGB values and frequency.
 
@@ -19,7 +19,9 @@ class Color(object):
         """
         assert len(rgb) == 3, "RGB values must be a tuple of length 3"
         self.rgb = cast(tuple[int, int, int], rgb)
+        self.a = alpha
         self.freq: float = frequency
+        self.weight = alpha / 255.0
 
     def display(self, w: int = 50, h: int = 50) -> None:
         """
