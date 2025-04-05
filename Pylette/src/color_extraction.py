@@ -5,7 +5,6 @@ from io import BytesIO
 from typing import Any, Literal, TypeAlias, Union
 
 import numpy as np
-import numpy.ma as ma
 import requests  # type: ignore
 from numpy.typing import NDArray
 from PIL import Image
@@ -101,8 +100,7 @@ def extract_colors(
         case ImageType.NONE:
             raise ValueError(f"Unable to parse image source. Got image type {type(image)}")
 
-    # Convert to RGBa where RGB values are pre-multiplied by the alpha channel
-    # then drop the alpha channel.
+    # Convert to RGBA
     img = img_obj.convert("RGBA")
 
     # open the image
@@ -110,12 +108,13 @@ def extract_colors(
         img = img.resize((256, 256))
     width, height = img.size
     arr = np.asarray(img)
-    arr = ma.masked_less(arr, alpha_mask_threshold)
+    alpha_mask = arr[:, :, 3] < alpha_mask_threshold
+    valid_pixels = arr[~alpha_mask]
 
     if mode == "KM":
-        colors = k_means_extraction(arr, height, width, palette_size)
+        colors = k_means_extraction(valid_pixels, height, width, palette_size)
     elif mode == "MC":
-        colors = median_cut_extraction(arr, height, width, palette_size)
+        colors = median_cut_extraction(valid_pixels, height, width, palette_size)
     else:
         raise NotImplementedError("Extraction mode not implemented")
 
