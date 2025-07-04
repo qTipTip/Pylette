@@ -22,14 +22,13 @@ class MedianCutExtractor(ColorExtractorBase):
         """
 
         arr = self._reshape_array(arr=arr, height=height, width=width)
-
+        valid_pixel_count = arr.shape[0]
         boxes = [ColorBox(arr)]
         while len(boxes) < palette_size:
             largest_box_idx = np.argmax(boxes)  # type: ignore
             boxes = boxes[:largest_box_idx] + boxes[largest_box_idx].split() + boxes[largest_box_idx + 1 :]
 
-        total_pixels = width * height
-        return [Color(tuple(map(int, box.average)), box.pixel_count / total_pixels) for box in boxes]
+        return [Color(tuple(map(int, box.average)), box.pixel_count / valid_pixel_count) for box in boxes]
 
 
 def median_cut_extraction(arr: np.ndarray, height: int, width: int, palette_size: int) -> list[Color]:

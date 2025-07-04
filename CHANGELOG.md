@@ -10,6 +10,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Released
 
+## 4.1.0 - 4/7/2025
+
+### Added
+
+- Added `alpha_mask_threshold` parameter to `extract_colors()` function to support alpha channel masking for transparent images
+- Colors now include alpha channel information (RGBA) and weight properties based on alpha values
+- Support for filtering out transparent/semi-transparent pixels during color extraction
+
+### Changed
+
+- Color objects now accept RGBA tuples instead of RGB tuples in constructor
+- Image processing pipeline now converts all images to RGBA format internally
+- Display method now uses RGBA color space for better transparency handling
+
 ## 4.0.1 27/01/2025
 
 ### Added

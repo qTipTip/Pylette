@@ -20,7 +20,7 @@ class KMeansExtractor(ColorExtractorBase):
         Returns:
             list[Color]: A palette of colors sorted by frequency.
         """
-        arr = np.reshape(arr, (width * height, -1))
+        arr = np.squeeze(arr)
         model = KMeans(n_clusters=palette_size, n_init="auto", init="k-means++", random_state=2024)
         labels = model.fit_predict(arr)
         palette = np.array(model.cluster_centers_, dtype=int)

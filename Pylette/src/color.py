@@ -9,17 +9,21 @@ luminance_weights = np.array([0.2126, 0.7152, 0.0722])
 
 
 class Color(object):
-    def __init__(self, rgb: tuple[int, ...], frequency: float):
+    def __init__(self, rgba: tuple[int, ...], frequency: float):
         """
-        Initializes a Color object with RGB values and frequency.
+        Initializes a Color object with RGBA values and frequency.
 
         Parameters:
-            rgb (tuple[int, ...]): A tuple of RGB values.
+            rgba (tuple[int, ...]): A tuple of RGBA values.
             frequency (float): The frequency of the color.
         """
-        assert len(rgb) == 3, "RGB values must be a tuple of length 3"
+        assert len(rgba) == 4, "RGBA values must be a tuple of length 4"
+        *rgb, alpha = rgba
         self.rgb = cast(tuple[int, int, int], rgb)
+        self.rgba = rgba
+        self.a = alpha
         self.freq: float = frequency
+        self.weight = alpha / 255.0
 
     def display(self, w: int = 50, h: int = 50) -> None:
         """
@@ -29,7 +33,7 @@ class Color(object):
         w (int): Width of the window in pixels.
         h (int): Height of the window in pixels.
         """
-        img = Image.new("RGB", size=(w, h), color=self.rgb)
+        img = Image.new("RGBA", size=(w, h), color=self.rgba)
         img.show()
 
     def __lt__(self, other: "Color") -> bool:
