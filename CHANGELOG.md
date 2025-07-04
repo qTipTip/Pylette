@@ -17,12 +17,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `alpha_mask_threshold` parameter to `extract_colors()` function to support alpha channel masking for transparent images
 - Colors now include alpha channel information (RGBA) and weight properties based on alpha values
 - Support for filtering out transparent/semi-transparent pixels during color extraction
+- Added `save()` method to `Palette` class for saving palette images without displaying them
 
 ### Changed
 
 - Color objects now accept RGBA tuples instead of RGB tuples in constructor
 - Image processing pipeline now converts all images to RGBA format internally
 - Display method now uses RGBA color space for better transparency handling
+- Refactored `display()` method to use the new `save()` method when `save_to_file=True`, reducing code duplication
 
 ## 4.0.1 27/01/2025
 

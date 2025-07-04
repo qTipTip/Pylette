@@ -71,6 +71,9 @@ print(most_common_color.hsv)
 # Display the palette, and save the image to file
 palette.display(save_to_file=True)
 
+# Or save palette image directly without displaying
+palette.save(filename='my_palette', extension='png')
+
 # Save palette's color values to CSV
 palette.to_csv(filename='color_palette.csv', frequency=True)
 

@@ -19,6 +19,43 @@ class Palette:
         self.frequencies = [c.freq for c in colors]
         self.number_of_colors = len(colors)
 
+    def _generate_palette_image(self, w: int = 50, h: int = 50) -> Image.Image:
+        """
+        Helper method to generate a palette image.
+
+        Parameters:
+            w (int): Width of each color component.
+            h (int): Height of each color component.
+
+        Returns:
+            PIL.Image.Image: The generated palette image.
+        """
+        img = Image.new("RGB", size=(w * self.number_of_colors, h))
+        arr = np.asarray(img).copy()
+        for i in range(self.number_of_colors):
+            c = self.colors[i]
+            arr[:, i * h : (i + 1) * h, :] = c.rgb
+        return Image.fromarray(arr, "RGB")
+
+    def save(
+        self,
+        w: int = 50,
+        h: int = 50,
+        filename: str = "color_palette",
+        extension: str = "jpg",
+    ) -> None:
+        """
+        Saves the color palette as an image.
+
+        Parameters:
+            w (int): Width of each color component.
+            h (int): Height of each color component.
+            filename (str): Filename.
+            extension (str): File extension.
+        """
+        img = self._generate_palette_image(w, h)
+        img.save(f"{filename}.{extension}")
+
     def display(
         self,
         w: int = 50,
@@ -37,16 +74,11 @@ class Palette:
             filename (str): Filename.
             extension (str): File extension.
         """
-        img = Image.new("RGB", size=(w * self.number_of_colors, h))
-        arr = np.asarray(img).copy()
-        for i in range(self.number_of_colors):
-            c = self.colors[i]
-            arr[:, i * h : (i + 1) * h, :] = c.rgb
-        img = Image.fromarray(arr, "RGB")
+        img = self._generate_palette_image(w, h)
         img.show()
 
         if save_to_file:
-            img.save(f"{filename}.{extension}")
+            self.save(w, h, filename, extension)
 
     def __getitem__(self, item: int) -> Color:
         return self.colors[item]
