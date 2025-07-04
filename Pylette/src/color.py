@@ -17,7 +17,7 @@ class Color(object):
             rgba (tuple[int, ...]): A tuple of RGBA values.
             frequency (float): The frequency of the color.
         """
-        assert len(rgba) == 4, "RGBA values must be a tuple of length 3"
+        assert len(rgba) == 4, "RGBA values must be a tuple of length 4"
         *rgb, alpha = rgba
         self.rgb = cast(tuple[int, int, int], rgb)
         self.rgba = rgba

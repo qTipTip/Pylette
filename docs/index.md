@@ -31,6 +31,7 @@ Key features:
 
 * Extract color palettes from images
 * Support for various color modes (RGB, RGBa, HSV, etc.)
+* Alpha channel support with transparency masking
 * Random color selection from palettes
 * Command-line interface for quick palette extraction
 
@@ -84,6 +85,23 @@ This will give you a palette of 10 colors, sorted by frequency.
 The image is automatically resized to 256x256 pixels for faster processing.
 See the [reference documentation](reference.md) for a complete list of available methods and attributes.
 
+!!! tip "Working with Transparent Images"
+
+    For images with transparency (PNG files with alpha channels), you can use the `alpha_mask_threshold` parameter to exclude transparent or semi-transparent pixels:
+
+    ```python
+    from Pylette import extract_colors
+
+    # Extract colors from a transparent PNG, ignoring pixels with alpha < 128
+    palette = extract_colors(
+        image='transparent_image.png', 
+        palette_size=10, 
+        alpha_mask_threshold=128
+    )
+    ```
+
+    The `alpha_mask_threshold` parameter accepts values from 0-255, where pixels with alpha values below this threshold are excluded from color extraction.
+
 ## Command Line Tool
 
 Pylette also comes with a handy command-line tool. Here's a quick overview of its usage:
@@ -107,6 +125,7 @@ Pylette also comes with a handy command-line tool. Here's a quick overview of it
         │ --out-filename                                 PATH                   [default: None]                                                                                                                                                  │
         │ --display-colors        --no-display-colors                           [default: no-display-colors]                                                                                                                                     │
         │ --colorspace                                   [rgb|hsv|hls]          [default: rgb]                                                                                                                                                   │
+        │ --alpha-mask-threshold                         INTEGER RANGE [0<=x<=255]  Alpha threshold for transparent image masking (0-255). Pixels with alpha below this value are excluded. [default: None]                                     │
         │ --install-completion                                                  Install completion for the current shell.                                                                                                                        │
         │ --show-completion                                                     Show completion for the current shell, to copy it or customize the installation.                                                                                 │
         │ --help                                                                Show this message and exit.                                                                                                                                      │
@@ -121,6 +140,14 @@ Pylette also comes with a handy command-line tool. Here's a quick overview of it
                 --n 5 \
                 --sort-by luminance \
                 --colorspace rgb \
+                --display-colors
+        ```
+
+        For transparent images:
+        ```bash
+        pylette --filename transparent_image.png \
+                --alpha-mask-threshold 128 \
+                --n 10 \
                 --display-colors
         ```
 
