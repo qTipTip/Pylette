@@ -20,13 +20,12 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install Poetry
-        uses: snok/install-poetry@v1.4.1
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          virtualenvs-create: false
+          enable-cache: true
 
-      - name: Poetry build
-        run: |
-          poetry build
+      - name: Build package
+        run: uv build
       - name: Publish package distributions to PyPi
         uses: pypa/gh-action-pypi-publish@release/v1
