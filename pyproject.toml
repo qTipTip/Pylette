@@ -35,13 +35,8 @@ select = [
     "I"
 ]
 
-dependencies = [
-    "Pillow>=9.3,<11.0",
-    "numpy>=1.26.4",
-    "scikit-learn>=1.2",
-    "requests>=2.32.3",
-    "typer>=0.12.5",
-]
+[tool.hatch.build.targets.wheel]
+packages = ["Pylette"]
 
 [project.optional-dependencies]
 dev = [
