@@ -17,7 +17,6 @@ updates:
     labels:
       - "dependencies"
       - "python"
-      - "poetry"
 
     # Optional: Group minor and patch updates together to reduce PR noise
     groups:

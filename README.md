@@ -45,10 +45,10 @@ You can easily install Pylette using pip:
 pip install Pylette
 ```
 
-Or if you prefer using Poetry:
+Or if you prefer using uv:
 
 ```shell
-poetry add Pylette
+uv add Pylette
 ```
 
 ### Quick Start Guide

@@ -25,8 +25,9 @@ class ColorSpace(str, Enum):
 pylette_app = typer.Typer()
 
 
-@pylette_app.command(no_args_is_help=True)
+@pylette_app.command()
 def main(
+    ctx: typer.Context,
     filename: pathlib.Path | None = None,
     image_url: str | None = None,
     mode: ExtractionMode = ExtractionMode.KM,
@@ -39,9 +40,9 @@ def main(
     alpha_mask_threshold: int | None = typer.Option(None, min=0, max=255, help="Alpha threshold for transparent image masking (0-255). Pixels with alpha below this value are excluded."),
 ):
     if filename is None and image_url is None:
-        typer.echo("Please provide either a filename or an image-url.")
-        raise typer.Exit(code=1)
-
+        typer.echo(ctx.get_help())
+        raise typer.Exit(code=0)
+    
     if filename is not None and image_url is not None:
         typer.echo("Please provide either a filename or an image-url, but not both.")
         raise typer.Exit(code=1)
