@@ -59,9 +59,18 @@ def main(
         image = image_url  # str (URL)
 
     output_file_path = str(out_filename) if out_filename is not None else None
-    palette = extract_colors(
-        image=image, palette_size=n, sort_mode=sort_by.value, mode=mode.value, alpha_mask_threshold=alpha_mask_threshold
-    )
+    try:
+        palette = extract_colors(
+            image=image,
+            palette_size=n,
+            sort_mode=sort_by.value,
+            mode=mode.value,
+            alpha_mask_threshold=alpha_mask_threshold,
+        )
+    except ValueError as e:
+        typer.echo(str(e))
+        raise typer.Exit(code=1)
+
     palette.to_csv(filename=output_file_path, frequency=True, stdout=stdout, colorspace=colorspace.value)
     if display_colors:
         palette.display()

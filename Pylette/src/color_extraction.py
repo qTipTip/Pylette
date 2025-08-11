@@ -85,12 +85,17 @@ def extract_colors(
     alpha_mask = arr[:, :, 3] <= alpha_mask_threshold
     valid_pixels = arr[~alpha_mask]
 
+    if len(valid_pixels) == 0:
+        raise ValueError(
+            f"No valid pixels remain after applying alpha mask with threshold {alpha_mask_threshold}. "
+            f"Try using a lower alpha-mask-threshold value or check if your image has transparency."
+        )
+
     match mode:
         case "KM":
             colors = k_means_extraction(valid_pixels, height, width, palette_size)
         case "MC":
             colors = median_cut_extraction(valid_pixels, height, width, palette_size)
-
     if sort_mode == "luminance":
         colors.sort(key=lambda c: c.luminance, reverse=False)
     else:

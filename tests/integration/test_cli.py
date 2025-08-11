@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from typer.testing import CliRunner
 
 from Pylette.cmd import pylette_app
@@ -25,17 +27,17 @@ def test_cli_filename_nonexistent():
     assert result.exit_code == 1
 
 
-def test_cli_image_url(test_image_as_url):
+def test_cli_image_url(test_image_as_url: str):
     result = runner.invoke(pylette_app, ["--image-url", test_image_as_url])
     assert result.exit_code == 0
 
 
-def test_cli_image_path(test_image_path_as_str):
+def test_cli_image_path(test_image_path_as_str: str):
     result = runner.invoke(pylette_app, ["--filename", test_image_path_as_str])
     assert result.exit_code == 0
 
 
-def test_cli_all_options(test_image_path_as_str, tmp_path):
+def test_cli_all_options(test_image_path_as_str: str, tmp_path: Path):
     tmp_output_file = tmp_path / "output.csv"
 
     result = runner.invoke(
@@ -66,3 +68,9 @@ def test_cli_all_options(test_image_path_as_str, tmp_path):
 def test_pylette_help():
     result = runner.invoke(pylette_app, ["--help"])
     assert result.exit_code == 0
+
+
+def test_alpha_mask_filters_all_pixels(test_image_path_as_str: str):
+    result = runner.invoke(pylette_app, ["--filename", test_image_path_as_str, "--alpha-mask-threshold", "255"])
+    assert result.exit_code == 1
+    assert "No valid pixels remain after applying alpha mask" in result.stdout
