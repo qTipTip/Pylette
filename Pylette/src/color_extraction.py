@@ -13,7 +13,7 @@ from Pylette.src.extractors.k_means import k_means_extraction
 from Pylette.src.extractors.median_cut import median_cut_extraction
 from Pylette.src.palette import Palette
 
-ImageType_T: TypeAlias = Union["os.PathLike[Any]", bytes, NDArray[float], str]
+ImageType_T: TypeAlias = Union["os.PathLike[Any]", bytes, NDArray[float], str, Image]
 
 
 class ImageType(str, Enum):
@@ -21,6 +21,7 @@ class ImageType(str, Enum):
     BYTES = "bytes"
     ARRAY = "array"
     URL = "url"
+    PIL = "pil"
     NONE = "none"
 
 
@@ -35,6 +36,8 @@ def _parse_image_type(image: ImageType_T) -> ImageType:
     ImageType: The type of the input image.
     """
     match image:
+        case Image.Image():
+            image_type = ImageType.PIL
         case np.ndarray():
             image_type = ImageType.ARRAY
         case os.PathLike():
@@ -97,6 +100,8 @@ def extract_colors(
             img_obj = request_image(image)
         case ImageType.ARRAY:
             img_obj = Image.fromarray(image)
+        case ImageType.PIL:
+            img_obj = image
         case ImageType.NONE:
             raise ValueError(f"Unable to parse image source. Got image type {type(image)}")
 
