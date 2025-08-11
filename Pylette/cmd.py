@@ -37,12 +37,17 @@ def main(
     out_filename: pathlib.Path | None = None,
     display_colors: bool = False,
     colorspace: ColorSpace = ColorSpace.rgb,
-    alpha_mask_threshold: int | None = typer.Option(None, min=0, max=255, help="Alpha threshold for transparent image masking (0-255). Pixels with alpha below this value are excluded."),
+    alpha_mask_threshold: int | None = typer.Option(
+        None,
+        min=0,
+        max=255,
+        help="Alpha threshold for transparent image masking (0-255). Pixels with alpha below this value are excluded.",
+    ),
 ):
     if filename is None and image_url is None:
         typer.echo(ctx.get_help())
         raise typer.Exit(code=0)
-    
+
     if filename is not None and image_url is not None:
         typer.echo("Please provide either a filename or an image-url, but not both.")
         raise typer.Exit(code=1)
@@ -54,7 +59,9 @@ def main(
         image = image_url
 
     output_file_path = str(out_filename) if out_filename is not None else None
-    palette = extract_colors(image=image, palette_size=n, sort_mode=sort_by.value, mode=mode.value, alpha_mask_threshold=alpha_mask_threshold)
+    palette = extract_colors(
+        image=image, palette_size=n, sort_mode=sort_by.value, mode=mode.value, alpha_mask_threshold=alpha_mask_threshold
+    )
     palette.to_csv(filename=output_file_path, frequency=True, stdout=stdout, colorspace=colorspace.value)
     if display_colors:
         palette.display()
