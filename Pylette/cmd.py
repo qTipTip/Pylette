@@ -52,11 +52,9 @@ def main(
         typer.echo("Please provide either a filename or an image-url, but not both.")
         raise typer.Exit(code=1)
 
-    # Type-safe image selection - guaranteed to be non-None due to validation above
     if filename is not None:
         image = filename  # Path
     else:
-        # image_url is guaranteed to be non-None by validation above
         assert image_url is not None
         image = image_url  # str (URL)
 
