@@ -139,5 +139,6 @@ class Palette:
             return [self.colors[i] for i in indices]
         else:
             raise ValueError(f"Invalid mode: {mode}. Must be 'frequency' or 'uniform'.")
+
     def __str__(self):
         return "".join(["({}, {}, {}, {}) \n".format(c.rgb[0], c.rgb[1], c.rgb[2], c.freq) for c in self.colors])

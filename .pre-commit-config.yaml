@@ -6,27 +6,23 @@ repos:
         exclude: ^mkdocs\.yml$
       - id: end-of-file-fixer
       - id: trailing-whitespace
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    # Ruff version.
-    rev: v0.5.0
+  - repo: local
     hooks:
-      # Run the linter.
-      - id: ruff
-        args:
-          - --config=pyproject.toml
-          - --fix
-      # Run the formatter.
+      - id: ruff-check
+        name: ruff check
+        entry: uv run ruff check --config=pyproject.toml --fix
+        language: system
+        types: [python]
+        require_serial: false
       - id: ruff-format
-  -   repo: https://github.com/pre-commit/mirrors-mypy
-      rev: 'v1.10.0'  # Use the sha / tag you want to point at
-      hooks:
-      -   id: mypy
-          args:
-            - --show-error-codes
-            - --pretty
-            - --warn-redundant-casts
-            - --check-untyped-defs
-            - --ignore-missing-imports
-            - --disallow-any-generics
-            - --disallow-subclassing-any
-            - --no-implicit-optional
+        name: ruff format
+        entry: uv run ruff format
+        language: system
+        types: [python]
+        require_serial: false
+      - id: pyright
+        name: pyright
+        entry: uv run pyright
+        language: system
+        types: [python]
+        require_serial: false

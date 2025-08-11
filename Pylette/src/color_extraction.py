@@ -1,5 +1,4 @@
 import urllib.parse
-from enum import Enum
 from io import BytesIO
 from pathlib import Path
 from typing import Literal
@@ -12,14 +11,6 @@ from Pylette.src.extractors.k_means import k_means_extraction
 from Pylette.src.extractors.median_cut import median_cut_extraction
 from Pylette.src.palette import Palette
 from Pylette.src.types import ImageInput, PILImage
-
-class ImageType(str, Enum):
-    PATH = "path"
-    BYTES = "bytes"
-    ARRAY = "array"
-    URL = "url"
-    PIL = "pil"
-    NONE = "none"
 
 
 def _is_url(image_str: str) -> bool:
@@ -43,20 +34,19 @@ def _normalize_image_input(image: ImageInput) -> PILImage:
             return Image.open(image)
     elif isinstance(image, bytes):
         return Image.open(BytesIO(image))
-    elif hasattr(image, '__array__'):  # More general check for array-like objects
+    elif hasattr(image, "__array__"):  # More general check for array-like objects
         return Image.fromarray(image)
     else:
         raise TypeError(f"Unsupported image type: {type(image)}")
-
 
 
 def extract_colors(
     image: ImageInput,
     palette_size: int = 5,
     resize: bool = True,
-    mode: Literal['KM', 'MC'] = "KM",
-    sort_mode: Literal['luminance', 'frequency'] | None = None,
-    alpha_mask_threshold: int | None = None
+    mode: Literal["KM", "MC"] = "KM",
+    sort_mode: Literal["luminance", "frequency"] | None = None,
+    alpha_mask_threshold: int | None = None,
 ) -> Palette:
     """
     Extracts a set of 'palette_size' colors from the given image.
@@ -95,12 +85,11 @@ def extract_colors(
     alpha_mask = arr[:, :, 3] <= alpha_mask_threshold
     valid_pixels = arr[~alpha_mask]
 
-    if mode == "KM":
-        colors = k_means_extraction(valid_pixels, height, width, palette_size)
-    elif mode == "MC":
-        colors = median_cut_extraction(valid_pixels, height, width, palette_size)
-    else:
-        raise NotImplementedError("Extraction mode not implemented")
+    match mode:
+        case "KM":
+            colors = k_means_extraction(valid_pixels, height, width, palette_size)
+        case "MC":
+            colors = median_cut_extraction(valid_pixels, height, width, palette_size)
 
     if sort_mode == "luminance":
         colors.sort(key=lambda c: c.luminance, reverse=False)

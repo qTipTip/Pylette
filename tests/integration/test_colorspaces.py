@@ -42,17 +42,17 @@ def test_palette_invariants_with_image_path(
     )
 
     assert len(palette) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette)}"
-    assert (
-        palette.number_of_colors == palette_size
-    ), f"Expected {palette_size} colors in palette, got {palette.number_of_colors}"
+    assert palette.number_of_colors == palette_size, (
+        f"Expected {palette_size} colors in palette, got {palette.number_of_colors}"
+    )
     assert len(palette.colors) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette.colors)}"
-    assert (
-        palette.colors[0].freq >= palette.colors[-1].freq
-    ), "Expected colors to be sorted by frequency in descending order"
+    assert palette.colors[0].freq >= palette.colors[-1].freq, (
+        "Expected colors to be sorted by frequency in descending order"
+    )
     assert palette.colors[0].freq > 0.0, "Expected the most frequent color to have a frequency greater than 0.0"
-    assert (
-        palette.colors[0].freq <= 1.0
-    ), "Expected the most frequent color to have a frequency less than or equal to 1.0"
+    assert palette.colors[0].freq <= 1.0, (
+        "Expected the most frequent color to have a frequency less than or equal to 1.0"
+    )
 
     assert_approx_equal(
         sum(c.freq for c in palette.colors),
@@ -75,17 +75,17 @@ def test_palette_invariants_with_image_pathlike(test_image_path_as_pathlike, pal
     )
 
     assert len(palette) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette)}"
-    assert (
-        palette.number_of_colors == palette_size
-    ), f"Expected {palette_size} colors in palette, got {palette.number_of_colors}"
+    assert palette.number_of_colors == palette_size, (
+        f"Expected {palette_size} colors in palette, got {palette.number_of_colors}"
+    )
     assert len(palette.colors) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette.colors)}"
-    assert (
-        palette.colors[0].freq >= palette.colors[-1].freq
-    ), "Expected colors to be sorted by frequency in descending order"
+    assert palette.colors[0].freq >= palette.colors[-1].freq, (
+        "Expected colors to be sorted by frequency in descending order"
+    )
     assert palette.colors[0].freq > 0.0, "Expected the most frequent color to have a frequency greater than 0.0"
-    assert (
-        palette.colors[0].freq <= 1.0
-    ), "Expected the most frequent color to have a frequency less than or equal to 1.0"
+    assert palette.colors[0].freq <= 1.0, (
+        "Expected the most frequent color to have a frequency less than or equal to 1.0"
+    )
 
     assert_approx_equal(
         sum(c.freq for c in palette.colors),
@@ -108,17 +108,17 @@ def test_palette_invariants_with_image_bytes(test_image_as_bytes, palette_size, 
     )
 
     assert len(palette) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette)}"
-    assert (
-        palette.number_of_colors == palette_size
-    ), f"Expected {palette_size} colors in palette, got {palette.number_of_colors}"
+    assert palette.number_of_colors == palette_size, (
+        f"Expected {palette_size} colors in palette, got {palette.number_of_colors}"
+    )
     assert len(palette.colors) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette.colors)}"
-    assert (
-        palette.colors[0].freq >= palette.colors[-1].freq
-    ), "Expected colors to be sorted by frequency in descending order"
+    assert palette.colors[0].freq >= palette.colors[-1].freq, (
+        "Expected colors to be sorted by frequency in descending order"
+    )
     assert palette.colors[0].freq > 0.0, "Expected the most frequent color to have a frequency greater than 0.0"
-    assert (
-        palette.colors[0].freq <= 1.0
-    ), "Expected the most frequent color to have a frequency less than or equal to 1.0"
+    assert palette.colors[0].freq <= 1.0, (
+        "Expected the most frequent color to have a frequency less than or equal to 1.0"
+    )
 
     assert_approx_equal(
         sum(c.freq for c in palette.colors),
@@ -141,17 +141,17 @@ def test_palette_invariants_with_PIL_image(test_image_from_PIL, palette_size, ex
     )
 
     assert len(palette) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette)}"
-    assert (
-        palette.number_of_colors == palette_size
-    ), f"Expected {palette_size} colors in palette, got {palette.number_of_colors}"
+    assert palette.number_of_colors == palette_size, (
+        f"Expected {palette_size} colors in palette, got {palette.number_of_colors}"
+    )
     assert len(palette.colors) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette.colors)}"
-    assert (
-        palette.colors[0].freq >= palette.colors[-1].freq
-    ), "Expected colors to be sorted by frequency in descending order"
+    assert palette.colors[0].freq >= palette.colors[-1].freq, (
+        "Expected colors to be sorted by frequency in descending order"
+    )
     assert palette.colors[0].freq > 0.0, "Expected the most frequent color to have a frequency greater than 0.0"
-    assert (
-        palette.colors[0].freq <= 1.0
-    ), "Expected the most frequent color to have a frequency less than or equal to 1.0"
+    assert palette.colors[0].freq <= 1.0, (
+        "Expected the most frequent color to have a frequency less than or equal to 1.0"
+    )
 
     assert_approx_equal(
         sum(c.freq for c in palette.colors),
@@ -174,17 +174,17 @@ def test_palette_invariants_with_opencv(test_image_from_opencv, palette_size, ex
     )
 
     assert len(palette) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette)}"
-    assert (
-        palette.number_of_colors == palette_size
-    ), f"Expected {palette_size} colors in palette, got {palette.number_of_colors}"
+    assert palette.number_of_colors == palette_size, (
+        f"Expected {palette_size} colors in palette, got {palette.number_of_colors}"
+    )
     assert len(palette.colors) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette.colors)}"
-    assert (
-        palette.colors[0].freq >= palette.colors[-1].freq
-    ), "Expected colors to be sorted by frequency in descending order"
+    assert palette.colors[0].freq >= palette.colors[-1].freq, (
+        "Expected colors to be sorted by frequency in descending order"
+    )
     assert palette.colors[0].freq > 0.0, "Expected the most frequent color to have a frequency greater than 0.0"
-    assert (
-        palette.colors[0].freq <= 1.0
-    ), "Expected the most frequent color to have a frequency less than or equal to 1.0"
+    assert palette.colors[0].freq <= 1.0, (
+        "Expected the most frequent color to have a frequency less than or equal to 1.0"
+    )
 
     assert_approx_equal(
         sum(c.freq for c in palette.colors),
@@ -207,17 +207,17 @@ def test_palette_invariants_with_image_url(test_image_as_url, palette_size, extr
     )
 
     assert len(palette) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette)}"
-    assert (
-        palette.number_of_colors == palette_size
-    ), f"Expected {palette_size} colors in palette, got {palette.number_of_colors}"
+    assert palette.number_of_colors == palette_size, (
+        f"Expected {palette_size} colors in palette, got {palette.number_of_colors}"
+    )
     assert len(palette.colors) == palette_size, f"Expected {palette_size} colors in palette, got {len(palette.colors)}"
-    assert (
-        palette.colors[0].freq >= palette.colors[-1].freq
-    ), "Expected colors to be sorted by frequency in descending order"
+    assert palette.colors[0].freq >= palette.colors[-1].freq, (
+        "Expected colors to be sorted by frequency in descending order"
+    )
     assert palette.colors[0].freq > 0.0, "Expected the most frequent color to have a frequency greater than 0.0"
-    assert (
-        palette.colors[0].freq <= 1.0
-    ), "Expected the most frequent color to have a frequency less than or equal to 1.0"
+    assert palette.colors[0].freq <= 1.0, (
+        "Expected the most frequent color to have a frequency less than or equal to 1.0"
+    )
 
     assert_approx_equal(
         sum(c.freq for c in palette.colors),

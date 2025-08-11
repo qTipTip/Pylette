@@ -5,6 +5,7 @@ import typer
 
 from Pylette import extract_colors
 
+
 class ExtractionMode(str, Enum):
     KM = "KM"
     MC = "MC"

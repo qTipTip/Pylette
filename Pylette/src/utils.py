@@ -3,6 +3,7 @@ from numpy.typing import ArrayLike
 
 from Pylette.src.types import ColorArray
 
+
 class ColorBox:
     """
     Represents a box in the RGBA color space, with associated attributes, used in the Median Cut algorithm.
@@ -27,6 +28,7 @@ class ColorBox:
         """
         self.min_channel: ColorArray = np.min(self.colors[:, :3], axis=0)
         self.max_channel: ColorArray = np.max(self.colors[:, :3], axis=0)
+
     def __lt__(self, other: "ColorBox") -> bool:
         """
         Compares two ColorBoxes based on their volume.
@@ -75,6 +77,7 @@ class ColorBox:
 
         avg_color = np.append(avg_rgb, avg_alpha)
         return np.round(avg_color).astype(np.uint8)
+
     @property
     def volume(self) -> int:
         """
