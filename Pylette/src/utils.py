@@ -1,6 +1,7 @@
 import numpy as np
-from numpy.typing import ArrayLike, NDArray
+from numpy.typing import ArrayLike
 
+from Pylette.src.types import ColorArray
 
 class ColorBox:
     """
@@ -24,9 +25,8 @@ class ColorBox:
         """
         Calculates the minimum and maximum values for each color channel in the ColorBox.
         """
-        self.min_channel: NDArray[np.uint8] = np.min(self.colors[:, :3], axis=0)
-        self.max_channel: NDArray[np.uint8] = np.max(self.colors[:, :3], axis=0)
-
+        self.min_channel: ColorArray = np.min(self.colors[:, :3], axis=0)
+        self.max_channel: ColorArray = np.max(self.colors[:, :3], axis=0)
     def __lt__(self, other: "ColorBox") -> bool:
         """
         Compares two ColorBoxes based on their volume.
@@ -56,12 +56,12 @@ class ColorBox:
         Returns:
             int: The index of the dominant color channel.
         """
-        diff: NDArray[np.uint8] = self.max_channel - self.min_channel
+        diff: ColorArray = self.max_channel - self.min_channel
         dominant_channel = np.argmax(diff)
         return int(dominant_channel)
 
     @property
-    def average(self) -> NDArray[np.uint8]:
+    def average(self) -> ColorArray:
         """
         Calculates the average color contained in the ColorBox.
 
@@ -74,8 +74,7 @@ class ColorBox:
             raise ValueError("Invalid number of channels in average color.")
 
         avg_color = np.append(avg_rgb, avg_alpha)
-        return np.round(avg_color)
-
+        return np.round(avg_color).astype(np.uint8)
     @property
     def volume(self) -> int:
         """
@@ -84,7 +83,7 @@ class ColorBox:
         Returns:
             int: The volume of the ColorBox.
         """
-        diff: NDArray[np.uint8] = self.max_channel - self.min_channel
+        diff: ColorArray = self.max_channel - self.min_channel
         return np.prod(diff).item()
 
     def split(self) -> list["ColorBox"]:

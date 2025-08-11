@@ -115,7 +115,7 @@ class Palette:
                         palette_file.write(",{}".format(color.freq))
                     palette_file.write("\n")
 
-    def random_color(self, N, mode="frequency"):
+    def random_color(self, N: int, mode: str = "frequency") -> list[Color]:
         """
         Returns N random colors from the palette, either using the frequency of each color, or choosing uniformly.
 
@@ -128,11 +128,16 @@ class Palette:
         """
 
         if mode == "frequency":
-            pdf = self.frequencies
+            # Convert to numpy-compatible format for weighted selection
+            colors_array = np.array(range(len(self.colors)))
+            indices = np.random.choice(colors_array, size=N, p=self.frequencies)
+            return [self.colors[i] for i in indices]
         elif mode == "uniform":
-            pdf = None
-
-        return np.random.choice(self.colors, size=N, p=pdf)
-
+            # Uniform selection without weights
+            colors_array = np.array(range(len(self.colors)))
+            indices = np.random.choice(colors_array, size=N)
+            return [self.colors[i] for i in indices]
+        else:
+            raise ValueError(f"Invalid mode: {mode}. Must be 'frequency' or 'uniform'.")
     def __str__(self):
         return "".join(["({}, {}, {}, {}) \n".format(c.rgb[0], c.rgb[1], c.rgb[2], c.freq) for c in self.colors])
