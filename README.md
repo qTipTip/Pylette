@@ -95,8 +95,8 @@ from Pylette import extract_colors
 
 # Extract colors from a transparent PNG, ignoring pixels with alpha < 128
 palette = extract_colors(
-    image='transparent_image.png', 
-    palette_size=10, 
+    image='transparent_image.png',
+    palette_size=10,
     alpha_mask_threshold=128
 )
 ```

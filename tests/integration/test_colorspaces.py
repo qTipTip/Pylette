@@ -1,10 +1,10 @@
 import pathlib
 from typing import Literal
 
-from PIL import Image
 import cv2
 import pytest
 from numpy.testing import assert_approx_equal
+from PIL import Image
 
 from Pylette.src.color_extraction import extract_colors
 
@@ -13,6 +13,7 @@ from Pylette.src.color_extraction import extract_colors
 def test_image_from_opencv():
     test_image = pathlib.Path(__file__).parent.parent / "data/test_image.png"
     return cv2.imread(str(test_image.absolute().resolve()))
+
 
 @pytest.fixture
 def test_image_from_PIL():
@@ -30,7 +31,9 @@ def test_kmean_extracted_palette(test_image_path_as_str: str):
     "extraction_mode",
     ["KM", "MC"],
 )
-def test_palette_invariants_with_image_path(test_image_path_as_str: str, palette_size: int, extraction_mode: Literal["KM", "MC"]):
+def test_palette_invariants_with_image_path(
+    test_image_path_as_str: str, palette_size: int, extraction_mode: Literal["KM", "MC"]
+):
     palette = extract_colors(
         image=test_image_path_as_str,
         palette_size=palette_size,
@@ -122,7 +125,7 @@ def test_palette_invariants_with_image_bytes(test_image_as_bytes, palette_size, 
         1.0,
         err_msg="Expected the sum of all frequencies to be 1.0",
     )
-    
+
 
 @pytest.mark.parametrize("palette_size", [1, 5, 10, 100])
 @pytest.mark.parametrize(
@@ -155,6 +158,7 @@ def test_palette_invariants_with_PIL_image(test_image_from_PIL, palette_size, ex
         1.0,
         err_msg="Expected the sum of all frequencies to be 1.0",
     )
+
 
 @pytest.mark.parametrize("palette_size", [1, 5, 10, 100])
 @pytest.mark.parametrize(
