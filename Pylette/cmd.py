@@ -52,11 +52,11 @@ def main(
         typer.echo("Please provide either a filename or an image-url, but not both.")
         raise typer.Exit(code=1)
 
-    image: pathlib.Path | str | None
-    if filename is not None and image_url is None:
-        image = filename
+    if filename is not None:
+        image = filename  # Path
     else:
-        image = image_url
+        assert image_url is not None
+        image = image_url  # str (URL)
 
     output_file_path = str(out_filename) if out_filename is not None else None
     palette = extract_colors(

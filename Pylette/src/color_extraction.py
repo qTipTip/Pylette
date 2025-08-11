@@ -1,68 +1,50 @@
-import os
 import urllib.parse
-from enum import Enum
 from io import BytesIO
-from typing import Any, Literal, TypeAlias, Union
+from pathlib import Path
+from typing import Literal
 
 import numpy as np
-import requests  # type: ignore
-from numpy.typing import NDArray
+import requests
 from PIL import Image
 
 from Pylette.src.extractors.k_means import k_means_extraction
 from Pylette.src.extractors.median_cut import median_cut_extraction
 from Pylette.src.palette import Palette
-
-ImageType_T: TypeAlias = Union["os.PathLike[Any]", bytes, NDArray[float], str, Image.Image]
-
-
-class ImageType(str, Enum):
-    PATH = "path"
-    BYTES = "bytes"
-    ARRAY = "array"
-    URL = "url"
-    PIL = "pil"
-    NONE = "none"
+from Pylette.src.types import ImageInput, PILImage
 
 
-def _parse_image_type(image: ImageType_T) -> ImageType:
-    """
-    Determines the type of the input image.
+def _is_url(image_str: str) -> bool:
+    """Check if a string is a valid URL."""
+    try:
+        result = urllib.parse.urlparse(image_str)
+        return all([result.scheme, result.netloc])
+    except Exception:
+        return False
 
-    Parameters:
-    image (ImageType_T): The input image.
 
-    Returns:
-    ImageType: The type of the input image.
-    """
-    match image:
-        case Image.Image():
-            image_type = ImageType.PIL
-        case np.ndarray():
-            image_type = ImageType.ARRAY
-        case os.PathLike():
-            image_type = ImageType.PATH
-        case bytes():
-            image_type = ImageType.BYTES
-        case str():
-            try:
-                result = urllib.parse.urlparse(image)
-                if all([result.scheme, result.netloc]):
-                    image_type = ImageType.URL
-                else:
-                    image_type = ImageType.PATH
-            except ValueError:
-                image_type = ImageType.PATH
-        case _:
-            image_type = ImageType.NONE
-    return image_type
+def _normalize_image_input(image: ImageInput) -> PILImage:
+    """Convert any valid image input to PIL Image."""
+    if isinstance(image, Image.Image):
+        return image
+    elif isinstance(image, (str, Path)):
+        image_str = str(image)
+        if _is_url(image_str):
+            return request_image(image_str)
+        else:
+            return Image.open(image)
+    elif isinstance(image, bytes):
+        return Image.open(BytesIO(image))
+    elif hasattr(image, "__array__"):  # More general check for array-like objects
+        return Image.fromarray(image)
+    else:
+        raise TypeError(f"Unsupported image type: {type(image)}")
 
 
 def extract_colors(
-    image: ImageType_T,
+    image: ImageInput,
     palette_size: int = 5,
     resize: bool = True,
-    mode: Literal["KM"] | Literal["MC"] = "KM",
+    mode: Literal["KM", "MC"] = "KM",
     sort_mode: Literal["luminance", "frequency"] | None = None,
     alpha_mask_threshold: int | None = None,
 ) -> Palette:
@@ -87,27 +69,9 @@ def extract_colors(
         >>> extract_colors(b"image_bytes", palette_size=5, resize=True, mode="KM", sort_mode="luminance")
     """
 
-    image_type = _parse_image_type(image)
-
-    match image_type:
-        case ImageType.PATH:
-            img_obj = Image.open(image)
-        case ImageType.BYTES:
-            assert isinstance(image, bytes)
-            img_obj = Image.open(BytesIO(image))
-        case ImageType.URL:
-            assert isinstance(image, str)
-            img_obj = request_image(image)
-        case ImageType.ARRAY:
-            img_obj = Image.fromarray(image)
-        case ImageType.PIL:
-            img_obj = image
-        case ImageType.NONE:
-            raise ValueError(f"Unable to parse image source. Got image type {type(image)}")
-
-    # Convert to RGBA
+    # Normalize input to PIL Image and convert to RGBA
+    img_obj = _normalize_image_input(image)
     img = img_obj.convert("RGBA")
-
     # open the image
     if resize:
         img = img.resize((256, 256))
@@ -121,12 +85,11 @@ def extract_colors(
     alpha_mask = arr[:, :, 3] <= alpha_mask_threshold
     valid_pixels = arr[~alpha_mask]
 
-    if mode == "KM":
-        colors = k_means_extraction(valid_pixels, height, width, palette_size)
-    elif mode == "MC":
-        colors = median_cut_extraction(valid_pixels, height, width, palette_size)
-    else:
-        raise NotImplementedError("Extraction mode not implemented")
+    match mode:
+        case "KM":
+            colors = k_means_extraction(valid_pixels, height, width, palette_size)
+        case "MC":
+            colors = median_cut_extraction(valid_pixels, height, width, palette_size)
 
     if sort_mode == "luminance":
         colors.sort(key=lambda c: c.luminance, reverse=False)
