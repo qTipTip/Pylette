@@ -13,7 +13,7 @@ from Pylette.src.extractors.k_means import k_means_extraction
 from Pylette.src.extractors.median_cut import median_cut_extraction
 from Pylette.src.palette import Palette
 
-ImageType_T: TypeAlias = Union["os.PathLike[Any]", bytes, NDArray[float], str, Image]
+ImageType_T: TypeAlias = Union["os.PathLike[Any]", bytes, NDArray[float], str, Image.Image]
 
 
 class ImageType(str, Enum):
