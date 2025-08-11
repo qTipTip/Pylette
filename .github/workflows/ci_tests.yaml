@@ -29,5 +29,9 @@ jobs:
           key: venv-${{ hashFiles('uv.lock') }}
       - name: Install the project dependencies
         run: uv sync --extra dev
+      - name: Install pyright
+        run: uv tool install pyright
+      - name: Run type checking
+        run: uv run pyright
       - name: Run the automated tests (for example)
         run: uv run pytest -v

@@ -40,9 +40,6 @@ packages = ["Pylette"]
 
 [project.optional-dependencies]
 dev = [
-    "mypy>=1.10.0",
-    "types-requests>=2.32.0.20240602",
-    "types-pillow>=10.2.0.20240520",
     "pre-commit>=3.7.1",
     "pytest>=8.2.2",
     "opencv-python>=4.10.0.84",
@@ -52,9 +49,32 @@ dev = [
     "mkdocs-glightbox>=0.4.0",
     "requests-mock>=1.12.1",
 ]
-
 [project.scripts]
 pylette = "Pylette.cmd:main_typer"
+
+[tool.pyright]
+include = ["Pylette"]
+exclude = ["tests"]
+typeCheckingMode = "strict"
+reportMissingImports = false
+reportMissingTypeStubs = false
+reportUnknownVariableType = false
+reportUnknownMemberType = false
+reportUnknownArgumentType = false
+reportUnknownParameterType = false
+reportUnusedImport = true
+reportUnusedClass = true
+reportUnusedFunction = true
+reportUnusedVariable = true
+reportDuplicateImport = true
+reportOptionalSubscript = true
+reportOptionalMemberAccess = true
+reportOptionalCall = true
+reportOptionalIterable = true
+reportOptionalContextManager = true
+reportOptionalOperand = true
+reportTypedDictNotRequiredAccess = false
+pythonVersion = "3.10"
 
 [build-system]
 requires = ["hatchling"]
