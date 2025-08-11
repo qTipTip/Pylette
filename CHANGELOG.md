@@ -10,13 +10,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Released
 
-## 4.2.0 - 08/11/2025
+## 4.3.0 - 11/08/2025
+
+### Added
+
+• Added `types.py` file containing custom type definitions
+
+### Changed
+
+• Replaced mypy with pyright for type checking
+• Updated and improved type annotations
+• Replaced pre-commit hooks with local tools
+
+### Fixed
+
+• Fixed an issue with np.argmax and ColorBox not implementing the __array__ protocol, improving NumPy compatibility
+
+## 4.2.0 - 11/08/2025
 
 ### Added
 
 - Added support for `PIL.Image` type in `extract_colors`.
 
-## 4.1.0 - 4/7/2025
+## 4.1.0 - 04/07/2025
 
 ### Added
 
