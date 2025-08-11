@@ -25,9 +25,8 @@ class MedianCutExtractor(ColorExtractorBase):
         valid_pixel_count = arr.shape[0]
         boxes = [ColorBox(arr)]
         while len(boxes) < palette_size:
-            largest_box_idx = np.argmax(boxes)  # type: ignore
+            largest_box_idx = np.argmax([box.size for box in boxes])
             boxes = boxes[:largest_box_idx] + boxes[largest_box_idx].split() + boxes[largest_box_idx + 1 :]
-
         return [Color(tuple(map(int, box.average)), box.pixel_count / valid_pixel_count) for box in boxes]
 
 

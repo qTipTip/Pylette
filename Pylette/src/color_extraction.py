@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Literal
 
 import numpy as np
-import requests  # type: ignore
+import requests
 from PIL import Image
 
 from Pylette.src.extractors.k_means import k_means_extraction
