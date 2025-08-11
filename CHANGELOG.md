@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Released
 
+## 4.2.0 - 08/11/2025
+
+### Added
+
+- Added support for `PIL.Image` type in `extract_colors`.
+
 ## 4.1.0 - 4/7/2025
 
 ### Added

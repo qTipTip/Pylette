@@ -1,6 +1,6 @@
 [project]
 name = "pylette"
-version = "4.1.0"
+version = "4.2.0"
 description = "A Python library for extracting color palettes from images."
 authors = [
     {name = "Ivar Stangeby"}
