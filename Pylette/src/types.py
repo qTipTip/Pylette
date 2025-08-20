@@ -5,6 +5,7 @@ This module contains all the type aliases and protocols used throughout the Pyle
 to ensure type safety and consistency.
 """
 
+from enum import Enum
 from pathlib import Path
 from typing import Any, Protocol, TypeAlias, TypedDict
 
@@ -46,6 +47,12 @@ RGBATuple: TypeAlias = tuple[int, int, int, int]
 ColorTuple: TypeAlias = RGBTuple | RGBATuple
 
 
+class ExtractionMethod(str, Enum):
+    MC = "MedianCut"
+    KM = "KMeans"
+
+
 # Palette types
 class PaletteMetaData(TypedDict):
     image_source: str
+    extraction_method: ExtractionMethod

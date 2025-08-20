@@ -5,11 +5,7 @@ from typing import Annotated, List
 import typer
 
 from Pylette.src.color_extraction import batch_extract_colors
-
-
-class ExtractionMode(str, Enum):
-    KM = "KM"
-    MC = "MC"
+from Pylette.src.types import ExtractionMethod
 
 
 class SortBy(str, Enum):
@@ -31,7 +27,7 @@ def main(
     image_sources: Annotated[
         List[str], typer.Argument(help="A list of paths / directories / URLs pointing to images.")
     ],  # These can be paths or URLs
-    mode: ExtractionMode = ExtractionMode.KM,
+    mode: ExtractionMethod = ExtractionMethod.KM,
     n: int = 5,
     sort_by: SortBy = SortBy.luminance,
     stdout: bool = True,
@@ -51,7 +47,7 @@ def main(
             images=image_sources,
             palette_size=n,
             sort_mode=sort_by.value,
-            mode=mode.value,
+            mode=mode,
             alpha_mask_threshold=alpha_mask_threshold,
         )
     except ValueError as e:

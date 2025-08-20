@@ -10,7 +10,7 @@ from PIL import Image
 from Pylette.src.extractors.k_means import k_means_extraction
 from Pylette.src.extractors.median_cut import median_cut_extraction
 from Pylette.src.palette import Palette
-from Pylette.src.types import ImageInput, PaletteMetaData, PILImage
+from Pylette.src.types import ExtractionMethod, ImageInput, PaletteMetaData, PILImage
 
 
 def _is_url(image_str: str) -> bool:
@@ -44,7 +44,7 @@ def batch_extract_colors(
     images: Sequence[ImageInput],
     palette_size: int = 5,
     resize: bool = True,
-    mode: Literal["KM", "MC"] = "KM",
+    mode: ExtractionMethod = ExtractionMethod.KM,
     sort_mode: Literal["luminance", "frequency"] | None = None,
     alpha_mask_threshold: int | None = None,
     max_workers: int | None = None,
@@ -69,7 +69,7 @@ def extract_colors(
     image: ImageInput,
     palette_size: int = 5,
     resize: bool = True,
-    mode: Literal["KM", "MC"] = "KM",
+    mode: ExtractionMethod = ExtractionMethod.KM,
     sort_mode: Literal["luminance", "frequency"] | None = None,
     alpha_mask_threshold: int | None = None,
 ) -> Palette:
@@ -117,16 +117,18 @@ def extract_colors(
         )
 
     match mode:
-        case "KM":
+        case ExtractionMethod.KM:
             colors = k_means_extraction(valid_pixels, height, width, palette_size)
-        case "MC":
+        case ExtractionMethod.MC:
             colors = median_cut_extraction(valid_pixels, height, width, palette_size)
-    if sort_mode == "luminance":
-        colors.sort(key=lambda c: c.luminance, reverse=False)
-    else:
-        colors.sort(reverse=True)
 
-    return Palette(colors, metadata=PaletteMetaData(image_source=str(image)))
+    if colors:
+        if sort_mode == "luminance":
+            colors.sort(key=lambda c: c.luminance, reverse=False)
+        else:
+            colors.sort(reverse=True)
+
+    return Palette(colors, metadata=PaletteMetaData(image_source=str(image), extraction_method=mode))
 
 
 def request_image(image_url: str) -> Image.Image:
