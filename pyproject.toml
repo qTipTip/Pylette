@@ -82,3 +82,8 @@ pythonVersion = "3.10"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "importtime-waterfall>=1.0.0",
+]

@@ -2,7 +2,6 @@ import colorsys
 from typing import Literal, cast
 
 import numpy as np
-from PIL import Image
 
 # Weights for calculating luminance
 luminance_weights = np.array([0.2126, 0.7152, 0.0722])
@@ -33,6 +32,9 @@ class Color(object):
         w (int): Width of the window in pixels.
         h (int): Height of the window in pixels.
         """
+
+        from PIL import Image
+
         img = Image.new("RGBA", size=(w, h), color=self.rgba)
         img.show()
 

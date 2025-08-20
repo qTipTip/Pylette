@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import Literal
 
 import numpy as np
-import requests
 from PIL import Image
 
 from Pylette.src.extractors.k_means import k_means_extraction
@@ -117,6 +116,8 @@ def request_image(image_url: str) -> Image.Image:
     Raises:
         ValueError: If the URL does not point to a valid image.
     """
+
+    import requests
     response = requests.get(image_url)
     # Check if the request was successful and content type is an image
     if response.status_code == 200 and "image" in response.headers.get("Content-Type", ""):
