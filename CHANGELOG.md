@@ -6,18 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-# Unreleased
+# Released
 
-## Changed
+## 4.4.0 - 20/08/2025
+
+### Changed
 
 - Raise a ValueError if there are no pixels left after alpha channel masking.
 
-## Fixed
+### Fixed
 
 - Local imports improve startup speed for CLI based usage, especially when not
 requiring K Means extraction.
-
-# Released
 
 ## 4.3.0 - 11/08/2025
 
