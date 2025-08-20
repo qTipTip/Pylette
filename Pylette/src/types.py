@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Protocol, TypeAlias, TypedDict
 
 import numpy as np
+from cv2.typing import MatLike
 from numpy.typing import NDArray
 from PIL import Image
 
@@ -31,10 +32,11 @@ PathLikeImage: TypeAlias = str | Path
 URLImage: TypeAlias = str  # URLs are strings but semantically different
 BytesImage: TypeAlias = bytes
 ArrayImage: TypeAlias = NDArray[np.uint8]  # Properly typed array
+CV2Image: TypeAlias = MatLike
 PILImage: TypeAlias = Image.Image
 
 # Main union type - more restrictive and logical
-ImageInput: TypeAlias = PathLikeImage | URLImage | BytesImage | ArrayImage | PILImage
+ImageInput: TypeAlias = PathLikeImage | URLImage | BytesImage | ArrayImage | PILImage | CV2Image
 
 # Color array types
 ColorArray: TypeAlias = NDArray[np.uint8]  # For RGB/RGBA color data
