@@ -1,16 +1,66 @@
 import urllib.parse
-from concurrent.futures import ThreadPoolExecutor
+from collections import deque
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from io import BytesIO
 from pathlib import Path
 from typing import Literal, Sequence
 
 import numpy as np
 from PIL import Image
+from rich.console import RenderableType
+from rich.progress import BarColumn, Progress, ProgressColumn, Task, TextColumn, TimeElapsedColumn
+from rich.table import Table
+from rich.text import Text
 
+from Pylette.src.color import Color
 from Pylette.src.extractors.k_means import k_means_extraction
 from Pylette.src.extractors.median_cut import median_cut_extraction
 from Pylette.src.palette import Palette
 from Pylette.src.types import ExtractionMethod, ImageInput, PaletteMetaData, PILImage
+
+
+class RecentlyCompletedColumn(ProgressColumn):
+    def __init__(self, num_items: int = 5, max_text_width: int = 20, max_num_preview_colors: int = 6) -> None:
+        self.max_items = num_items
+        self.max_name_width = max_text_width
+        self.items = deque(maxlen=self.max_items)
+        self.num_preview_colors = max_num_preview_colors
+
+        super().__init__()
+
+    def add_completed_task(self, task_name: str, colors: list[Color]) -> None:
+        # Truncate name if too long
+        display_name = task_name
+        if len(display_name) < self.max_name_width:
+            display_name = task_name[:-3] + "..."
+
+        self.items.append(
+            {
+                "name": display_name,
+                "colors": colors[: self.num_preview_colors],
+            }
+        )
+
+    def render(self, task: Task) -> RenderableType:
+        table = Table.grid(padding=(0, 1))
+        table.add_column(justify="left", width=self.max_name_width)  # Task name
+        table.add_column(justify="left")  # Palette dots
+
+        # Add each recent task as a row (most recent first)
+        for task_info in reversed(list(self.items)):
+            task_name = task_info["name"]
+            colors = task_info["colors"]
+
+            # Create colored dots for palette
+            dots_text = Text()
+            for c in colors:
+                r, g, b = c.rgb
+                color = f"rgb({r},{g},{b})"
+                dots_text.append("●", style=color)
+
+            table.add_row(task_name, dots_text)
+
+        return table
 
 
 def _is_url(image_str: str) -> bool:
@@ -49,8 +99,6 @@ def batch_extract_colors(
     alpha_mask_threshold: int | None = None,
     max_workers: int | None = None,
 ) -> list[Palette]:
-    thread_pool_executor = ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix="pylette")
-
     def thread_fn(image: ImageInput):
         return extract_colors(
             image=image,
@@ -61,8 +109,30 @@ def batch_extract_colors(
             alpha_mask_threshold=alpha_mask_threshold,
         )
 
-    futures = thread_pool_executor.map(thread_fn, images)
-    return list(futures)
+    results: list[Palette] = []
+
+    recent_column = RecentlyCompletedColumn(num_items=5, max_num_preview_colors=palette_size)
+    progress = Progress(
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
+        TextColumn("({task.completed}/{task.total})"),
+        TimeElapsedColumn(),
+        recent_column,
+    )
+    with ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix="pylette") as executor:
+        futures = [executor.submit(thread_fn, image) for image in images]
+
+        with progress:
+            task_id = progress.add_task("Extracting colors...", total=len(images))
+            for future in as_completed(futures):
+                r = future.result()
+                results.append(r)
+
+                recent_column.add_completed_task(r.metadata["image_source"] if r.metadata else "", colors=r.colors)
+                progress.update(task_id=task_id, advance=1)
+
+    return results
 
 
 def extract_colors(

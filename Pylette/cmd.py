@@ -40,6 +40,9 @@ def main(
         max=255,
         help="Alpha threshold for transparent image masking (0-255). Pixels with alpha below this value are excluded.",
     ),
+    num_threads: int | None = typer.Option(
+        None, min=1, help="Number of threads used for batch extraction of color palettes"
+    ),
 ):
     output_file_path = str(out_filename) if out_filename is not None else None
     try:
@@ -49,6 +52,7 @@ def main(
             sort_mode=sort_by.value,
             mode=mode,
             alpha_mask_threshold=alpha_mask_threshold,
+            max_workers=num_threads,
         )
     except ValueError as e:
         typer.echo(str(e))
