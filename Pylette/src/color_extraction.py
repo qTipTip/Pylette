@@ -1,5 +1,4 @@
 import urllib.parse
-from collections import deque
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from io import BytesIO
 from pathlib import Path
@@ -7,18 +6,12 @@ from typing import Literal, Sequence
 
 import numpy as np
 from PIL import Image
-from rich.console import RenderableType
-from rich.progress import BarColumn, Progress, ProgressColumn, Task, TextColumn, TimeElapsedColumn
-from rich.table import Table
-from rich.text import Text
 
-from Pylette.src.cli_utils import PyletteProgress, pylette_progress_bar
-from Pylette.src.color import Color
+from Pylette.src.cli_utils import PyletteProgress
 from Pylette.src.extractors.k_means import k_means_extraction
 from Pylette.src.extractors.median_cut import median_cut_extraction
 from Pylette.src.palette import Palette
 from Pylette.src.types import ExtractionMethod, ImageInput, PaletteMetaData, PILImage
-
 
 
 def _is_url(image_str: str) -> bool:
@@ -68,19 +61,26 @@ def batch_extract_colors(
         )
 
     results: list[Palette] = []
-    
+    exceptions: list[BaseException] = []
     with ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix="pylette") as executor:
         futures = [executor.submit(thread_fn, image) for image in images]
 
-        with PyletteProgress() as progress:
+        with PyletteProgress(palette_size=palette_size) as progress:
             task_id = progress.add_task("Extracting colors...", total=len(images))
             task_number = 1
             for future in as_completed(futures):
-                r = future.result()
-                results.append(r)
-                progress.mark_task_complete(task_number=task_number, task_id=task_id, completed_task_name=r.metadata["image_source"] if r.metadata else "", palette_colors=r.colors)
-
-                task_number+=1
+                try:
+                    r = future.result()
+                    results.append(r)
+                    progress.mark_task_complete(
+                        task_number=task_number,
+                        task_id=task_id,
+                        completed_task_name=r.metadata["image_source"] if r.metadata else "",
+                        palette_colors=r.colors,
+                    )
+                except Exception as e:
+                    exceptions.append(e)
+                task_number += 1
 
     return results
 
