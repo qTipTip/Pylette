@@ -1,6 +1,6 @@
 import pathlib
 from enum import Enum
-from typing import List
+from typing import Annotated, List
 
 import typer
 
@@ -26,10 +26,11 @@ class ColorSpace(str, Enum):
 pylette_app = typer.Typer()
 
 
-@pylette_app.command()
+@pylette_app.command(no_args_is_help=True)
 def main(
-    ctx: typer.Context,
-    image_sources: List[str],  # These can be paths or URLs
+    image_sources: Annotated[
+        List[str], typer.Argument(help="A list of paths / directories / URLs pointing to images.")
+    ],  # These can be paths or URLs
     mode: ExtractionMode = ExtractionMode.KM,
     n: int = 5,
     sort_by: SortBy = SortBy.luminance,
@@ -44,10 +45,6 @@ def main(
         help="Alpha threshold for transparent image masking (0-255). Pixels with alpha below this value are excluded.",
     ),
 ):
-    if not image_sources:
-        typer.echo(ctx.get_help())
-        raise typer.Exit(code=0)
-
     output_file_path = str(out_filename) if out_filename is not None else None
     try:
         palettes = batch_extract_colors(
@@ -65,10 +62,6 @@ def main(
         palette.to_csv(filename=output_file_path, frequency=True, stdout=stdout, colorspace=colorspace.value)
         if display_colors:
             palette.display()
-
-
-def docs():
-    typer.launch("https://qtiptip.github.io/Pylette/")
 
 
 def main_typer() -> None:
