@@ -30,7 +30,7 @@ class MedianCutExtractor(ColorExtractorBase):
         return [Color(tuple(map(int, box.average)), box.pixel_count / valid_pixel_count) for box in boxes]
 
 
-def median_cut_extraction(arr: np.ndarray, height: int, width: int, palette_size: int) -> list[Color]:
+def median_cut_extraction(arr: NDArray[NP_T], height: int, width: int, palette_size: int) -> list[Color]:
     """
     Extracts a color palette using the median cut algorithm.
 
