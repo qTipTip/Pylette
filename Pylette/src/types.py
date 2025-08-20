@@ -6,7 +6,7 @@ to ensure type safety and consistency.
 """
 
 from pathlib import Path
-from typing import Any, Protocol, TypeAlias
+from typing import Any, Protocol, TypeAlias, TypedDict
 
 import numpy as np
 from numpy.typing import NDArray
@@ -44,3 +44,8 @@ IntArray: TypeAlias = NDArray[np.integer[Any]]  # For integer arrays
 RGBTuple: TypeAlias = tuple[int, int, int]
 RGBATuple: TypeAlias = tuple[int, int, int, int]
 ColorTuple: TypeAlias = RGBTuple | RGBATuple
+
+
+# Palette types
+class PaletteMetaData(TypedDict):
+    image_source: str

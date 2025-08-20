@@ -4,10 +4,11 @@ import numpy as np
 from PIL import Image
 
 from Pylette.src.color import Color
+from Pylette.src.types import PaletteMetaData
 
 
 class Palette:
-    def __init__(self, colors: list[Color]):
+    def __init__(self, colors: list[Color], metadata: PaletteMetaData | None = None):
         """
         Initializes a color palette with a list of Color objects.
 
@@ -18,6 +19,7 @@ class Palette:
         self.colors = colors
         self.frequencies = [c.freq for c in colors]
         self.number_of_colors = len(colors)
+        self.metadata = metadata
 
     def _generate_palette_image(self, w: int = 50, h: int = 50) -> Image.Image:
         """
@@ -104,6 +106,7 @@ class Palette:
         """
 
         if stdout:
+            print(self.metadata)
             for color in self.colors:
                 print(",".join(map(str, color.get_colors(colorspace))))
 

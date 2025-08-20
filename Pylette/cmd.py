@@ -1,9 +1,10 @@
 import pathlib
 from enum import Enum
+from typing import List
 
 import typer
 
-from Pylette import extract_colors
+from Pylette.src.color_extraction import batch_extract_colors
 
 
 class ExtractionMode(str, Enum):
@@ -28,8 +29,7 @@ pylette_app = typer.Typer()
 @pylette_app.command()
 def main(
     ctx: typer.Context,
-    filename: pathlib.Path | None = None,
-    image_url: str | None = None,
+    image_sources: List[str],  # These can be paths or URLs
     mode: ExtractionMode = ExtractionMode.KM,
     n: int = 5,
     sort_by: SortBy = SortBy.luminance,
@@ -44,24 +44,14 @@ def main(
         help="Alpha threshold for transparent image masking (0-255). Pixels with alpha below this value are excluded.",
     ),
 ):
-    if filename is None and image_url is None:
+    if not image_sources:
         typer.echo(ctx.get_help())
         raise typer.Exit(code=0)
 
-    if filename is not None and image_url is not None:
-        typer.echo("Please provide either a filename or an image-url, but not both.")
-        raise typer.Exit(code=1)
-
-    if filename is not None:
-        image = filename  # Path
-    else:
-        assert image_url is not None
-        image = image_url  # str (URL)
-
     output_file_path = str(out_filename) if out_filename is not None else None
     try:
-        palette = extract_colors(
-            image=image,
+        palettes = batch_extract_colors(
+            images=image_sources,
             palette_size=n,
             sort_mode=sort_by.value,
             mode=mode.value,
@@ -71,9 +61,10 @@ def main(
         typer.echo(str(e))
         raise typer.Exit(code=1)
 
-    palette.to_csv(filename=output_file_path, frequency=True, stdout=stdout, colorspace=colorspace.value)
-    if display_colors:
-        palette.display()
+    for palette in palettes:
+        palette.to_csv(filename=output_file_path, frequency=True, stdout=stdout, colorspace=colorspace.value)
+        if display_colors:
+            palette.display()
 
 
 def docs():

@@ -1,7 +1,8 @@
 import urllib.parse
+from concurrent.futures import ThreadPoolExecutor
 from io import BytesIO
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Sequence
 
 import numpy as np
 from PIL import Image
@@ -9,7 +10,7 @@ from PIL import Image
 from Pylette.src.extractors.k_means import k_means_extraction
 from Pylette.src.extractors.median_cut import median_cut_extraction
 from Pylette.src.palette import Palette
-from Pylette.src.types import ImageInput, PILImage
+from Pylette.src.types import ImageInput, PaletteMetaData, PILImage
 
 
 def _is_url(image_str: str) -> bool:
@@ -37,6 +38,31 @@ def _normalize_image_input(image: ImageInput) -> PILImage:
         return Image.fromarray(image)
     else:
         raise TypeError(f"Unsupported image type: {type(image)}")
+
+
+def batch_extract_colors(
+    images: Sequence[ImageInput],
+    palette_size: int = 5,
+    resize: bool = True,
+    mode: Literal["KM", "MC"] = "KM",
+    sort_mode: Literal["luminance", "frequency"] | None = None,
+    alpha_mask_threshold: int | None = None,
+    max_workers: int | None = None,
+) -> list[Palette]:
+    thread_pool_executor = ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix="pylette")
+
+    def thread_fn(image: ImageInput):
+        return extract_colors(
+            image=image,
+            palette_size=palette_size,
+            resize=resize,
+            mode=mode,
+            sort_mode=sort_mode,
+            alpha_mask_threshold=alpha_mask_threshold,
+        )
+
+    futures = thread_pool_executor.map(thread_fn, images)
+    return list(futures)
 
 
 def extract_colors(
@@ -100,7 +126,7 @@ def extract_colors(
     else:
         colors.sort(reverse=True)
 
-    return Palette(colors)
+    return Palette(colors, metadata=PaletteMetaData(image_source=str(image)))
 
 
 def request_image(image_url: str) -> Image.Image:
