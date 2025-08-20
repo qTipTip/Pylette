@@ -1,22 +1,24 @@
 import pathlib
 from typing import Literal
 
-import cv2
 import pytest
 from numpy.testing import assert_approx_equal
-from PIL import Image
 
 from Pylette.src.color_extraction import extract_colors
 
 
 @pytest.fixture
 def test_image_from_opencv():
+    import cv2
+
     test_image = pathlib.Path(__file__).parent.parent / "data/test_image.png"
     return cv2.imread(str(test_image.absolute().resolve()))
 
 
 @pytest.fixture
 def test_image_from_PIL():
+    from PIL import Image
+
     test_image = pathlib.Path(__file__).parent.parent / "data/test_image.png"
     return Image.open(test_image)
 

@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.10"
 resolution-markers = [
     "python_full_version >= '3.12' and sys_platform == 'darwin'",
@@ -206,6 +206,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/f1/70/7703c29685631f5a7590aa73f1f1d3fa9a380e654b86af429e0934a32f7d/idna-3.10.tar.gz", hash = "sha256:12f65c9b470abda6dc35cf8e63cc574b1c52b11df2c86030af0ac09b01b13ea9", size = 190490, upload-time = "2024-09-15T18:07:39.745Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/76/c6/c88e154df9c4e1a2a66ccf0005a88dfb2650c1dffb6f5ce603dfbd452ce3/idna-3.10-py3-none-any.whl", hash = "sha256:946d195a0d259cbba61165e88e65941f16e9b36ea6ddb97f00452bae8b1287d3", size = 70442, upload-time = "2024-09-15T18:07:37.964Z" },
+]
+
+[[package]]
+name = "importtime-waterfall"
+version = "1.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0c/f8/0d33c4d69344cb55116a656ef103b499f69a5f33f748ac0cd32c297cc955/importtime_waterfall-1.0.0.tar.gz", hash = "sha256:8140eb8e1774a39d426df82220f36b17d78ccbbba2adc75466979a315395f391", size = 5544, upload-time = "2019-02-28T06:47:06.29Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1d/5c/a299cf9f5748cc13f506934e2fa3ea5bbc9584946c0a773dc5104cb770f2/importtime_waterfall-1.0.0-py2.py3-none-any.whl", hash = "sha256:e65dbc4d23f0fd698ca3e8cfe767937b86f697e11790ac672aa86109792b3595", size = 5925, upload-time = "2019-02-28T06:47:04.954Z" },
 ]
 
 [[package]]
@@ -780,6 +789,11 @@ dev = [
     { name = "ruff" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "importtime-waterfall" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "mkdocs", extras = ["python"], marker = "extra == 'dev'", specifier = ">=1.6.0" },
@@ -799,6 +813,9 @@ requires-dist = [
     { name = "typer", specifier = ">=0.12.5" },
 ]
 provides-extras = ["dev"]
+
+[package.metadata.requires-dev]
+dev = [{ name = "importtime-waterfall", specifier = ">=1.0.0" }]
 
 [[package]]
 name = "pymdown-extensions"

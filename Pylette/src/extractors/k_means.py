@@ -1,6 +1,5 @@
 import numpy as np
 from numpy.typing import NDArray
-from sklearn.cluster import KMeans
 
 from Pylette.src.color import Color
 from Pylette.src.extractors.protocol import NP_T, ColorExtractorBase
@@ -20,6 +19,9 @@ class KMeansExtractor(ColorExtractorBase):
         Returns:
             list[Color]: A palette of colors sorted by frequency.
         """
+
+        from sklearn.cluster import KMeans
+
         arr = np.squeeze(arr)
         model = KMeans(n_clusters=palette_size, n_init="auto", init="k-means++", random_state=2024)
         labels = model.fit_predict(arr)
