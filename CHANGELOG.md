@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Raise a ValueError if there are no pixels left after alpha channel masking.
 
+## Fixed
+
+- Local imports improve startup speed for CLI based usage, especially when not
+requiring K Means extraction.
+
 # Released
 
 ## 4.3.0 - 11/08/2025
