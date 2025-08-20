@@ -118,6 +118,7 @@ def request_image(image_url: str) -> Image.Image:
     """
 
     import requests
+
     response = requests.get(image_url)
     # Check if the request was successful and content type is an image
     if response.status_code == 200 and "image" in response.headers.get("Content-Type", ""):
