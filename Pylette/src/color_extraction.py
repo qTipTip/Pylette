@@ -70,6 +70,21 @@ def _get_source_type_from_image_input(image: ImageInput) -> SourceType:
     return source_type
 
 
+def _get_descriptive_image_source(image: ImageInput, pil_image: PILImage) -> str:
+    """Generate a descriptive image source string for metadata."""
+    if isinstance(image, Image.Image):
+        return f"<pil_image: {pil_image.size[0]}x{pil_image.size[1]} {pil_image.mode}>"
+    elif isinstance(image, (str, Path)):
+        return str(image)
+    elif isinstance(image, bytes):
+        return f"<bytes: {len(image):,} bytes>"
+    elif hasattr(image, "__array__"):
+        arr = np.asarray(image)
+        return f"<numpy_array: shape={arr.shape}>"
+    else:
+        return f"<unknown: {type(image).__name__}>"
+
+
 def batch_extract_colors(
     images: Sequence[ImageInput],
     palette_size: int = 5,
@@ -205,7 +220,7 @@ def extract_colors(
 
     # Build comprehensive metadata
     metadata = PaletteMetaData(
-        image_source=str(image),
+        image_source=_get_descriptive_image_source(image, img_obj),
         source_type=source_type,
         extraction_params=ExtractionParams(
             palette_size=palette_size,
