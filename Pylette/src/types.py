@@ -58,6 +58,7 @@ class ExtractionMethod(str, Enum):
     KM = "KMeans"
 
 
+# PaletteMetaData Types
 class SourceType(str, Enum):
     FILE_PATH = "file_path"
     URL = "url"
@@ -91,7 +92,6 @@ class ProcessingStats(TypedDict):
     timestamp: str
 
 
-# Palette types
 class PaletteMetaData(TypedDict):
     image_source: str
     source_type: SourceType
