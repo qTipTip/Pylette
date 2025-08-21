@@ -4,10 +4,11 @@ import numpy as np
 from PIL import Image
 
 from Pylette.src.color import Color
+from Pylette.src.types import ExtractionParams, ImageInfo, PaletteMetaData, ProcessingStats, SourceType
 
 
 class Palette:
-    def __init__(self, colors: list[Color]):
+    def __init__(self, colors: list[Color], metadata: PaletteMetaData | None = None):
         """
         Initializes a color palette with a list of Color objects.
 
@@ -18,6 +19,7 @@ class Palette:
         self.colors = colors
         self.frequencies = [c.freq for c in colors]
         self.number_of_colors = len(colors)
+        self.metadata = metadata
 
     def _generate_palette_image(self, w: int = 50, h: int = 50) -> Image.Image:
         """
@@ -104,6 +106,7 @@ class Palette:
         """
 
         if stdout:
+            print(self.metadata)
             for color in self.colors:
                 print(",".join(map(str, color.get_colors(colorspace))))
 
@@ -142,3 +145,29 @@ class Palette:
 
     def __str__(self):
         return "".join(["({}, {}, {}, {}) \n".format(c.rgb[0], c.rgb[1], c.rgb[2], c.freq) for c in self.colors])
+
+    # Convenient metadata accessors
+    @property
+    def image_source(self) -> str | None:
+        """Get the image source from metadata."""
+        return self.metadata.get("image_source") if self.metadata else None
+
+    @property
+    def source_type(self) -> SourceType | None:
+        """Get the source type from metadata."""
+        return self.metadata.get("source_type") if self.metadata else None
+
+    @property
+    def extraction_params(self) -> ExtractionParams | None:
+        """Get the extraction parameters from metadata."""
+        return self.metadata.get("extraction_params") if self.metadata else None
+
+    @property
+    def image_info(self) -> ImageInfo | None:
+        """Get the image information from metadata."""
+        return self.metadata.get("image_info") if self.metadata else None
+
+    @property
+    def processing_stats(self) -> ProcessingStats | None:
+        """Get the processing statistics from metadata."""
+        return self.metadata.get("processing_stats") if self.metadata else None
