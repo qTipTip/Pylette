@@ -5,14 +5,18 @@ This module contains all the type aliases and protocols used throughout the Pyle
 to ensure type safety and consistency.
 """
 
+from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Protocol, TypeAlias, TypedDict
+from typing import TYPE_CHECKING, Any, Protocol, TypeAlias, TypedDict
 
 import numpy as np
 from cv2.typing import MatLike
 from numpy.typing import NDArray
 from PIL import Image
+
+if TYPE_CHECKING:
+    from Pylette.src.palette import Palette
 
 
 class ImageLike(Protocol):
@@ -58,3 +62,23 @@ class ExtractionMethod(str, Enum):
 class PaletteMetaData(TypedDict):
     image_source: str
     extraction_method: ExtractionMethod
+
+
+# Batch extraction types
+@dataclass
+class BatchResult:
+    source: ImageInput
+    result: "Palette | None" = None
+    exception: Exception | None = None
+
+    @property
+    def success(self) -> bool:
+        return self.result is not None
+
+    @property
+    def palette(self) -> "Palette | None":
+        return self.result
+
+    @property
+    def error(self) -> "Exception | None":
+        return self.exception

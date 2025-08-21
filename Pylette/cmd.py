@@ -4,8 +4,9 @@ from typing import Annotated, List
 
 import typer
 
+from Pylette.src.cli_utils import PyletteProgress
 from Pylette.src.color_extraction import batch_extract_colors
-from Pylette.src.types import ExtractionMethod
+from Pylette.src.types import BatchResult, ExtractionMethod
 
 
 class SortBy(str, Enum):
@@ -45,23 +46,63 @@ def main(
     ),
 ):
     output_file_path = str(out_filename) if out_filename is not None else None
-    try:
-        palettes = batch_extract_colors(
+
+    # Set up progress bar for CLI
+    with PyletteProgress(palette_size=n) as progress:
+        task_id = progress.add_task("Extracting colors...", total=len(image_sources))
+
+        def progress_callback(task_number: int, result: BatchResult):
+            if result.success and result.palette:
+                progress.mark_task_complete(
+                    task_number=task_number,
+                    task_id=task_id,
+                    completed_task_name=result.palette.metadata["image_source"] if result.palette.metadata else "",
+                    palette_colors=result.palette.colors,
+                )
+            else:
+                progress.update(task_id, advance=1)
+
+        results = batch_extract_colors(
             images=image_sources,
             palette_size=n,
             sort_mode=sort_by.value,
             mode=mode,
             alpha_mask_threshold=alpha_mask_threshold,
             max_workers=num_threads,
+            progress_callback=progress_callback,
         )
-    except ValueError as e:
-        typer.echo(str(e))
-        raise typer.Exit(code=1)
 
-    for palette in palettes:
-        palette.to_csv(filename=output_file_path, frequency=True, stdout=stdout, colorspace=colorspace.value)
-        if display_colors:
-            palette.display()
+    successful = [r for r in results if r.success]
+    failed = [r for r in results if not r.success]
+    for success in successful:
+        if success.palette is not None:
+            success.palette.to_csv(
+                filename=output_file_path, frequency=True, stdout=stdout, colorspace=colorspace.value
+            )
+            if display_colors:
+                success.palette.display()
+
+    if failed:
+        print_extraction_summary(successful, failed)
+
+    # If we have no successful extractions, return with code 1
+    if not successful:
+        raise typer.Exit(1)
+    # Otherwise, if we have some failures, return with code 2
+    elif failed:
+        raise typer.Exit(2)
+
+
+def print_extraction_summary(successful: list[BatchResult], failed: list[BatchResult]):
+    total = len(successful) + len(failed)
+
+    if successful:
+        typer.secho(f"✓ Processed {len(successful)}/{total} images successfully", fg=typer.colors.GREEN)
+    if failed:
+        typer.secho(f"✗ {len(failed)} images failed:", fg=typer.colors.RED)
+        for result in failed:
+            error_msg = str(result.error)
+            typer.secho(f"{result.source}: {error_msg}", err=True)
 
 
 def main_typer() -> None:

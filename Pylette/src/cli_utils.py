@@ -38,7 +38,7 @@ class RecentlyCompletedDisplay:
         table.add_column(width=self.max_name_width)  # Task name
         table.add_column()  # Palette dots
 
-        # Add each recent task as a row (most recent first)
+        # Add each recent task as a row
         table.add_row("Number", "Image Source", "Preview")
         for task_info in list(self.items):
             task_name = task_info["name"]
@@ -69,7 +69,7 @@ class PyletteProgress(Progress):
         *args,  # pyright: ignore[reportMissingParameterType]
         **kwargs,  # pyright: ignore[reportMissingParameterType]
     ):
-        # Create the recently completed column
+        # Create the recently completed display
         self.recently_completed = RecentlyCompletedDisplay(
             num_items=max_recent_items, max_text_width=max_name_width, max_num_preview_colors=palette_size
         )
@@ -96,14 +96,8 @@ class PyletteProgress(Progress):
         yield ""
         yield self.recently_completed.render()
 
-    def add_completed_item(self, task_number: int, task_name: str, colors: list[Color]) -> None:
-        """Add a completed item to the recent completions display"""
-        self.recently_completed.add_completed_task(task_number, task_name, colors)
-
     def mark_task_complete(
         self, task_id: TaskID, task_number: int, completed_task_name: str, palette_colors: list[Color]
     ) -> None:
         self.update(task_id, advance=1)
-
-        # Add to recent completions
-        self.add_completed_item(task_number=task_number, task_name=completed_task_name, colors=palette_colors)
+        self.recently_completed.add_completed_task(task_number, completed_task_name, palette_colors)

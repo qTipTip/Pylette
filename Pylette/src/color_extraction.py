@@ -2,16 +2,15 @@ import urllib.parse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from io import BytesIO
 from pathlib import Path
-from typing import Literal, Sequence
+from typing import Callable, Literal, Sequence
 
 import numpy as np
 from PIL import Image
 
-from Pylette.src.cli_utils import PyletteProgress
 from Pylette.src.extractors.k_means import k_means_extraction
 from Pylette.src.extractors.median_cut import median_cut_extraction
 from Pylette.src.palette import Palette
-from Pylette.src.types import ExtractionMethod, ImageInput, PaletteMetaData, PILImage
+from Pylette.src.types import BatchResult, ExtractionMethod, ImageInput, PaletteMetaData, PILImage
 
 
 def _is_url(image_str: str) -> bool:
@@ -49,7 +48,15 @@ def batch_extract_colors(
     sort_mode: Literal["luminance", "frequency"] | None = None,
     alpha_mask_threshold: int | None = None,
     max_workers: int | None = None,
-) -> list[Palette]:
+    progress_callback: Callable[[int, BatchResult], None] | None = None,
+) -> list[BatchResult]:
+    """Extract colors from multiple images in parallel.
+
+    Args:
+        progress_callback: Optional callback function called when each task completes.
+                         Receives (task_number, result) as arguments.
+    """
+
     def thread_fn(image: ImageInput):
         return extract_colors(
             image=image,
@@ -60,29 +67,30 @@ def batch_extract_colors(
             alpha_mask_threshold=alpha_mask_threshold,
         )
 
-    results: list[Palette] = []
-    exceptions: list[BaseException] = []
+    results: list[BatchResult] = []
+    task_number = 1
+
     with ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix="pylette") as executor:
-        futures = [executor.submit(thread_fn, image) for image in images]
+        futures_to_image_map = {executor.submit(thread_fn, image): image for image in images}
 
-        with PyletteProgress(palette_size=palette_size) as progress:
-            task_id = progress.add_task("Extracting colors...", total=len(images))
-            task_number = 1
-            for future in as_completed(futures):
-                try:
-                    r = future.result()
-                    results.append(r)
-                    progress.mark_task_complete(
-                        task_number=task_number,
-                        task_id=task_id,
-                        completed_task_name=r.metadata["image_source"] if r.metadata else "",
-                        palette_colors=r.colors,
-                    )
-                except Exception as e:
-                    exceptions.append(e)
-                task_number += 1
+        for future in as_completed(futures_to_image_map):
+            source_image = futures_to_image_map[future]
+            try:
+                r = future.result()
+                batch_result = BatchResult(source=source_image, result=r)
+                results.append(batch_result)
+                if progress_callback:
+                    progress_callback(task_number, batch_result)
+            except Exception as e:
+                batch_result = BatchResult(source=source_image, exception=e)
+                results.append(batch_result)
+                if progress_callback:
+                    progress_callback(task_number, batch_result)
+            task_number += 1
 
-    return results
+    # Return results in original order
+    source_to_result = {r.source: r for r in results}
+    return [source_to_result[source] for source in images]
 
 
 def extract_colors(
