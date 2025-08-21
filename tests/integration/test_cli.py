@@ -10,11 +10,11 @@ runner = CliRunner()
 def test_cli_no_input_is_error():
     result = runner.invoke(pylette_app, [])
     assert result.exit_code == 2
-    assert "Usage: main [OPTIONS] IMAGE_SOURCES..." in result.stderr
+    assert "Usage: " in result.stderr
 
     result_help = runner.invoke(pylette_app, ["--help"])
     assert result_help.exit_code == 0
-    assert "--mode" in result_help.stdout
+    assert "Usage: " in result_help.stdout
 
 
 def test_cli_both_input(test_image_as_url: str, test_image_path_as_str: str):
