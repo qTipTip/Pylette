@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image
 
 from Pylette.src.color import Color
-from Pylette.src.types import ExtractionParams, ImageInfo, PaletteMetaData, ProcessingStats, SourceType
+from Pylette.src.types import ColorSpace, ExtractionParams, ImageInfo, PaletteMetaData, ProcessingStats, SourceType
 
 
 class Palette:
@@ -93,7 +93,7 @@ class Palette:
         self,
         filename: str | None = None,
         frequency: bool = True,
-        colorspace: Literal["rgb", "hsv", "hls"] = "rgb",
+        colorspace: ColorSpace = ColorSpace.RGB,
         stdout: bool = True,
     ):
         """
@@ -147,7 +147,7 @@ class Palette:
     def to_json(
         self,
         filename: str | None = None,
-        colorspace: Literal["rgb", "hsv", "hls"] = "rgb",
+        colorspace: ColorSpace = ColorSpace.RGB,
         include_metadata: bool = True,
         stdout: bool = True,
     ) -> dict[str, object] | None:
@@ -220,7 +220,7 @@ class Palette:
         self,
         filename: str,
         format: Literal["json", "csv"] = "json",
-        colorspace: Literal["rgb", "hsv", "hls"] = "rgb",
+        colorspace: ColorSpace = ColorSpace.RGB,
         include_frequency: bool = True,
         include_metadata: bool = True,
         stdout: bool = False,
