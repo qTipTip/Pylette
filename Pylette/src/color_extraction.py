@@ -1,5 +1,7 @@
+import time
 import urllib.parse
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime
 from io import BytesIO
 from pathlib import Path
 from typing import Callable, Literal, Sequence
@@ -10,7 +12,17 @@ from PIL import Image
 from Pylette.src.extractors.k_means import k_means_extraction
 from Pylette.src.extractors.median_cut import median_cut_extraction
 from Pylette.src.palette import Palette
-from Pylette.src.types import BatchResult, ExtractionMethod, ImageInput, PaletteMetaData, PILImage
+from Pylette.src.types import (
+    BatchResult,
+    ExtractionMethod,
+    ExtractionParams,
+    ImageInfo,
+    ImageInput,
+    PaletteMetaData,
+    PILImage,
+    ProcessingStats,
+    SourceType,
+)
 
 
 def _is_url(image_str: str) -> bool:
@@ -38,6 +50,24 @@ def _normalize_image_input(image: ImageInput) -> PILImage:
         return Image.fromarray(image)
     else:
         raise TypeError(f"Unsupported image type: {type(image)}")
+
+
+def _get_source_type_from_image_input(image: ImageInput) -> SourceType:
+    if isinstance(image, Image.Image):
+        source_type = SourceType.PIL_IMAGE
+    elif isinstance(image, (str, Path)):
+        image_str = str(image)
+        if _is_url(image_str):
+            source_type = SourceType.URL
+        else:
+            source_type = SourceType.FILE_PATH
+    elif isinstance(image, bytes):
+        source_type = SourceType.BYTES
+    elif hasattr(image, "__array__"):
+        source_type = SourceType.NUMPY_ARRAY
+    else:
+        source_type = SourceType.UNKNOWN
+    return source_type
 
 
 def batch_extract_colors(
@@ -122,12 +152,26 @@ def extract_colors(
         >>> extract_colors(b"image_bytes", palette_size=5, resize=True, mode="KM", sort_mode="luminance")
     """
 
+    start_time = time.time()
+
+    source_type = _get_source_type_from_image_input(image)
     # Normalize input to PIL Image and convert to RGBA
     img_obj = _normalize_image_input(image)
+    original_size = img_obj.size
     img = img_obj.convert("RGBA")
-    # open the image
+
+    # Store original image info
+    image_info = ImageInfo(
+        original_size=original_size,
+        processed_size=img.size if not resize else (256, 256),
+        format=getattr(img_obj, "format", None),
+        mode=img.mode,
+        has_alpha=img.mode in ("RGBA", "LA") or "transparency" in img_obj.info,
+    )
+
     if resize:
         img = img.resize((256, 256))
+        image_info["processed_size"] = (256, 256)
 
     width, height = img.size
     arr = np.asarray(img)
@@ -144,6 +188,7 @@ def extract_colors(
             f"Try using a lower alpha-mask-threshold value or check if your image has transparency."
         )
 
+    # Color extraction
     match mode:
         case ExtractionMethod.KM:
             colors = k_means_extraction(valid_pixels, height, width, palette_size)
@@ -156,7 +201,29 @@ def extract_colors(
         else:
             colors.sort(reverse=True)
 
-    return Palette(colors, metadata=PaletteMetaData(image_source=str(image), extraction_method=mode))
+    end_time = time.time()
+
+    # Build comprehensive metadata
+    metadata = PaletteMetaData(
+        image_source=str(image),
+        source_type=source_type,
+        extraction_params=ExtractionParams(
+            palette_size=palette_size,
+            mode=mode,
+            sort_mode=sort_mode,
+            resize=resize,
+            alpha_mask_threshold=alpha_mask_threshold,
+        ),
+        image_info=image_info,
+        processing_stats=ProcessingStats(
+            total_pixels=width * height,
+            valid_pixels=len(valid_pixels),
+            extraction_time=end_time - start_time,
+            timestamp=datetime.now().isoformat(),
+        ),
+    )
+
+    return Palette(colors, metadata=metadata)
 
 
 def request_image(image_url: str) -> Image.Image:

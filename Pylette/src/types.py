@@ -58,10 +58,46 @@ class ExtractionMethod(str, Enum):
     KM = "KMeans"
 
 
+class SourceType(str, Enum):
+    FILE_PATH = "file_path"
+    URL = "url"
+    BYTES = "bytes"
+    PIL_IMAGE = "pil_image"
+    NUMPY_ARRAY = "numpy_array"
+    CV2_IMAGE = "cv2_image"
+    UNKNOWN = "unknown"
+
+
+class ExtractionParams(TypedDict):
+    palette_size: int
+    mode: ExtractionMethod
+    sort_mode: str | None
+    resize: bool
+    alpha_mask_threshold: int | None
+
+
+class ImageInfo(TypedDict):
+    original_size: tuple[int, int]
+    processed_size: tuple[int, int]
+    format: str | None
+    mode: str
+    has_alpha: bool
+
+
+class ProcessingStats(TypedDict):
+    total_pixels: int
+    valid_pixels: int
+    extraction_time: float | None
+    timestamp: str
+
+
 # Palette types
 class PaletteMetaData(TypedDict):
     image_source: str
-    extraction_method: ExtractionMethod
+    source_type: SourceType
+    extraction_params: ExtractionParams
+    image_info: ImageInfo
+    processing_stats: ProcessingStats
 
 
 # Batch extraction types
