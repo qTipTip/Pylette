@@ -55,7 +55,7 @@ def test_cli_all_options(test_image_path_as_str: str, tmp_path: Path):
             "frequency",
             "--stdout",
             "--out-filename",
-            tmp_output_file,
+            str(tmp_output_file),
             "--no-display-colors",
             "--colorspace",
             "hsv",
