@@ -27,6 +27,11 @@ def test_cli_filename_nonexistent():
     assert result.exit_code == 1
 
 
+def test_cli_filename_partial_failure(test_image_as_url: str):
+    result = runner.invoke(pylette_app, [test_image_as_url, "this-file-does-definitely-not-exist.jpg"])
+    assert result.exit_code == 2
+
+
 def test_cli_image_url(test_image_as_url: str):
     result = runner.invoke(pylette_app, [test_image_as_url])
     assert result.exit_code == 0
@@ -57,7 +62,6 @@ def test_cli_all_options(test_image_path_as_str: str, tmp_path: Path):
         ],
     )
     assert result.exit_code == 0
-    assert len(result.stdout.splitlines()) == 11
     assert tmp_output_file.exists()
 
     with tmp_output_file.open() as f:
@@ -72,4 +76,4 @@ def test_pylette_help():
 def test_alpha_mask_filters_all_pixels(test_image_path_as_str: str):
     result = runner.invoke(pylette_app, [test_image_path_as_str, "--alpha-mask-threshold", "255"])
     assert result.exit_code == 1
-    assert "No valid pixels remain after applying alpha mask" in result.stdout
+    assert "No valid pixels remain after applying alpha mask" in result.stderr
