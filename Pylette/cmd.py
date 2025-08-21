@@ -15,11 +15,6 @@ class SortBy(str, Enum):
     luminance = "luminance"
 
 
-class ExportMode(str, Enum):
-    individual = "individual"  # One file per palette
-    combined = "combined"  # All palettes in one file
-
-
 pylette_app = typer.Typer()
 
 
