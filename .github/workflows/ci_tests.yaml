@@ -54,7 +54,7 @@ jobs:
       - name: Install package in fresh environment
         run: |
           source .smoke-test-venv/bin/activate
-          uv sync --frozen --extra dev
+          uv sync --frozen --active
       - name: Run smoke test
         run: |
           source .smoke-test-venv/bin/activate
