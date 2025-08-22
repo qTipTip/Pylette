@@ -13,14 +13,6 @@
 ![Dependabot](https://img.shields.io/badge/dependabot-enabled-025E8C?logo=dependabot&logoColor=white)
 [![DOI](https://zenodo.org/badge/145131524.svg)](https://doi.org/10.5281/zenodo.14757252)
 
-## What's New in v5.0
-
-- JSON export with metadata and hex colors
-- Batch processing of multiple images
-- Enhanced command-line interface
-- Semantic colorspace field names
-- Parallel processing support
-
 ---
 
 **Documentation**: [qtiptip.github.io/Pylette](https://qtiptip.github.io/Pylette/)
