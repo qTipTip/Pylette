@@ -236,16 +236,22 @@ class TestJSONExport:
             assert "extraction_time" in metadata["processing_stats"]
             assert "timestamp" in metadata["processing_stats"]
 
-    def test_fallback_to_csv_when_no_export_json(self, runner, test_image):
-        """Test that CLI falls back to CSV behavior when --export-json is not used."""
+    def test_clean_table_output_when_no_export_json(self, runner, test_image):
+        """Test that CLI shows clean table output when --export-json is not used."""
         result = runner.invoke(pylette_app, [test_image, "--n", "2"])
 
         assert result.exit_code == 0
-        # Should output CSV-style data to stdout
-        lines = result.stdout.strip().split("\n")
-        # Look for CSV-like output (numbers separated by commas)
-        csv_lines = [line for line in lines if "," in line and line.replace(",", "").replace(".", "").isdigit()]
-        assert len(csv_lines) > 0  # Should have some CSV output
+        # Should output clean table format
+        output = result.stdout.strip()
+
+        # Should contain table elements
+        assert "✓ Extracted 2 colors from" in output
+        assert "Hex" in output
+        assert "RGB" in output
+        assert "Frequen" in output  # May be truncated as "Frequen…"
+
+        # Should contain helpful message
+        assert "Use --export-json for structured data" in output
 
     def test_color_hex_property(self):
         """Test that Color.hex property returns correct hex values."""

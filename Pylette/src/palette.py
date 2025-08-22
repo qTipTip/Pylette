@@ -1,5 +1,4 @@
 import json
-from typing import Literal
 
 import numpy as np
 from PIL import Image
@@ -88,36 +87,6 @@ class Palette:
 
     def __len__(self) -> int:
         return self.number_of_colors
-
-    def to_csv(
-        self,
-        filename: str | None = None,
-        frequency: bool = True,
-        colorspace: ColorSpace = ColorSpace.RGB,
-        stdout: bool = True,
-    ):
-        """
-        Dumps the palette to stdout. Saves to file if filename is specified.
-
-        Parameters:
-            filename (str | None): File to dump to.
-            frequency (bool): Whether to dump the corresponding frequency of each color.
-            colorspace (Literal["rgb", "hsv", "hls"]): Color space to use.
-            stdout (bool): Whether to dump to stdout.
-        """
-
-        if stdout:
-            print(self.metadata)
-            for color in self.colors:
-                print(",".join(map(str, color.get_colors(colorspace))))
-
-        if filename is not None:
-            with open(filename, "w") as palette_file:
-                for color in self.colors:
-                    palette_file.write(",".join(map(str, color.get_colors(colorspace))))
-                    if frequency:
-                        palette_file.write(",{}".format(color.freq))
-                    palette_file.write("\n")
 
     def random_color(self, N: int, mode: str = "frequency") -> list[Color]:
         """
@@ -234,34 +203,25 @@ class Palette:
     def export(
         self,
         filename: str,
-        format: Literal["json", "csv"] = "json",
         colorspace: ColorSpace = ColorSpace.RGB,
-        include_frequency: bool = True,
         include_metadata: bool = True,
         stdout: bool = False,
     ) -> None:
         """
-        General export method that supports multiple formats with JSON as default.
+        Export palette to JSON format.
 
         Parameters:
-            filename (str): File to save to (extension will be added automatically).
-            format (Literal["json", "csv"]): Export format (default: json).
-            colorspace (Literal["rgb", "hsv", "hls"]): Color space to use.
-            include_frequency (bool): Whether to include frequency data.
-            include_metadata (bool): Whether to include metadata (JSON only).
+            filename (str): File to save to (extension will be added automatically if not present).
+            colorspace (ColorSpace): Color space to use.
+            include_metadata (bool): Whether to include metadata.
             stdout (bool): Whether to print to stdout.
         """
 
-        if format == "json":
-            json_filename = f"{filename}.json"
-            self.to_json(
-                filename=json_filename, colorspace=colorspace, include_metadata=include_metadata, stdout=stdout
-            )
-        elif format == "csv":
-            csv_filename = f"{filename}.csv"
-            self.to_csv(filename=csv_filename, frequency=include_frequency, colorspace=colorspace, stdout=stdout)
-        else:
-            raise ValueError(f"Unsupported format: {format}. Supported formats: 'json', 'csv'")
+        # Add .json extension if not present
+        if not filename.endswith(".json"):
+            filename = f"{filename}.json"
+
+        self.to_json(filename=filename, colorspace=colorspace, include_metadata=include_metadata, stdout=stdout)
 
     def __str__(self):
         return "".join(["({}, {}, {}, {}) \n".format(c.rgb[0], c.rgb[1], c.rgb[2], c.freq) for c in self.colors])
