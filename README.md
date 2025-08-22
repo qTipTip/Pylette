@@ -2,7 +2,7 @@
   <a href="https://qtiptip.github.io/Pylette/"><img src="docs/example_imgs/pylette_logo.jpg" alt="Pylette"></a>
 </p>
 <p align="center">
-    <em>Welcome to Pylette, the easy-to-use Python library for extracting color palettes from images!
+    <em>Extract color palettes from images using the command line or Python library
 </em>
 </p>
 
@@ -12,6 +12,14 @@
 [![Built with Material for MkDocs](https://img.shields.io/badge/Material_for_MkDocs-526CFE?logo=MaterialForMkDocs&logoColor=white)](https://squidfunk.github.io/mkdocs-material/)
 ![Dependabot](https://img.shields.io/badge/dependabot-enabled-025E8C?logo=dependabot&logoColor=white)
 [![DOI](https://zenodo.org/badge/145131524.svg)](https://doi.org/10.5281/zenodo.14757252)
+
+## What's New in v5.0
+
+- JSON export with metadata and hex colors
+- Batch processing of multiple images
+- Enhanced command-line interface
+- Semantic colorspace field names
+- Parallel processing support
 
 ---
 
@@ -23,17 +31,15 @@
 
 ## What is Pylette?
 
-Pylette is a powerful yet user-friendly library designed to help you extract color palettes from images. Whether you're
-working on computer graphics, visualizations, or generative art, Pylette makes it easy to create visually appealing
-color sets.
+Pylette helps you extract color palettes from images. Use the command-line interface for quick tasks or the Python library for more advanced workflows.
 
-Key features:
-
-* Extract color palettes from images
-* Support for various color modes (RGB, RGBa, HSV, etc.)
-* Alpha channel support with transparency masking
-* Random color selection from palettes
-* Command-line interface for quick palette extraction
+**Key Features:**
+- Extract palettes from single images or batch process multiple files
+- Export to JSON format with metadata and hex colors
+- Support for different colorspaces (RGB, HSV, HLS)
+- Handle transparent images with alpha channel masking
+- Fast parallel processing for multiple images
+- Rich progress display with color previews
 
 ## Getting Started
 
@@ -51,57 +57,126 @@ Or if you prefer using uv:
 uv add Pylette
 ```
 
-### Quick Start Guide
+## Command Line Usage
 
-Here's how to extract a color palette from an image and work with it in Python:
+Extract palettes from images using simple commands:
+
+```bash
+# Extract 5 colors from an image
+pylette image.jpg
+
+# Process multiple images and export to JSON files
+pylette *.jpg --export-json --output results/
+
+# Extract 8 colors in HSV colorspace
+pylette photo.png --n 8 --colorspace hsv --export-json --output colors.json
+
+# Batch process with parallel processing
+pylette images/*.png --export-json --output palettes/ --num-threads 4
+```
+
+### Export Formats
+
+Export your palettes in different formats:
+
+```bash
+# Individual JSON files for each image
+pylette *.jpg --export-json --output palettes/
+# Creates: palette_001.json, palette_002.json, etc.
+
+# Combined JSON file with all palettes
+pylette *.jpg --export-json --output all_colors.json
+
+# Traditional CSV output
+pylette image.jpg --colorspace rgb > colors.csv
+```
+
+### Common Options
+
+```bash
+# Use different extraction algorithms
+pylette image.jpg --mode MedianCut --n 6
+
+# Handle transparent images
+pylette logo.png --alpha-mask-threshold 128
+
+# Customize output
+pylette image.jpg --no-stdout --display-colors
+```
+
+## Python Library
+
+For programmatic usage and advanced workflows:
 
 ```python
 from Pylette import extract_colors
 
-palette = extract_colors(image='image.jpg', palette_size=10)
-# Access colors by index
-most_common_color = palette[0]
-least_common_color = palette[-1]
+# Basic usage
+palette = extract_colors(image='image.jpg', palette_size=8)
 
-# Get color information
-print(most_common_color.rgb)
-print(most_common_color.hls)
-print(most_common_color.hsv)
+# Access color properties
+for color in palette.colors:
+    print(f"RGB: {color.rgb}")
+    print(f"Hex: {color.hex}")
+    print(f"Frequency: {color.freq:.2%}")
 
-# Display the palette, and save the image to file
-palette.display(save_to_file=True)
+# Export to JSON with metadata
+palette.to_json(filename='palette.json', colorspace='hsv')
 
-# Or save palette image directly without displaying
-palette.save(filename='my_palette', extension='png')
-
-# Save palette's color values to CSV
-palette.to_csv(filename='color_palette.csv', frequency=True)
-
-# Pick random colors
-random_color = palette.random_color(N=1, mode='uniform')
-random_colors = palette.random_color(N=100, mode='frequency')
+# Work with different colorspaces
+for color in palette.colors:
+    print(f"RGB: {color.rgb}, HSV: {color.hsv}, Hex: {color.hex}")
 ```
 
-This will give you a palette of 10 colors, sorted by frequency.
-The image is automatically resized to 256x256 pixels for faster processing.
-See the [documentation](https://qtiptip.github.io/Pylette) for a complete list of available methods and attributes.
+The Python library provides access to all CLI functionality plus additional customization options.
 
-### Working with Transparent Images
+## JSON Export Format
 
-For images with transparency (PNG files with alpha channels), you can use the `alpha_mask_threshold` parameter to exclude transparent or semi-transparent pixels:
+Pylette exports rich JSON data with semantic field names:
+
+```json
+{
+  "colors": [
+    {
+      "rgb": [142, 152, 174],
+      "hex": "#8E98AE",
+      "frequency": 0.25
+    }
+  ],
+  "palette_size": 5,
+  "colorspace": "rgb",
+  "metadata": {
+    "image_source": "photo.jpg",
+    "extraction_params": {
+      "palette_size": 5,
+      "mode": "KMeans"
+    },
+    "processing_stats": {
+      "extraction_time": 0.234
+    }
+  }
+}
+```
+
+Different colorspaces use appropriate field names:
+- RGB: `{"rgb": [255, 128, 64], "hex": "#FF8040"}`
+- HSV: `{"hsv": [0.08, 0.75, 1.0], "rgb": [255, 128, 64], "hex": "#FF8040"}`
+- HLS: `{"hls": [0.08, 0.63, 0.75], "rgb": [255, 128, 64], "hex": "#FF8040"}`
+
+## Working with Transparent Images
+
+Handle transparency in both CLI and Python:
+
+```bash
+# CLI: Exclude pixels with alpha < 128
+pylette transparent.png --alpha-mask-threshold 128
+```
 
 ```python
+# Python: Same functionality
 from Pylette import extract_colors
-
-# Extract colors from a transparent PNG, ignoring pixels with alpha < 128
-palette = extract_colors(
-    image='transparent_image.png',
-    palette_size=10,
-    alpha_mask_threshold=128
-)
+palette = extract_colors('transparent.png', alpha_mask_threshold=128)
 ```
-
-The `alpha_mask_threshold` parameter accepts values from 0-255, where pixels with alpha values below this threshold are excluded from color extraction.
 
 
 ## Command Line Interface:
