@@ -6,19 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased]
+# Released
+
+## 5.0.0 - 22/08/2025
 
 ### Added
-- JSON export functionality for palettes with `to_json()` method
-- General `export()` method supporting multiple formats (JSON, CSV) with JSON as default
-- CLI `--export-json` flag for JSON output instead of CSV to stdout
-- CLI `--output` parameter with auto-detection for individual vs combined file export
-- Smart file naming with prefix + index (`palette_001.json`) for directory exports
-- Support for combined JSON files containing multiple palettes
-- `hex` property on `Color` class, representing RGB-values in hexadecimal
-- Pylette JSON format with colorspace-specific field names (e.g., `rgb`, `hsv`, `hls`)
+- **JSON Export**: New `to_json()` method on `Palette` class for exporting palettes to JSON format
+- **Enhanced CLI Export**:
+  - `--export-json` flag for JSON output
+  - `--output` parameter supporting both individual files and combined export
+- **Batch Processing**: Process multiple images in a single CLI command with parallel processing
+- **Color Hex Representation**: `hex` property on `Color` class providing `#RRGGBB` format
+- **Palette Metadata**: Metadata including image source, extraction parameters, and processing statistics
+- **Enhanced Progress Display**: CLI shows recently extracted palettes with color previews
 
-# Released
+### Changed
+- **CLI Interface**: Removed `--filename` and `--image-url` parameters in favor of positional image arguments
+- **Batch Processing**: CLI now processes multiple image sources by default
+
+### Breaking Changes
+- CLI parameter changes: `--filename` and `--image-url` removed
+
 
 ## 4.4.0 - 20/08/2025
 
