@@ -62,33 +62,50 @@ uv add Pylette
 Extract palettes from images using simple commands:
 
 ```bash
-# Extract 5 colors from an image
+# Extract 5 colors from an image (shows clean table output)
 pylette image.jpg
 
 # Process multiple images and export to JSON files
 pylette *.jpg --export-json --output results/
 
-# Extract 8 colors in HSV colorspace
+# Extract 8 colors in HSV colorspace with structured export
 pylette photo.png --n 8 --colorspace hsv --export-json --output colors.json
 
-# Batch process with parallel processing
-pylette images/*.png --export-json --output palettes/ --num-threads 4
+# Batch process with parallel processing and table display
+pylette images/*.png --n 6 --num-threads 4
 ```
 
-### Export Formats
+**Example Output:**
+```
+✓ Extracted 5 colors from sunset.jpg
+┏━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┓
+┃ Hex      ┃ RGB             ┃ Frequency┃
+┡━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━┩
+│ #FF6B35  │ (255, 107, 53)  │    28.5% │
+│ #F7931E  │ (247, 147, 30)  │    23.2% │
+│ #FFD23F  │ (255, 210, 63)  │    18.7% │
+│ #06FFA5  │ (6, 255, 165)   │    15.4% │
+│ #4ECDC4  │ (78, 205, 196)  │    14.2% │
+└──────────┴─────────────────┴──────────┘
+```
 
-Export your palettes in different formats:
+### Export Options
+
+Control how your palettes are saved:
 
 ```bash
 # Individual JSON files for each image
 pylette *.jpg --export-json --output palettes/
-# Creates: palette_001.json, palette_002.json, etc.
+# Creates: palettes/palette_001.json, palettes/palette_002.json, etc.
 
 # Combined JSON file with all palettes
 pylette *.jpg --export-json --output all_colors.json
 
-# Traditional CSV output
-pylette image.jpg --colorspace rgb > colors.csv
+# Export with different colorspace
+pylette image.jpg --colorspace hsv --export-json --output hsv_palette.json
+
+# Suppress table output, only export JSON
+pylette *.png --export-json --output results/ --no-stdout
 ```
 
 ### Common Options
@@ -111,24 +128,52 @@ For programmatic usage and advanced workflows:
 ```python
 from Pylette import extract_colors
 
-# Basic usage
+# Extract palette with rich metadata
 palette = extract_colors(image='image.jpg', palette_size=8)
 
-# Access color properties
+# Access color properties with hex support
 for color in palette.colors:
     print(f"RGB: {color.rgb}")
     print(f"Hex: {color.hex}")
+    print(f"HSV: {color.hsv}")
     print(f"Frequency: {color.freq:.2%}")
 
-# Export to JSON with metadata
+# Export to structured JSON
 palette.to_json(filename='palette.json', colorspace='hsv')
 
-# Work with different colorspaces
-for color in palette.colors:
-    print(f"RGB: {color.rgb}, HSV: {color.hsv}, Hex: {color.hex}")
+# Access metadata
+print(f"Source: {palette.image_source}")
+print(f"Extraction time: {palette.processing_stats['extraction_time']:.2f}s")
+
+# Simple export method
+palette.export('my_colors', colorspace='hls', include_metadata=True)
 ```
 
-The Python library provides access to all CLI functionality plus additional customization options.
+### Batch Processing
+
+For processing multiple images programmatically:
+
+```python
+from Pylette import batch_extract_colors
+
+# Process multiple images with parallel processing
+results = batch_extract_colors(
+    images=['image1.jpg', 'image2.png', 'image3.jpg'],
+    palette_size=8,
+    max_workers=4,
+    mode='KMeans'
+)
+
+# Handle results
+for result in results:
+    if result.success and result.palette:
+        print(f"✓ {result.source}: {len(result.palette.colors)} colors")
+        result.palette.export(f"{result.source}_palette")
+    else:
+        print(f"✗ {result.source}: {result.error}")
+```
+
+The Python library provides full programmatic access to all CLI features plus detailed metadata and customization options.
 
 ## JSON Export Format
 
@@ -158,10 +203,28 @@ Pylette exports rich JSON data with semantic field names:
 }
 ```
 
-Different colorspaces use appropriate field names:
-- RGB: `{"rgb": [255, 128, 64], "hex": "#FF8040"}`
-- HSV: `{"hsv": [0.08, 0.75, 1.0], "rgb": [255, 128, 64], "hex": "#FF8040"}`
-- HLS: `{"hls": [0.08, 0.63, 0.75], "rgb": [255, 128, 64], "hex": "#FF8040"}`
+Different colorspaces use semantic field names:
+- **RGB**: `{"rgb": [255, 128, 64], "hex": "#FF8040", "frequency": 0.25}`
+- **HSV**: `{"hsv": [0.08, 0.75, 1.0], "rgb": [255, 128, 64], "hex": "#FF8040", "frequency": 0.25}`
+- **HLS**: `{"hls": [0.08, 0.63, 0.75], "rgb": [255, 128, 64], "hex": "#FF8040", "frequency": 0.25}`
+
+### Interactive Table Output
+
+When run without `--export-json`, Pylette displays a clean table:
+
+```
+✓ Extracted 5 colors from photo.jpg
+┏━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┓
+┃ Hex      ┃ RGB             ┃ Frequency┃
+┡━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━┩
+│ #FF8040  │ (255, 128, 64)  │    25.2% │
+│ #4080FF  │ (64, 128, 255)  │    30.1% │
+└──────────┴─────────────────┴──────────┘
+```
+
+The table automatically adapts to show the chosen colorspace (RGB, HSV, or HLS).
+
+## Working with Transparent Images
 
 ## Working with Transparent Images
 
@@ -178,10 +241,45 @@ from Pylette import extract_colors
 palette = extract_colors('transparent.png', alpha_mask_threshold=128)
 ```
 
+## Why Choose Pylette?
 
-## Command Line Interface:
+- **Clean, Visual Output**: No more raw CSV dumps - see your colors in beautiful tables
+- **Rich Metadata**: Every palette includes extraction details, timing, and image info
+- **Flexible Export**: JSON format with semantic field names for easy parsing
+- **Batch Ready**: Process hundreds of images with parallel processing and progress bars
+- **Developer Friendly**: Comprehensive Python API with full type hints
+- **Modern CLI**: Intuitive commands that guide you toward the right options
 
-Pylette also comes with a command-line interface for quick palette extraction:
+
+## CLI Reference
+
+For complete usage information:
+
+```bash
+pylette --help
+```
+
+### All Options
+
+```
+Usage: pylette [OPTIONS] IMAGE_SOURCES...
+
+Arguments:
+  IMAGE_SOURCES...  Images, URLs, or directories to process [required]
+
+Options:
+  --mode [KMeans|MedianCut]     Extraction algorithm [default: KMeans]
+  --n INTEGER                   Number of colors to extract [default: 5]
+  --sort-by [frequency|luminance]  Sort colors by [default: luminance]
+  --colorspace [rgb|hsv|hls]    Color space [default: rgb]
+  --export-json                 Export to JSON format
+  --output PATH                 Output file or directory for JSON export
+  --alpha-mask-threshold [0-255]  Alpha threshold for transparency
+  --num-threads INTEGER         Parallel processing threads
+  --display-colors             Show palette images
+  --no-stdout                  Suppress table output
+  --help                       Show help message
+```
 
 ```shell
  pylette --help

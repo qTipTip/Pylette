@@ -4,6 +4,8 @@ from enum import Enum
 from typing import Annotated, List
 
 import typer
+from rich.console import Console
+from rich.table import Table
 
 from Pylette.src.cli_utils import PyletteProgress
 from Pylette.src.color_extraction import batch_extract_colors
@@ -52,8 +54,6 @@ def main(
         typer.echo("Error: --output is required when using --export-json", err=True)
         raise typer.Exit(1)
 
-    output_file_path = str(out_filename) if out_filename is not None else None
-
     # Set up progress bar for CLI
     with PyletteProgress(palette_size=n) as progress:
         task_id = progress.add_task("Extracting colors...", total=len(image_sources))
@@ -84,11 +84,9 @@ def main(
 
     if export_json and output:
         handle_json_export(successful, output, colorspace)
-    else:
-        # Original CSV behavior
-        for success in successful:
-            if success.palette is not None:
-                success.palette.to_csv(filename=output_file_path, frequency=True, stdout=stdout, colorspace=colorspace)
+    elif stdout and successful:
+        # Show clean palette summary
+        display_palette_summary(successful, colorspace)
 
     # Display colors if requested
     if display_colors:
@@ -149,6 +147,62 @@ def handle_json_export(
             json.dump(combined_data, f, indent=2)
 
         typer.echo(f"✓ Exported {len(successful_results)} palettes to {output_path}")
+
+
+def display_palette_summary(successful_results: list[BatchResult], colorspace: ColorSpace) -> None:
+    """Display a clean summary of extracted palettes."""
+    console = Console()
+
+    for result in successful_results:
+        if result.palette is not None:
+            palette = result.palette
+
+            # Show extraction success message
+            source = result.source
+            if isinstance(source, str) and len(source) > 50:
+                source = "..." + source[-47:]  # Truncate long paths
+
+            console.print(f"\n✓ Extracted {palette.number_of_colors} colors from [bold]{source}[/bold]")
+
+            # Create color table
+            table = Table(show_header=True, header_style="bold blue")
+            table.add_column("Hex", style="bold", width=8)
+
+            # Add colorspace-specific column
+            colorspace_label = colorspace.value.upper()
+            if colorspace == ColorSpace.RGB:
+                table.add_column(f"{colorspace_label}", width=15)
+            else:
+                table.add_column(f"{colorspace_label}", width=20)
+                table.add_column("RGB", width=15)
+
+            table.add_column("Frequency", width=8, justify="right")
+
+            # Add color rows
+            for color in palette.colors:
+                hex_color = color.hex
+                frequency = f"{color.freq:.1%}"
+
+                # Get colorspace values
+                color_values = color.get_colors(colorspace)
+
+                if colorspace == ColorSpace.RGB:
+                    rgb_str = f"({int(color_values[0])}, {int(color_values[1])}, {int(color_values[2])})"
+                    table.add_row(f"[{hex_color}]{hex_color}[/{hex_color}]", rgb_str, frequency)
+                else:
+                    # For HSV/HLS, show both the colorspace values and RGB reference
+                    if colorspace == ColorSpace.HSV:
+                        cs_str = f"({color_values[0]:.2f}, {color_values[1]:.2f}, {color_values[2]:.2f})"
+                    else:  # HLS
+                        cs_str = f"({color_values[0]:.2f}, {color_values[1]:.2f}, {color_values[2]:.2f})"
+
+                    rgb_str = f"({color.rgb[0]}, {color.rgb[1]}, {color.rgb[2]})"
+                    table.add_row(f"[{hex_color}]{hex_color}[/{hex_color}]", cs_str, rgb_str, frequency)
+
+            console.print(table)
+
+    # Show helpful usage message
+    console.print("\n[dim]Use --export-json for structured data or --no-stdout to suppress output.[/dim]")
 
 
 def print_extraction_summary(successful: list[BatchResult], failed: list[BatchResult]):
