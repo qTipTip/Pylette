@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Released
 
+## 5.1.0 - 22/08/2025
+
+### Fixed
+- Added OpenCV as required dependency
+
+### Added
+- Expose the `types`-module to the user, so they can import Pylette types from `Pylette.types`.
+
 ## 5.0.1 - 22/08/2025
 
 ### Changed

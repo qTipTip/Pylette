@@ -764,11 +764,12 @@ wheels = [
 
 [[package]]
 name = "pylette"
-version = "5.0.1"
+version = "5.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.3.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "opencv-python" },
     { name = "pillow" },
     { name = "requests" },
     { name = "scikit-learn" },
@@ -801,6 +802,7 @@ requires-dist = [
     { name = "mkdocs-material", marker = "extra == 'dev'", specifier = ">=9.5.27" },
     { name = "mkdocstrings", extras = ["python"], marker = "extra == 'dev'", specifier = ">=0.25.1" },
     { name = "numpy", specifier = ">=1.26.4" },
+    { name = "opencv-python", specifier = ">=4.11.0.86" },
     { name = "opencv-python", marker = "extra == 'dev'", specifier = ">=4.10.0.84" },
     { name = "pillow", specifier = ">=9.3,<11.0" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=3.7.1" },

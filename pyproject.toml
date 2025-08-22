@@ -1,6 +1,6 @@
 [project]
 name = "pylette"
-version = "5.0.1"
+version = "5.1.0"
 description = "A Python library for extracting color palettes from images."
 authors = [
     {name = "Ivar Stangeby"}
@@ -16,9 +16,12 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed"
 ]
 dependencies = [
     "numpy>=1.26.4",
+    "opencv-python>=4.11.0.86",
     "pillow>=9.3,<11.0",
     "requests>=2.32.3",
     "scikit-learn>=1.2",
@@ -54,6 +57,11 @@ dev = [
 
 [project.scripts]
 pylette = "Pylette.cmd:main_typer"
+
+[tool.pytest.ini_options]
+testpaths = [
+  "tests"
+]
 
 [tool.pyright]
 include = ["Pylette"]
