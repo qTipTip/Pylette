@@ -1,10 +1,11 @@
+import json
 from typing import Literal
 
 import numpy as np
 from PIL import Image
 
 from Pylette.src.color import Color
-from Pylette.src.types import ExtractionParams, ImageInfo, PaletteMetaData, ProcessingStats, SourceType
+from Pylette.src.types import ColorSpace, ExtractionParams, ImageInfo, PaletteMetaData, ProcessingStats, SourceType
 
 
 class Palette:
@@ -92,7 +93,7 @@ class Palette:
         self,
         filename: str | None = None,
         frequency: bool = True,
-        colorspace: Literal["rgb", "hsv", "hls"] = "rgb",
+        colorspace: ColorSpace = ColorSpace.RGB,
         stdout: bool = True,
     ):
         """
@@ -142,6 +143,125 @@ class Palette:
             return [self.colors[i] for i in indices]
         else:
             raise ValueError(f"Invalid mode: {mode}. Must be 'frequency' or 'uniform'.")
+
+    def to_json(
+        self,
+        filename: str | None = None,
+        colorspace: ColorSpace = ColorSpace.RGB,
+        include_metadata: bool = True,
+        stdout: bool = True,
+    ) -> dict[str, object] | None:
+        """
+        Exports the palette to JSON format.
+
+        Parameters:
+            filename (str | None): File to save to. If None, returns the dictionary.
+            colorspace (Literal["rgb", "hsv", "hls"]): Color space to use.
+            include_metadata (bool): Whether to include palette metadata.
+            stdout (bool): Whether to print to stdout.
+
+        Returns:
+            dict | None: The palette data as a dictionary if filename is None.
+        """
+
+        # Build the palette data
+        palette_data: dict[str, object] = {
+            "colors": [],
+            "palette_size": self.number_of_colors,
+            "colorspace": colorspace,
+        }
+
+        colors_list = []
+        # Add color data
+        for color in self.colors:
+            color_values = color.get_colors(colorspace)
+            color_data: dict[str, object] = {
+                "frequency": float(color.freq),
+            }
+
+            # Add colorspace-specific field
+            colorspace_field = colorspace.value.lower()  # "rgb", "hsv", "hls"
+            if colorspace == ColorSpace.RGB:
+                # RGB values should be integers
+                color_data[colorspace_field] = [int(v) if isinstance(v, np.integer) else v for v in color_values]
+            else:
+                # HSV/HLS values should be floats
+                color_data[colorspace_field] = [
+                    float(v) if isinstance(v, (np.integer, np.floating)) else v for v in color_values
+                ]
+
+            # Add hex (always present, derived from RGB)
+            color_data["hex"] = color.hex
+
+            # Add RGB reference if colorspace is not RGB
+            if colorspace != ColorSpace.RGB:
+                color_data["rgb"] = [int(v) if isinstance(v, np.integer) else v for v in color.rgb]
+
+            colors_list.append(color_data)
+
+        palette_data["colors"] = colors_list
+
+        # Add metadata if requested and available
+        if include_metadata and self.metadata:
+            metadata_dict: dict[str, object] = {}
+
+            if "image_source" in self.metadata:
+                metadata_dict["image_source"] = self.metadata["image_source"]
+            if "source_type" in self.metadata:
+                metadata_dict["source_type"] = self.metadata["source_type"]
+            if "extraction_params" in self.metadata:
+                metadata_dict["extraction_params"] = self.metadata["extraction_params"]
+            if "image_info" in self.metadata:
+                metadata_dict["image_info"] = self.metadata["image_info"]
+            if "processing_stats" in self.metadata:
+                metadata_dict["processing_stats"] = self.metadata["processing_stats"]
+
+            palette_data["metadata"] = metadata_dict
+
+        # Print to stdout if requested
+        if stdout:
+            print(json.dumps(palette_data, indent=2))
+
+        # Save to file if filename provided
+        if filename is not None:
+            with open(filename, "w") as f:
+                json.dump(palette_data, f, indent=2)
+            return None
+
+        # Return data if no filename provided
+        return palette_data
+
+    def export(
+        self,
+        filename: str,
+        format: Literal["json", "csv"] = "json",
+        colorspace: ColorSpace = ColorSpace.RGB,
+        include_frequency: bool = True,
+        include_metadata: bool = True,
+        stdout: bool = False,
+    ) -> None:
+        """
+        General export method that supports multiple formats with JSON as default.
+
+        Parameters:
+            filename (str): File to save to (extension will be added automatically).
+            format (Literal["json", "csv"]): Export format (default: json).
+            colorspace (Literal["rgb", "hsv", "hls"]): Color space to use.
+            include_frequency (bool): Whether to include frequency data.
+            include_metadata (bool): Whether to include metadata (JSON only).
+            stdout (bool): Whether to print to stdout.
+        """
+
+        if format == "json":
+            json_filename = f"{filename}.json"
+            self.to_json(
+                filename=json_filename, colorspace=colorspace, include_metadata=include_metadata, stdout=stdout
+            )
+        elif format == "csv":
+            csv_filename = f"{filename}.csv"
+            self.to_csv(filename=csv_filename, frequency=include_frequency, colorspace=colorspace, stdout=stdout)
+        else:
+            raise ValueError(f"Unsupported format: {format}. Supported formats: 'json', 'csv'")
 
     def __str__(self):
         return "".join(["({}, {}, {}, {}) \n".format(c.rgb[0], c.rgb[1], c.rgb[2], c.freq) for c in self.colors])

@@ -1,7 +1,9 @@
 import colorsys
-from typing import Literal, cast
+from typing import cast
 
 import numpy as np
+
+from Pylette.src.types import ColorSpace
 
 # Weights for calculating luminance
 luminance_weights = np.array([0.2126, 0.7152, 0.0722])
@@ -50,17 +52,17 @@ class Color(object):
         """
         return self.freq < other.freq
 
-    def get_colors(self, colorspace: Literal["rgb", "hsv", "hls"] = "rgb") -> tuple[int, ...] | tuple[float, ...]:
+    def get_colors(self, colorspace: ColorSpace = ColorSpace.RGB) -> tuple[int, ...] | tuple[float, ...]:
         """
         Returns the color values in the specified color space.
 
         Parameters:
-            colorspace (Literal["rgb", "hsv", "hls"]): The color space to use.
+            colorspace (ColorSpace): The color space to use.
 
         Returns:
             tuple[int, ...] | tuple[float, ...]: The color values in the specified color space.
         """
-        colors = {"rgb": self.rgb, "hsv": self.hsv, "hls": self.hls}
+        colors = {ColorSpace.RGB: self.rgb, ColorSpace.HSV: self.hsv, ColorSpace.HLS: self.hls}
         return colors[colorspace]
 
     @property
@@ -82,6 +84,16 @@ class Color(object):
             tuple[float, float, float]: The color values in HLS color space.
         """
         return colorsys.rgb_to_hls(r=self.rgb[0] / 255, g=self.rgb[1] / 255, b=self.rgb[2] / 255)
+
+    @property
+    def hex(self) -> str:
+        """
+        Returns the color as a hexadecimal string.
+
+        Returns:
+            str: The color in hexadecimal format (e.g., "#FF5733").
+        """
+        return f"#{self.rgb[0]:02X}{self.rgb[1]:02X}{self.rgb[2]:02X}"
 
     @property
     def luminance(self) -> float:

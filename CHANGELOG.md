@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased]
+
+### Added
+- JSON export functionality for palettes with `to_json()` method
+- General `export()` method supporting multiple formats (JSON, CSV) with JSON as default
+- CLI `--export-json` flag for JSON output instead of CSV to stdout
+- CLI `--output` parameter with auto-detection for individual vs combined file export
+- Smart file naming with prefix + index (`palette_001.json`) for directory exports
+- Support for combined JSON files containing multiple palettes
+- `hex` property on `Color` class, representing RGB-values in hexadecimal
+- Pylette JSON format with colorspace-specific field names (e.g., `rgb`, `hsv`, `hls`)
+
 # Released
 
 ## 4.4.0 - 20/08/2025

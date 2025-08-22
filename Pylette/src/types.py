@@ -58,6 +58,12 @@ class ExtractionMethod(str, Enum):
     KM = "KMeans"
 
 
+class ColorSpace(str, Enum):
+    RGB = "rgb"
+    HSV = "hsv"
+    HLS = "hls"
+
+
 # PaletteMetaData Types
 class SourceType(str, Enum):
     FILE_PATH = "file_path"
