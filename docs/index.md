@@ -21,14 +21,6 @@
 
 ---
 
-## What's New in v5.0
-
-- JSON export with metadata and hex colors
-- Batch processing of multiple images
-- Enhanced command-line interface
-- Semantic colorspace field names
-- Parallel processing support
-
 ## What is Pylette?
 
 Pylette helps you extract color palettes from images. Use the command-line interface for quick tasks or the Python library for more advanced workflows.
@@ -164,7 +156,7 @@ The Python library provides full programmatic access to all CLI features plus de
 
 ## JSON Export Format
 
-Pylette exports rich JSON data with semantic field names:
+Pylette exports rich JSON data:
 
 !!! example "JSON Structure"
 
