@@ -218,8 +218,6 @@ The table automatically adapts to show the chosen colorspace (RGB, HSV, or HLS).
 
 ## Working with Transparent Images
 
-## Working with Transparent Images
-
 Handle transparency in both CLI and Python:
 
 ```bash
@@ -246,32 +244,6 @@ palette = extract_colors('transparent.png', alpha_mask_threshold=128)
 ## CLI Reference
 
 For complete usage information:
-
-```bash
-pylette --help
-```
-
-### All Options
-
-```
-Usage: pylette [OPTIONS] IMAGE_SOURCES...
-
-Arguments:
-  IMAGE_SOURCES...  Images, URLs, or directories to process [required]
-
-Options:
-  --mode [KMeans|MedianCut]     Extraction algorithm [default: KMeans]
-  --n INTEGER                   Number of colors to extract [default: 5]
-  --sort-by [frequency|luminance]  Sort colors by [default: luminance]
-  --colorspace [rgb|hsv|hls]    Color space [default: rgb]
-  --export-json                 Export to JSON format
-  --output PATH                 Output file or directory for JSON export
-  --alpha-mask-threshold [0-255]  Alpha threshold for transparency
-  --num-threads INTEGER         Parallel processing threads
-  --display-colors             Show palette images
-  --no-stdout                  Suppress table output
-  --help                       Show help message
-```
 
 ```shell
  pylette --help
