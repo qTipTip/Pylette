@@ -19,6 +19,7 @@ classifiers = [
 ]
 dependencies = [
     "numpy>=1.26.4",
+    "opencv-python>=4.11.0.86",
     "pillow>=9.3,<11.0",
     "requests>=2.32.3",
     "scikit-learn>=1.2",
