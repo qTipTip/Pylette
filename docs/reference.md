@@ -21,4 +21,29 @@ and the `Palette` and `Color` classes, which are used to work with the extracted
 
 ::: Pylette.Color
 
-::: Pylette.ImageInput
+
+## Core Types:
+
+::: Pylette.types.ArrayImage
+::: Pylette.types.ArrayLike
+::: Pylette.types.BatchResult
+::: Pylette.types.BytesImage
+::: Pylette.types.ColorArray
+::: Pylette.types.ColorSpace
+::: Pylette.types.ColorTuple
+::: Pylette.types.CV2Image
+::: Pylette.types.ExtractionMethod
+::: Pylette.types.ExtractionParams
+::: Pylette.types.FloatArray
+::: Pylette.types.ImageInfo
+::: Pylette.types.ImageInput
+::: Pylette.types.ImageLike
+::: Pylette.types.IntArray
+::: Pylette.types.PaletteMetaData
+::: Pylette.types.PathLikeImage
+::: Pylette.types.PILImage
+::: Pylette.types.ProcessingStats
+::: Pylette.types.RGBATuple
+::: Pylette.types.RGBTuple
+::: Pylette.types.SourceType
+::: Pylette.types.URLImage
