@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Released
 
+## 5.1.1 - 22/08/2025
+
+### Fixed
+- Added missing `py.typed`
+
 ## 5.1.0 - 22/08/2025
 
 ### Fixed
