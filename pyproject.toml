@@ -56,6 +56,11 @@ dev = [
 [project.scripts]
 pylette = "Pylette.cmd:main_typer"
 
+[tool.pytest.ini_options]
+testpaths = [
+  "tests"
+]
+
 [tool.pyright]
 include = ["Pylette"]
 exclude = ["tests"]
