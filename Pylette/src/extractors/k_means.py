@@ -1,11 +1,13 @@
 import numpy as np
 from numpy.typing import NDArray
+from typing_extensions import override
 
 from Pylette.src.color import Color
 from Pylette.src.extractors.protocol import NP_T, ColorExtractorBase
 
 
 class KMeansExtractor(ColorExtractorBase):
+    @override
     def extract(self, arr: NDArray[NP_T], height: int, width: int, palette_size: int) -> list[Color]:
         """
         Extracts a color palette using KMeans.

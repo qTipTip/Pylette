@@ -1,5 +1,6 @@
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
+from typing_extensions import override
 
 from Pylette.src.color import Color
 from Pylette.src.extractors.protocol import NP_T, ColorExtractorBase
@@ -121,6 +122,7 @@ class ColorBox:
 
 
 class MedianCutExtractor(ColorExtractorBase):
+    @override
     def extract(self, arr: NDArray[NP_T], height: int, width: int, palette_size: int) -> list[Color]:
         """
         Extracts a color palette using the median cut algorithm.

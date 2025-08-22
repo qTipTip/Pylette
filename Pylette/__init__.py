@@ -1,4 +1,4 @@
-import Pylette.src.types as types
+from Pylette import types
 from Pylette.src.color import Color
 from Pylette.src.color_extraction import batch_extract_colors, extract_colors
 from Pylette.src.palette import Palette
