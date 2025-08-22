@@ -218,8 +218,6 @@ The table automatically adapts to show the chosen colorspace (RGB, HSV, or HLS).
 
 ## Working with Transparent Images
 
-## Working with Transparent Images
-
 Handle transparency in both CLI and Python:
 
 ```bash
@@ -271,26 +269,4 @@ Options:
   --display-colors             Show palette images
   --no-stdout                  Suppress table output
   --help                       Show help message
-```
-
-```shell
- pylette --help
-
- Usage: pylette [OPTIONS]
-
-╭─ Options ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ --filename                                     PATH                   [default: None]                                                                                                                                                  │
-│ --image-url                                    TEXT                   [default: None]                                                                                                                                                  │
-│ --mode                                         [KM|MC]                [default: KM]                                                                                                                                                    │
-│ --n                                            INTEGER                [default: 5]                                                                                                                                                     │
-│ --sort-by                                      [frequency|luminance]  [default: luminance]                                                                                                                                             │
-│ --stdout                --no-stdout                                   [default: stdout]                                                                                                                                                │
-│ --out-filename                                 PATH                   [default: None]                                                                                                                                                  │
-│ --display-colors        --no-display-colors                           [default: no-display-colors]                                                                                                                                     │
-│ --colorspace                                   [rgb|hsv|hls]          [default: rgb]                                                                                                                                                   │
-│ --alpha-mask-threshold                         INTEGER RANGE [0<=x<=255]  Alpha threshold for transparent image masking (0-255). Pixels with alpha below this value are excluded. [default: None]                                     │
-│ --install-completion                                                  Install completion for the current shell.                                                                                                                        │
-│ --show-completion                                                     Show completion for the current shell, to copy it or customize the installation.                                                                                 │
-│ --help                                                                Show this message and exit.                                                                                                                                      │
-╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
