@@ -176,12 +176,27 @@ class Palette:
         for color in self.colors:
             color_values = color.get_colors(colorspace)
             color_data: dict[str, object] = {
-                "values": [float(v) if isinstance(v, (np.integer, np.floating)) else v for v in color_values],
                 "frequency": float(color.freq),
             }
-            # Add RGB values for reference if not already RGB
-            if colorspace != "rgb":
+
+            # Add colorspace-specific field
+            colorspace_field = colorspace.value.lower()  # "rgb", "hsv", "hls"
+            if colorspace == ColorSpace.RGB:
+                # RGB values should be integers
+                color_data[colorspace_field] = [int(v) if isinstance(v, np.integer) else v for v in color_values]
+            else:
+                # HSV/HLS values should be floats
+                color_data[colorspace_field] = [
+                    float(v) if isinstance(v, (np.integer, np.floating)) else v for v in color_values
+                ]
+
+            # Add hex (always present, derived from RGB)
+            color_data["hex"] = color.hex
+
+            # Add RGB reference if colorspace is not RGB
+            if colorspace != ColorSpace.RGB:
                 color_data["rgb"] = [int(v) if isinstance(v, np.integer) else v for v in color.rgb]
+
             colors_list.append(color_data)
 
         palette_data["colors"] = colors_list

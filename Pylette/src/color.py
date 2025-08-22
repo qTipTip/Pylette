@@ -86,6 +86,16 @@ class Color(object):
         return colorsys.rgb_to_hls(r=self.rgb[0] / 255, g=self.rgb[1] / 255, b=self.rgb[2] / 255)
 
     @property
+    def hex(self) -> str:
+        """
+        Returns the color as a hexadecimal string.
+
+        Returns:
+            str: The color in hexadecimal format (e.g., "#FF5733").
+        """
+        return f"#{self.rgb[0]:02X}{self.rgb[1]:02X}{self.rgb[2]:02X}"
+
+    @property
     def luminance(self) -> float:
         """
         Calculates the luminance of the color.

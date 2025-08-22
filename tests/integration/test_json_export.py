@@ -5,7 +5,10 @@ from pathlib import Path
 import pytest
 from typer.testing import CliRunner
 
+from Pylette import extract_colors
 from Pylette.cmd import pylette_app
+from Pylette.src.color import Color
+from Pylette.src.types import ColorSpace
 
 
 class TestJSONExport:
@@ -158,9 +161,11 @@ class TestJSONExport:
             assert data["palettes"][0]["colorspace"] == "hsv"
             # HSV values should be floats between 0 and 1
             first_color = data["palettes"][0]["colors"][0]
-            assert all(isinstance(v, float) for v in first_color["values"])
+            assert "hsv" in first_color
+            assert all(isinstance(v, float) for v in first_color["hsv"])
             # Should include RGB reference values
             assert "rgb" in first_color
+            assert "hex" in first_color
 
     def test_json_export_creates_parent_directories(self, runner, test_image):
         """Test that JSON export creates parent directories if they don't exist."""
@@ -241,3 +246,91 @@ class TestJSONExport:
         # Look for CSV-like output (numbers separated by commas)
         csv_lines = [line for line in lines if "," in line and line.replace(",", "").replace(".", "").isdigit()]
         assert len(csv_lines) > 0  # Should have some CSV output
+
+    def test_color_hex_property(self):
+        """Test that Color.hex property returns correct hex values."""
+        test_cases = [
+            ((255, 0, 0, 255), "#FF0000"),  # Red
+            ((0, 255, 0, 255), "#00FF00"),  # Green
+            ((0, 0, 255, 255), "#0000FF"),  # Blue
+            ((142, 152, 174, 255), "#8E98AE"),  # Gray-blue
+        ]
+
+        for rgba, expected_hex in test_cases:
+            color = Color(rgba=rgba, frequency=0.5)
+            assert color.hex == expected_hex
+
+    def test_json_semantic_format_all_colorspaces(self, test_image):
+        """Test that JSON format uses semantic field names for each colorspace."""
+        palette = extract_colors(image=test_image, palette_size=2)
+
+        # Test RGB colorspace
+        rgb_data = palette.to_json(filename=None, colorspace=ColorSpace.RGB, stdout=False)
+        assert rgb_data["colorspace"] == "rgb"
+
+        for color_data in rgb_data["colors"]:
+            # RGB colorspace should have: rgb, hex, frequency (no duplication)
+            assert "rgb" in color_data
+            assert "hex" in color_data
+            assert "frequency" in color_data
+            assert "hsv" not in color_data  # No other colorspace fields
+            assert "hls" not in color_data
+
+            # Verify RGB values are integers
+            assert all(isinstance(v, int) for v in color_data["rgb"])
+            assert len(color_data["rgb"]) == 3
+
+            # Verify hex matches RGB
+            rgb_values = color_data["rgb"]
+            expected_hex = f"#{rgb_values[0]:02X}{rgb_values[1]:02X}{rgb_values[2]:02X}"
+            assert color_data["hex"] == expected_hex
+
+        # Test HSV colorspace
+        hsv_data = palette.to_json(filename=None, colorspace=ColorSpace.HSV, stdout=False)
+        assert hsv_data["colorspace"] == "hsv"
+
+        for color_data in hsv_data["colors"]:
+            # HSV colorspace should have: hsv, rgb, hex, frequency
+            assert "hsv" in color_data
+            assert "rgb" in color_data
+            assert "hex" in color_data
+            assert "frequency" in color_data
+
+            # HSV values should be floats
+            assert all(isinstance(v, float) for v in color_data["hsv"])
+            assert len(color_data["hsv"]) == 3
+
+            # RGB should be integers (reference values)
+            assert all(isinstance(v, int) for v in color_data["rgb"])
+            assert len(color_data["rgb"]) == 3
+
+        # Test HLS colorspace
+        hls_data = palette.to_json(filename=None, colorspace=ColorSpace.HLS, stdout=False)
+        assert hls_data["colorspace"] == "hls"
+
+        for color_data in hls_data["colors"]:
+            # HLS colorspace should have: hls, rgb, hex, frequency
+            assert "hls" in color_data
+            assert "rgb" in color_data
+            assert "hex" in color_data
+            assert "frequency" in color_data
+
+            # HLS values should be floats
+            assert all(isinstance(v, float) for v in color_data["hls"])
+            assert len(color_data["hls"]) == 3
+
+    def test_json_no_duplication_for_rgb_colorspace(self, test_image):
+        """Test that RGB colorspace doesn't duplicate RGB values."""
+        palette = extract_colors(image=test_image, palette_size=2)
+
+        rgb_data = palette.to_json(filename=None, colorspace=ColorSpace.RGB, stdout=False)
+
+        for color_data in rgb_data["colors"]:
+            # Should only have rgb field, not both rgb and values
+            assert "rgb" in color_data
+            assert "values" not in color_data  # No generic values field
+
+            # Should have exactly these fields
+            expected_fields = {"rgb", "hex", "frequency"}
+            actual_fields = set(color_data.keys())
+            assert actual_fields == expected_fields

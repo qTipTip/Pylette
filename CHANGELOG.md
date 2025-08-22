@@ -15,7 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CLI `--output` parameter with auto-detection for individual vs combined file export
 - Smart file naming with prefix + index (`palette_001.json`) for directory exports
 - Support for combined JSON files containing multiple palettes
-- Comprehensive metadata preservation in JSON exports including extraction parameters, image info, and processing stats
+- `hex` property on `Color` class, representing RGB-values in hexadecimal
+- Pylette JSON format with colorspace-specific field names (e.g., `rgb`, `hsv`, `hls`)
 
 # Released
 
