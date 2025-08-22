@@ -19,13 +19,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Color Hex Representation**: `hex` property on `Color` class providing `#RRGGBB` format
 - **Palette Metadata**: Metadata including image source, extraction parameters, and processing statistics
 - **Enhanced Progress Display**: CLI shows recently extracted palettes with color previews
+- **Rich Table Output**: Clean, colorized table display for CLI showing hex values, RGB/HSV/HLS, and frequencies
 
 ### Changed
 - **CLI Interface**: Removed `--filename` and `--image-url` parameters in favor of positional image arguments
 - **Batch Processing**: CLI now processes multiple image sources by default
 
+### Removed
+- **CSV Export**: Removed `to_csv()` method from `Palette` class - use JSON export instead
+
 ### Breaking Changes
 - CLI parameter changes: `--filename` and `--image-url` removed
+- `Palette.to_csv()` method removed
 
 
 ## 4.4.0 - 20/08/2025
