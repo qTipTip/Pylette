@@ -118,7 +118,7 @@ def handle_json_export(
         for i, result in enumerate(successful_results, 1):
             if result.palette is not None:
                 filename = output_dir / f"palette_{i:03d}.json"
-                result.palette.to_json(filename=str(filename), colorspace=colorspace, stdout=False)
+                result.palette.to_json(filename=str(filename), colorspace=colorspace)
 
         typer.echo(f"✓ Exported {len(successful_results)} palettes to {output_dir}")
 
@@ -136,7 +136,7 @@ def handle_json_export(
 
         for result in successful_results:
             if result.palette is not None:
-                palette_data = result.palette.to_json(filename=None, colorspace=colorspace, stdout=False)
+                palette_data = result.palette.to_json(filename=None, colorspace=colorspace)
                 if palette_data is not None:
                     palettes_list.append(palette_data)
 

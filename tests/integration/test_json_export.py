@@ -271,7 +271,7 @@ class TestJSONExport:
         palette = extract_colors(image=test_image, palette_size=2)
 
         # Test RGB colorspace
-        rgb_data = palette.to_json(filename=None, colorspace=ColorSpace.RGB, stdout=False)
+        rgb_data = palette.to_json(filename=None, colorspace=ColorSpace.RGB)
         assert rgb_data["colorspace"] == "rgb"
 
         for color_data in rgb_data["colors"]:
@@ -292,7 +292,7 @@ class TestJSONExport:
             assert color_data["hex"] == expected_hex
 
         # Test HSV colorspace
-        hsv_data = palette.to_json(filename=None, colorspace=ColorSpace.HSV, stdout=False)
+        hsv_data = palette.to_json(filename=None, colorspace=ColorSpace.HSV)
         assert hsv_data["colorspace"] == "hsv"
 
         for color_data in hsv_data["colors"]:
@@ -311,7 +311,7 @@ class TestJSONExport:
             assert len(color_data["rgb"]) == 3
 
         # Test HLS colorspace
-        hls_data = palette.to_json(filename=None, colorspace=ColorSpace.HLS, stdout=False)
+        hls_data = palette.to_json(filename=None, colorspace=ColorSpace.HLS)
         assert hls_data["colorspace"] == "hls"
 
         for color_data in hls_data["colors"]:
@@ -329,7 +329,7 @@ class TestJSONExport:
         """Test that RGB colorspace doesn't duplicate RGB values."""
         palette = extract_colors(image=test_image, palette_size=2)
 
-        rgb_data = palette.to_json(filename=None, colorspace=ColorSpace.RGB, stdout=False)
+        rgb_data = palette.to_json(filename=None, colorspace=ColorSpace.RGB)
 
         for color_data in rgb_data["colors"]:
             # Should only have rgb field, not both rgb and values

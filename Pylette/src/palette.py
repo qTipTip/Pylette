@@ -118,7 +118,6 @@ class Palette:
         filename: str | None = None,
         colorspace: ColorSpace = ColorSpace.RGB,
         include_metadata: bool = True,
-        stdout: bool = True,
     ) -> dict[str, object] | None:
         """
         Exports the palette to JSON format.
@@ -127,7 +126,6 @@ class Palette:
             filename (str | None): File to save to. If None, returns the dictionary.
             colorspace (Literal["rgb", "hsv", "hls"]): Color space to use.
             include_metadata (bool): Whether to include palette metadata.
-            stdout (bool): Whether to print to stdout.
 
         Returns:
             dict | None: The palette data as a dictionary if filename is None.
@@ -187,10 +185,6 @@ class Palette:
 
             palette_data["metadata"] = metadata_dict
 
-        # Print to stdout if requested
-        if stdout:
-            print(json.dumps(palette_data, indent=2))
-
         # Save to file if filename provided
         if filename is not None:
             with open(filename, "w") as f:
@@ -205,7 +199,6 @@ class Palette:
         filename: str,
         colorspace: ColorSpace = ColorSpace.RGB,
         include_metadata: bool = True,
-        stdout: bool = False,
     ) -> None:
         """
         Export palette to JSON format.
@@ -214,14 +207,13 @@ class Palette:
             filename (str): File to save to (extension will be added automatically if not present).
             colorspace (ColorSpace): Color space to use.
             include_metadata (bool): Whether to include metadata.
-            stdout (bool): Whether to print to stdout.
         """
 
         # Add .json extension if not present
         if not filename.endswith(".json"):
             filename = f"{filename}.json"
 
-        self.to_json(filename=filename, colorspace=colorspace, include_metadata=include_metadata, stdout=stdout)
+        self.to_json(filename=filename, colorspace=colorspace, include_metadata=include_metadata)
 
     def __str__(self):
         return "".join(["({}, {}, {}, {}) \n".format(c.rgb[0], c.rgb[1], c.rgb[2], c.freq) for c in self.colors])

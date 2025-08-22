@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Released
 
+## 5.0.1 - 22/08/2025
+
+### Changed
+- **to_json() API**: Removed `stdout` parameter from `to_json()` method - method now only returns JSON data without printing
+
 ## 5.0.0 - 22/08/2025
 
 ### Added
