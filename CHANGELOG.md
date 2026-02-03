@@ -8,9 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Released
 
+## 5.2.0 - 03/02/2026
+
+### Added
+
+- Support for Python 3.14
+- Direct dependency on scipy >= 1.17.0 to ensure compatibility with 3.14 until
+scikit-learn adds it as a dependency
+
 ## 5.1.2 - 03/02/2026
 
-## Changed
+### Changed
 
 - Relaxed the version constraint for Pillow to allow any version >= 9.3
 - Fixed various CVEs in dependencies by updating them to latest versions
