@@ -1,13 +1,13 @@
 [project]
 name = "pylette"
-version = "5.1.1"
+version = "5.2.0"
 description = "A Python library for extracting color palettes from images."
 authors = [
     {name = "Ivar Stangeby"}
 ]
 license = {text = "MIT"}
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = "<3.15,>=3.11"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -25,6 +25,7 @@ dependencies = [
     "pillow>=9.3",
     "requests>=2.32.3",
     "scikit-learn>=1.2",
+    "scipy>=1.17.0", # Need this to support python 3.14, which is a transitive dependency of scikit-learn
     "typer>=0.12.5",
 ]
 
