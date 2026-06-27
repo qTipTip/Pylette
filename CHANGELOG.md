@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Released
 
+## 5.2.0 - 27/06/2026
+
+### Fixed
+
+- Declare `typing-extensions` as runtime dependency
+
 ## 5.1.2 - 03/02/2026
 
 ## Changed
