@@ -5,8 +5,8 @@ authors:
   given-names: "Ivar"
   orcid: "https://orcid.org/0000-0002-7697-7526"
 title: "Pylette"
-version: 4.0.1
+version: 5.3.0
 doi: 10.5281/zenodo.14757253
-date-released: 2025-01-27
+date-released: 2026-06-27
 date-published: 2024-02-09
-url: "https://github.com/qtiptip/pylette"
+url: "https://github.com/qTipTip/Pylette"
