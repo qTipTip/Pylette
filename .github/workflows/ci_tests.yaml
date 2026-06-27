@@ -28,9 +28,9 @@ jobs:
         name: Define a cache for the virtual environment based on the dependencies lock file
         with:
           path: ./.venv
-          key: venv-${{ hashFiles('uv.lock') }}
+          key: venv-${{ matrix.python-version }}-${{ hashFiles('uv.lock') }}
       - name: Install the project dependencies
-        run: uv sync --extra dev
+        run: uv sync --extra dev --python ${{ matrix.python-version }}
       - name: Install pyright
         run: uv tool install pyright
       - name: Run type checking
