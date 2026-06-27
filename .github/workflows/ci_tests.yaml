@@ -38,6 +38,28 @@ jobs:
       - name: Run the automated tests (for example)
         run: uv run pytest -v
 
+  citation-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Check CITATION.cff version matches pyproject.toml
+        run: |
+          python - <<'PY'
+          import pathlib, re, sys, tomllib
+          proj = tomllib.loads(pathlib.Path("pyproject.toml").read_text())["project"]["version"]
+          cff = pathlib.Path("CITATION.cff").read_text()
+          m = re.search(r'^version:\s*["\']?([^"\'\s]+)', cff, re.MULTILINE)
+          if m is None:
+              sys.exit("Could not find 'version:' in CITATION.cff")
+          if proj != m.group(1):
+              sys.exit(f"Version mismatch: pyproject.toml={proj} but CITATION.cff={m.group(1)}")
+          print(f"OK: versions match ({proj})")
+          PY
+
   smoke-test:
     runs-on: ubuntu-latest
     steps:
