@@ -10,7 +10,7 @@ runner = CliRunner()
 def test_cli_no_input_is_error():
     result = runner.invoke(pylette_app, [])
     assert result.exit_code == 2
-    assert "Usage: " in result.stderr
+    assert "Usage: " in result.output
 
     result_help = runner.invoke(pylette_app, ["--help"])
     assert result_help.exit_code == 0
