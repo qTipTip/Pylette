@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Released
 
+## 5.3.0 - 27/06/2026
+
+### Security
+
+- Bumped minimum versions of `pillow` (>=12.2.0) and `requests` (>=2.33.0) to pull in
+  fixes for known CVEs, and upgraded all locked dependencies to non-vulnerable versions.
+
 ## 5.2.0 - 27/06/2026
 
 ### Fixed
