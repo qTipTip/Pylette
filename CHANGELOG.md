@@ -6,6 +6,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+# Unreleased
+
+## 6.0.0
+
+### Added
+
+- **Extractor registry**: A registry for color-extraction algorithms, exposing
+  `register`, `get_extractor`, and `available_methods` from `Pylette.src.extractors`.
+  Extractors are now registered via the `@register(...)` decorator, making it
+  possible to plug in custom extraction methods.
+
+### Changed
+
+- `extract_colors` now resolves the extraction algorithm through the registry
+  instead of dispatching on the extraction method directly.
+
+### Removed
+
+- Removed the `k_means_extraction` and `median_cut_extraction` free functions.
+  Use `get_extractor(...)` (or the registered `KMeansExtractor` /
+  `MedianCutExtractor` classes) instead.
+
+
 # Released
 
 ## 5.3.0 - 27/06/2026
