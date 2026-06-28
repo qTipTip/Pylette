@@ -48,6 +48,35 @@ def sort_perceptual(colors: list[Color], descending: bool = False) -> list[Color
     return sorted(colors, key=lambda c: c.oklab[0], reverse=descending)
 
 
+def merge_similar(colors: list[Color], delta_e: float) -> list[Color]:
+    """Merge colors within ``delta_e`` of each other (OKLab ΔE) into single swatches.
+
+    Greedy single pass over ``colors`` (extractor order is deterministic, so the
+    result is too): each color joins the first existing cluster whose running
+    representative is within ``delta_e``, otherwise it starts a new cluster. Each
+    cluster's representative is the frequency-weighted OKLab mean of its members,
+    with the summed frequency, so the total frequency is preserved.
+
+    Raises:
+        ValueError: If ``delta_e`` is negative.
+    """
+    if delta_e < 0:
+        raise ValueError(f"delta_e must be non-negative, got {delta_e}.")
+    clusters: list[list[Color]] = []
+    reps: list[Color] = []
+    for color in colors:
+        for i, rep in enumerate(reps):
+            if color.delta_e(rep) <= delta_e:
+                clusters[i].append(color)
+                srgb, opacity = weighted_oklab_mean(clusters[i])
+                reps[i] = Color.from_srgb_float(srgb, sum(c.frequency for c in clusters[i]), alpha=opacity)
+                break
+        else:
+            clusters.append([color])
+            reps.append(color)
+    return reps
+
+
 def dedup(colors: list[Color]) -> list[Color]:
     """Collapse exactly-equal colors (same 8-bit RGB), summing their frequencies.
 

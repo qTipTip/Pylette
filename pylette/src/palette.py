@@ -139,6 +139,22 @@ class Palette:
         """
         return Palette(operations.dedup(self.colors))
 
+    def merge_similar(self, delta_e: float) -> "Palette":
+        """Return a new palette with perceptually similar colors merged.
+
+        Colors within ``delta_e`` of each other (OKLab ΔE, see
+        :meth:`Color.delta_e`) collapse to their frequency-weighted OKLab mean, with
+        frequencies summed (so the total stays ≈ 1.0). The original palette is left
+        unchanged. For exact duplicates only, use :meth:`dedup`.
+
+        Parameters:
+            delta_e (float): Non-negative ΔE threshold; larger merges more.
+
+        Returns:
+            Palette: A new palette with near-duplicates merged.
+        """
+        return Palette(operations.merge_similar(self.colors, delta_e))
+
     def sort_perceptual(self, descending: bool = False) -> "Palette":
         """Return a new palette sorted by perceptual lightness (OKLab L).
 

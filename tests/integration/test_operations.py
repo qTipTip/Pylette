@@ -116,3 +116,45 @@ def test_palette_sort_perceptual_descending() -> None:
     result = palette.sort_perceptual(descending=True)
     assert result[0].rgb == (255, 255, 255)
     assert len(palette) == 2  # original untouched
+
+
+def test_merge_similar_collapses_near_duplicates() -> None:
+    colors = [
+        Color(rgba=(100, 100, 100, 255), frequency=0.4),
+        Color(rgba=(101, 101, 101, 255), frequency=0.3),  # ~identical to first
+        Color(rgba=(10, 200, 50, 255), frequency=0.3),  # clearly different
+    ]
+    result = operations.merge_similar(colors, delta_e=0.05)
+    assert len(result) == 2
+    assert sum(c.frequency for c in result) == pytest.approx(1.0)
+    # the merged grey carries the summed frequency of its two members
+    assert max(c.frequency for c in result) == pytest.approx(0.7)
+
+
+def test_merge_similar_idempotent_at_fixed_threshold() -> None:
+    colors = [
+        Color(rgba=(100, 100, 100, 255), frequency=0.4),
+        Color(rgba=(101, 101, 101, 255), frequency=0.3),
+        Color(rgba=(10, 200, 50, 255), frequency=0.3),
+    ]
+    once = operations.merge_similar(colors, delta_e=0.05)
+    twice = operations.merge_similar(once, delta_e=0.05)
+    assert [c.rgb for c in twice] == [c.rgb for c in once]
+
+
+def test_merge_similar_rejects_negative_threshold() -> None:
+    with pytest.raises(ValueError):
+        operations.merge_similar([Color(rgba=(0, 0, 0, 255), frequency=1.0)], delta_e=-1.0)
+
+
+def test_palette_merge_similar_is_immutable() -> None:
+    palette = Palette(
+        [
+            Color(rgba=(100, 100, 100, 255), frequency=0.5),
+            Color(rgba=(101, 101, 101, 255), frequency=0.5),
+        ]
+    )
+    merged = palette.merge_similar(delta_e=0.05)
+    assert len(merged) == 1
+    assert len(palette) == 2
+    assert sum(merged.frequencies) == pytest.approx(1.0)
