@@ -1,6 +1,6 @@
 import pytest
 
-from pylette import Color
+from pylette import Color, Palette
 from pylette.src import operations
 
 
@@ -72,3 +72,26 @@ def test_normalize_frequencies_sums_to_one() -> None:
 
 def test_normalize_frequencies_empty_list() -> None:
     assert operations._normalize_frequencies([]) == []
+
+
+def test_dedup_collapses_exact_duplicates_and_sums_frequency() -> None:
+    colors = [
+        Color(rgba=(10, 20, 30, 255), frequency=0.5),
+        Color(rgba=(10, 20, 30, 255), frequency=0.2),
+        Color(rgba=(200, 100, 50, 255), frequency=0.3),
+    ]
+    result = operations.dedup(colors)
+    assert len(result) == 2
+    assert result[0].rgb == (10, 20, 30)
+    assert result[0].frequency == pytest.approx(0.7)
+    assert result[1].rgb == (200, 100, 50)
+
+
+def test_palette_dedup_is_immutable_and_returns_new_palette() -> None:
+    colors = [Color(rgba=(10, 20, 30, 255), frequency=0.5), Color(rgba=(10, 20, 30, 255), frequency=0.5)]
+    palette = Palette(colors)
+    deduped = palette.dedup()
+    assert isinstance(deduped, Palette)
+    assert len(deduped) == 1
+    assert len(palette) == 2  # original untouched
+    assert sum(deduped.frequencies) == pytest.approx(1.0)

@@ -37,3 +37,27 @@ def _normalize_frequencies(colors: list[Color]) -> list[Color]:  # pyright: igno
     for color in colors:
         color.frequency = 1.0 / n
     return colors
+
+
+def dedup(colors: list[Color]) -> list[Color]:
+    """Collapse exactly-equal colors (same 8-bit RGB), summing their frequencies.
+
+    Cheap and lossless: the representative keeps the float precision of the first
+    occurrence and its opacity; only frequencies are combined. First-seen order
+    is preserved.
+    """
+    groups: dict[tuple[int, int, int], list[Color]] = {}
+    order: list[tuple[int, int, int]] = []
+    for color in colors:
+        key = color.rgb
+        if key not in groups:
+            groups[key] = []
+            order.append(key)
+        groups[key].append(color)
+    result: list[Color] = []
+    for key in order:
+        group = groups[key]
+        rep = group[0]
+        frequency = sum(c.frequency for c in group)
+        result.append(Color.from_srgb_float(rep.rgb_float, frequency, alpha=rep.opacity))
+    return result

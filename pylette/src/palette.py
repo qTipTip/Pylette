@@ -3,6 +3,7 @@ import json
 import numpy as np
 from PIL import Image
 
+from pylette.src import operations
 from pylette.src.color import Color
 from pylette.src.exceptions import InvalidColorspaceError
 from pylette.src.types import (
@@ -125,6 +126,18 @@ class Palette:
             return [self.colors[i] for i in indices]
         else:
             raise ValueError(f"Invalid mode: {mode}. Must be 'frequency' or 'uniform'.")
+
+    def dedup(self) -> "Palette":
+        """Return a new palette with exactly-equal colors merged (frequencies summed).
+
+        Only colorspace-identical colors (same 8-bit RGB) are collapsed; for
+        perceptual near-duplicates use :meth:`merge_similar`. The original palette
+        is left unchanged.
+
+        Returns:
+            Palette: A new palette with exact duplicates removed.
+        """
+        return Palette(operations.dedup(self.colors))
 
     def to_json(
         self,
