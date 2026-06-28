@@ -7,7 +7,7 @@
 </p>
 
 
-[![PyPI version](https://badge.fury.io/py/Pylette.svg)](https://badge.fury.io/py/Pylette)
+[![PyPI version](https://badge.fury.io/py/pylette.svg)](https://badge.fury.io/py/pylette)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/pylette)
 [![Built with Material for MkDocs](https://img.shields.io/badge/Material_for_MkDocs-526CFE?logo=MaterialForMkDocs&logoColor=white)](https://squidfunk.github.io/mkdocs-material/)
 ![Dependabot](https://img.shields.io/badge/dependabot-enabled-025E8C?logo=dependabot&logoColor=white)
@@ -40,13 +40,13 @@ Pylette helps you extract color palettes from images. Use the command-line inter
 You can easily install Pylette using pip:
 
 ```shell
-pip install Pylette
+pip install pylette
 ```
 
 Or if you prefer using uv:
 
 ```shell
-uv add Pylette
+uv add pylette
 ```
 
 ## Command Line Usage
@@ -118,7 +118,7 @@ pylette image.jpg --no-stdout --display-colors
 For programmatic usage and advanced workflows:
 
 ```python
-from Pylette import extract_colors
+from pylette import extract_colors
 
 # Extract palette with rich metadata
 palette = extract_colors(image='image.jpg', palette_size=8)
@@ -146,7 +146,7 @@ palette.export('my_colors', colorspace='hls', include_metadata=True)
 For processing multiple images programmatically:
 
 ```python
-from Pylette import batch_extract_colors
+from pylette import batch_extract_colors
 
 # Process multiple images with parallel processing
 results = batch_extract_colors(
@@ -227,7 +227,7 @@ pylette transparent.png --alpha-mask-threshold 128
 
 ```python
 # Python: Same functionality
-from Pylette import extract_colors
+from pylette import extract_colors
 palette = extract_colors('transparent.png', alpha_mask_threshold=128)
 ```
 

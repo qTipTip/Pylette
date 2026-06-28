@@ -13,37 +13,37 @@ and the `Palette` and `Color` classes, which are used to work with the extracted
 - **Batch Processing**: Process multiple images with parallel execution support
 
 
-::: Pylette.extract_colors
+::: pylette.extract_colors
 
-::: Pylette.batch_extract_colors
+::: pylette.batch_extract_colors
 
-::: Pylette.Palette
+::: pylette.Palette
 
-::: Pylette.Color
+::: pylette.Color
 
 
 ## Core Types:
 
-::: Pylette.types.ArrayImage
-::: Pylette.types.ArrayLike
-::: Pylette.types.BatchResult
-::: Pylette.types.BytesImage
-::: Pylette.types.ColorArray
-::: Pylette.types.ColorSpace
-::: Pylette.types.ColorTuple
-::: Pylette.types.CV2Image
-::: Pylette.types.ExtractionMethod
-::: Pylette.types.ExtractionParams
-::: Pylette.types.FloatArray
-::: Pylette.types.ImageInfo
-::: Pylette.types.ImageInput
-::: Pylette.types.ImageLike
-::: Pylette.types.IntArray
-::: Pylette.types.PaletteMetaData
-::: Pylette.types.PathLikeImage
-::: Pylette.types.PILImage
-::: Pylette.types.ProcessingStats
-::: Pylette.types.RGBATuple
-::: Pylette.types.RGBTuple
-::: Pylette.types.SourceType
-::: Pylette.types.URLImage
+::: pylette.types.ArrayImage
+::: pylette.types.ArrayLike
+::: pylette.types.BatchResult
+::: pylette.types.BytesImage
+::: pylette.types.ColorArray
+::: pylette.types.ColorSpace
+::: pylette.types.ColorTuple
+::: pylette.types.CV2Image
+::: pylette.types.ExtractionMethod
+::: pylette.types.ExtractionParams
+::: pylette.types.FloatArray
+::: pylette.types.ImageInfo
+::: pylette.types.ImageInput
+::: pylette.types.ImageLike
+::: pylette.types.IntArray
+::: pylette.types.PaletteMetaData
+::: pylette.types.PathLikeImage
+::: pylette.types.PILImage
+::: pylette.types.ProcessingStats
+::: pylette.types.RGBATuple
+::: pylette.types.RGBTuple
+::: pylette.types.SourceType
+::: pylette.types.URLImage

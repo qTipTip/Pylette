@@ -1,8 +1,8 @@
 import pytest
 from PIL import Image
 
-from Pylette import extract_colors
-from Pylette.src.types import BytesImage, ExtractionMethod, PathLikeImage, URLImage
+from pylette import extract_colors
+from pylette.src.types import BytesImage, ExtractionMethod, PathLikeImage, URLImage
 
 
 @pytest.mark.parametrize("mode", [ExtractionMethod.KM, ExtractionMethod.MC])

@@ -3,8 +3,8 @@ import json
 import numpy as np
 from PIL import Image
 
-from Pylette.src.color import Color
-from Pylette.src.types import ColorSpace, ExtractionParams, ImageInfo, PaletteMetaData, ProcessingStats, SourceType
+from pylette.src.color import Color
+from pylette.src.types import ColorSpace, ExtractionParams, ImageInfo, PaletteMetaData, ProcessingStats, SourceType
 
 
 class Palette:

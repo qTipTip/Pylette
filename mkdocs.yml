@@ -18,7 +18,7 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          paths: ["Pylette"]
+          paths: ["pylette"]
           load_external_modules: true
           options:
             show_signature: false

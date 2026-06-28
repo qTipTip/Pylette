@@ -3,7 +3,7 @@ from typing import cast
 
 import numpy as np
 
-from Pylette.src.types import ColorSpace
+from pylette.src.types import ColorSpace
 
 # Weights for calculating luminance
 luminance_weights = np.array([0.2126, 0.7152, 0.0722])

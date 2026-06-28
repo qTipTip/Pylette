@@ -4,7 +4,7 @@ This module allows users to import types in multiple ways:
 - import pylette.types as types
 """
 
-from Pylette.src.types import (
+from pylette.src.types import (
     ArrayImage,
     ArrayLike,
     BatchResult,

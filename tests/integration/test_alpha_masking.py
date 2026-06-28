@@ -12,8 +12,8 @@ import numpy as np
 import pytest
 from PIL import Image
 
-from Pylette import extract_colors
-from Pylette.types import ExtractionMethod
+from pylette import extract_colors
+from pylette.types import ExtractionMethod
 
 
 @pytest.fixture

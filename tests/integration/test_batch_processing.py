@@ -1,5 +1,5 @@
-from Pylette import batch_extract_colors
-from Pylette.src.types import BytesImage, PathLikeImage, URLImage
+from pylette import batch_extract_colors
+from pylette.src.types import BytesImage, PathLikeImage, URLImage
 
 
 def test_batch_processing(

@@ -1,8 +1,8 @@
 import pytest
 
-from Pylette.src.extractors import available_methods, get_extractor
-from Pylette.src.extractors.protocol import ColorExtractor
-from Pylette.src.types import ExtractionMethod
+from pylette.src.extractors import available_methods, get_extractor
+from pylette.src.extractors.protocol import ColorExtractor
+from pylette.src.types import ExtractionMethod
 
 
 class TestRegistry:
