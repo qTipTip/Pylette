@@ -9,8 +9,7 @@ from typing import Callable, Literal, Sequence
 import numpy as np
 from PIL import Image
 
-from Pylette.src.extractors.k_means import k_means_extraction
-from Pylette.src.extractors.median_cut import median_cut_extraction
+from Pylette.src.extractors.registry import get_extractor
 from Pylette.src.palette import Palette
 from Pylette.src.types import (
     BatchResult,
@@ -204,11 +203,8 @@ def extract_colors(
         )
 
     # Color extraction
-    match mode:
-        case ExtractionMethod.KM:
-            colors = k_means_extraction(valid_pixels, height, width, palette_size)
-        case ExtractionMethod.MC:
-            colors = median_cut_extraction(valid_pixels, height, width, palette_size)
+    extractor = get_extractor(mode)
+    colors = extractor.extract(arr=valid_pixels, height=height, width=width, palette_size=palette_size)
 
     if colors:
         if sort_mode == "luminance":

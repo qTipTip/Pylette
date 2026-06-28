@@ -3,8 +3,9 @@ from numpy.typing import ArrayLike, NDArray
 from typing_extensions import override
 
 from Pylette.src.color import Color
+from Pylette.src.extractors import register
 from Pylette.src.extractors.protocol import NP_T, ColorExtractorBase
-from Pylette.src.types import ColorArray
+from Pylette.src.types import ColorArray, ExtractionMethod
 
 
 class ColorBox:
@@ -121,6 +122,7 @@ class ColorBox:
         return len(self.colors)
 
 
+@register(ExtractionMethod.MC)
 class MedianCutExtractor(ColorExtractorBase):
     @override
     def extract(self, arr: NDArray[NP_T], height: int, width: int, palette_size: int) -> list[Color]:
