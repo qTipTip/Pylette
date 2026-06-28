@@ -52,3 +52,10 @@ def get_extractor(method: ExtractionMethod | str) -> ColorExtractor:
     except KeyError:
         available = ", ".join(sorted(m.value for m in _REGISTRY)) or "(none)"
         raise ValueError(f"No extractor registered for {method.value}. Registered: {available}.") from None
+
+
+def available_methods() -> list[ExtractionMethod]:
+    """
+    Return the extraction methods that currently have a registered extractor.
+    """
+    return list(_REGISTRY)
