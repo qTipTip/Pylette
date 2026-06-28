@@ -9,6 +9,7 @@ from typing import Callable, Literal, Sequence
 import numpy as np
 from PIL import Image
 
+from pylette.src.exceptions import InvalidImageError, NoValidPixelsError, UnknownExtractionMethodError
 from pylette.src.extractors.registry import get_extractor
 from pylette.src.palette import Palette
 from pylette.src.types import (
@@ -35,21 +36,30 @@ def _is_url(image_str: str) -> bool:
 
 
 def _normalize_image_input(image: ImageInput) -> PILImage:
-    """Convert any valid image input to PIL Image."""
-    if isinstance(image, Image.Image):
-        return image
-    elif isinstance(image, (str, Path)):
-        image_str = str(image)
-        if _is_url(image_str):
-            return request_image(image_str)
+    """Convert any valid image input to a PIL Image.
+
+    Any failure to load (unsupported type, missing file, corrupt data, a URL that
+    is not an image) is surfaced as :class:`InvalidImageError`.
+    """
+    try:
+        if isinstance(image, Image.Image):
+            return image
+        elif isinstance(image, (str, Path)):
+            image_str = str(image)
+            if _is_url(image_str):
+                return request_image(image_str)
+            else:
+                return Image.open(image)
+        elif isinstance(image, bytes):
+            return Image.open(BytesIO(image))
+        elif hasattr(image, "__array__"):  # More general check for array-like objects
+            return Image.fromarray(image)
         else:
-            return Image.open(image)
-    elif isinstance(image, bytes):
-        return Image.open(BytesIO(image))
-    elif hasattr(image, "__array__"):  # More general check for array-like objects
-        return Image.fromarray(image)
-    else:
-        raise TypeError(f"Unsupported image type: {type(image)}")
+            raise InvalidImageError(f"Unsupported image type: {type(image)}")
+    except InvalidImageError:
+        raise
+    except Exception as e:
+        raise InvalidImageError(f"Could not load image: {e}") from e
 
 
 def _get_source_type_from_image_input(image: ImageInput) -> SourceType:
@@ -169,7 +179,7 @@ def extract_colors(
 
     start_time = time.time()
 
-    mode = coerce_to_enum(mode, ExtractionMethod)
+    mode = coerce_to_enum(mode, ExtractionMethod, error_cls=UnknownExtractionMethodError)
 
     source_type = _get_source_type_from_image_input(image)
     # Normalize input to PIL Image and convert to RGBA
@@ -200,7 +210,7 @@ def extract_colors(
     valid_pixels = arr[~alpha_mask]
 
     if len(valid_pixels) == 0:
-        raise ValueError(
+        raise NoValidPixelsError(
             f"No valid pixels remain after applying alpha mask with threshold {alpha_mask_threshold}. "
             f"Try using a lower alpha-mask-threshold value or check if your image has transparency."
         )
@@ -251,7 +261,7 @@ def request_image(image_url: str) -> Image.Image:
         Image.Image: The requested image.
 
     Raises:
-        ValueError: If the URL does not point to a valid image.
+        InvalidImageError: If the URL does not point to a valid image.
     """
 
     import requests
@@ -262,4 +272,4 @@ def request_image(image_url: str) -> Image.Image:
         img = Image.open(BytesIO(response.content))
         return img
     else:
-        raise ValueError("The URL did not point to a valid image.")
+        raise InvalidImageError("The URL did not point to a valid image.")

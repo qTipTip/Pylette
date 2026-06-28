@@ -68,7 +68,11 @@ class ColorSpace(str, Enum):
 _EnumT = TypeVar("_EnumT", bound=Enum)
 
 
-def coerce_to_enum(value: "_EnumT | str", enum_cls: type[_EnumT]) -> _EnumT:
+def coerce_to_enum(
+    value: "_EnumT | str",
+    enum_cls: type[_EnumT],
+    error_cls: type[Exception] = ValueError,
+) -> _EnumT:
     """Coerce ``value`` to a member of ``enum_cls``.
 
     Accepts an existing member, the member's value, or its (case-insensitive)
@@ -76,8 +80,12 @@ def coerce_to_enum(value: "_EnumT | str", enum_cls: type[_EnumT]) -> _EnumT:
     (e.g. ``mode`` and ``colorspace``), replacing acceptance scattered across the
     registry, ``extract_colors``, and JSON export.
 
+    Parameters:
+        error_cls: Exception type raised on a miss, so callers can surface a
+            domain-specific error (e.g. ``UnknownExtractionMethodError``).
+
     Raises:
-        ValueError: If ``value`` matches no member of ``enum_cls``.
+        error_cls: If ``value`` matches no member of ``enum_cls``.
     """
     if isinstance(value, enum_cls):
         return value
@@ -91,7 +99,7 @@ def coerce_to_enum(value: "_EnumT | str", enum_cls: type[_EnumT]) -> _EnumT:
         except KeyError:
             pass
     valid = ", ".join(f"{m.name}/{m.value}" for m in enum_cls)
-    raise ValueError(f"Unknown {enum_cls.__name__} {value!r}. Valid options: {valid}.")
+    raise error_cls(f"Unknown {enum_cls.__name__} {value!r}. Valid options: {valid}.")
 
 
 # PaletteMetaData Types

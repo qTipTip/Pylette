@@ -22,6 +22,20 @@ and the `Palette` and `Color` classes, which are used to work with the extracted
 ::: pylette.Color
 
 
+## Exceptions
+
+Every error Pylette raises derives from `PyletteError`, so you can catch any
+Pylette-originated failure with a single `except pylette.PyletteError` and branch
+on the concrete subclass to identify the failure mode. Each subclass also derives
+from `ValueError`, so existing `except ValueError` handlers keep working.
+
+::: pylette.PyletteError
+::: pylette.InvalidImageError
+::: pylette.NoValidPixelsError
+::: pylette.UnknownExtractionMethodError
+::: pylette.InvalidColorspaceError
+
+
 ## Core Types:
 
 ::: pylette.types.ArrayImage
