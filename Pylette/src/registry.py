@@ -30,3 +30,25 @@ def register(method: ExtractionMethod) -> Callable[[type[_E]], type[_E]]:
         return cls
 
     return decorator
+
+
+def get_extractor(method: ExtractionMethod | str) -> ColorExtractor:
+    """
+    Return the extractor registered for ``method``.
+
+    Raises:
+        ValueError: If ``method`` is not a known method or has no registered extractor.
+    """
+
+    if not isinstance(method, ExtractionMethod):
+        try:
+            method = ExtractionMethod(method)
+        except ValueError:
+            valid = ", ".join(sorted(m.value for m in ExtractionMethod))
+            raise ValueError(f"Unknown extraction method {method}. Valid methods: {valid}.") from None
+
+    try:
+        return _REGISTRY[method]
+    except KeyError:
+        available = ", ".join(sorted(m.value for m in _REGISTRY)) or "(none)"
+        raise ValueError(f"No extractor registered for {method.value}. Registered: {available}.") from None
