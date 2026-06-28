@@ -75,6 +75,9 @@ rather than message. Each subclass also derives from `ValueError`, so existing
 
 ### Fixed
 
+- **Degenerate inputs no longer crash extraction**: a 1x1 image, a `palette_size`
+  larger than the number of distinct colors, or any case with fewer pixels than
+  the requested palette size previously raised raw sklearn/numpy `ValueError`s.
 - **Reshape bug with alpha masking**: Extractors reshaped the pixel array to
   `(height * width, n_channels)`, but after alpha masking the valid-pixel count
   can be smaller than `height * width`. This caused the reshape to either raise
