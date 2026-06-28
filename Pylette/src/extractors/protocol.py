@@ -20,4 +20,6 @@ class ColorExtractorBase(ABC):
         pass
 
     def _reshape_array(self, arr: NDArray[NP_T], height: int, width: int) -> NDArray[NP_T]:
-        return arr.reshape((height * width, -1))
+        # Reshape to (n_pixels, n_channels) from the array's actual length.
+        # Spatial dimensions aren't needed for color clustering.
+        return arr.reshape((-1, arr.shape[-1]))
