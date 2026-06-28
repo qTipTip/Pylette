@@ -30,6 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **String acceptance for `mode` and `colorspace`**: both now accept an enum
   member, its value, or its case-insensitive name (e.g. `mode="KM"`,
   `mode="KMeans"`).
+- **Unified color-space conversion**: `Color.to(space)` is now the single entry
+  point for converting a color to `rgb`, `hsv`, `hls`, or the new `oklab` space
+  (`Color.oklab` / `ColorSpace.OKLAB`).
 - **Typed exception hierarchy**: `PyletteError` base with `InvalidImageError`,
 `NoValidPixelsError`, `UnknownExtractionMethodError`, and
 `InvalidColorspaceError`. Using a `except PyletteError` clause now catches any
