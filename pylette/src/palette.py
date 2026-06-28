@@ -155,6 +155,40 @@ class Palette:
         """
         return Palette(operations.merge_similar(self.colors, delta_e))
 
+    def gradient(self, steps_between: int) -> "Palette":
+        """Return a new palette with interpolated colors bridging consecutive swatches.
+
+        Between each consecutive pair of colors, ``steps_between`` OKLab-interpolated
+        colors are inserted, producing a smooth ramp across the whole palette. The
+        result has equal frequencies summing to 1.0. A palette with fewer than two
+        colors has nothing to bridge and is returned unchanged. The original palette
+        is left unchanged.
+
+        Parameters:
+            steps_between (int): Colors to insert between each pair (>= 1).
+
+        Returns:
+            Palette: A new palette holding the gradient.
+
+        Raises:
+            ValueError: If ``steps_between`` is less than 1.
+        """
+        if steps_between < 1:
+            raise ValueError(f"steps_between must be at least 1, got {steps_between}.")
+        colors = self.colors
+        if len(colors) < 2:
+            return Palette([Color.from_srgb_float(c.rgb_float, c.frequency, alpha=c.opacity) for c in colors])
+        out: list[Color] = []
+        for idx in range(len(colors) - 1):
+            segment = operations.interpolate(colors[idx], colors[idx + 1], steps_between + 2)
+            if idx > 0:
+                segment = segment[1:]  # drop the seam color shared with the previous segment
+            out.extend(segment)
+        n = len(out)
+        for c in out:
+            c.frequency = 1.0 / n
+        return Palette(out)
+
     def sort_perceptual(self, descending: bool = False) -> "Palette":
         """Return a new palette sorted by perceptual lightness (OKLab L).
 

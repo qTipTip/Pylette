@@ -31,7 +31,7 @@ def weighted_oklab_mean(colors: list[Color]) -> tuple[tuple[float, float, float]
     return oklab_to_srgb((float(mean_lab[0]), float(mean_lab[1]), float(mean_lab[2]))), mean_opacity
 
 
-def _normalize_frequencies(colors: list[Color]) -> list[Color]:  # pyright: ignore[reportUnusedFunction]
+def _normalize_frequencies(colors: list[Color]) -> list[Color]:
     """Assign equal frequencies summing to 1.0 across ``colors`` in place."""
     n = len(colors)
     for color in colors:
@@ -75,6 +75,28 @@ def merge_similar(colors: list[Color], delta_e: float) -> list[Color]:
             clusters.append([color])
             reps.append(color)
     return reps
+
+
+def interpolate(a: Color, b: Color, steps: int) -> list[Color]:
+    """Return ``steps`` colors interpolated from ``a`` to ``b`` in OKLab (inclusive).
+
+    Interpolating in OKLab gives a perceptually even ramp. Opacity is
+    interpolated linearly. The result has equal frequencies summing to 1.0.
+
+    Raises:
+        ValueError: If ``steps`` is less than 2.
+    """
+    if steps < 2:
+        raise ValueError(f"steps must be at least 2, got {steps}.")
+    la = a.oklab
+    lb = b.oklab
+    result: list[Color] = []
+    for i in range(steps):
+        t = i / (steps - 1)
+        lab = (la[0] + t * (lb[0] - la[0]), la[1] + t * (lb[1] - la[1]), la[2] + t * (lb[2] - la[2]))
+        opacity = a.opacity + t * (b.opacity - a.opacity)
+        result.append(Color.from_srgb_float(oklab_to_srgb(lab), frequency=0.0, alpha=opacity))
+    return _normalize_frequencies(result)
 
 
 def dedup(colors: list[Color]) -> list[Color]:

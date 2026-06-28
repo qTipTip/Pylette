@@ -158,3 +158,57 @@ def test_palette_merge_similar_is_immutable() -> None:
     assert len(merged) == 1
     assert len(palette) == 2
     assert sum(merged.frequencies) == pytest.approx(1.0)
+
+
+def test_interpolate_includes_endpoints_and_normalizes() -> None:
+    a = Color(rgba=(0, 0, 0, 255), frequency=1.0)
+    b = Color(rgba=(255, 255, 255, 255), frequency=1.0)
+    ramp = operations.interpolate(a, b, steps=5)
+    assert len(ramp) == 5
+    assert ramp[0].rgb == (0, 0, 0)
+    assert ramp[-1].rgb == (255, 255, 255)
+    assert sum(c.frequency for c in ramp) == pytest.approx(1.0)
+    lightness = [c.oklab[0] for c in ramp]
+    assert lightness == sorted(lightness)  # monotonic ramp
+
+
+def test_interpolate_rejects_too_few_steps() -> None:
+    a = Color(rgba=(0, 0, 0, 255), frequency=1.0)
+    b = Color(rgba=(255, 255, 255, 255), frequency=1.0)
+    with pytest.raises(ValueError):
+        operations.interpolate(a, b, steps=1)
+
+
+def test_color_gradient_to_returns_palette() -> None:
+    a = Color(rgba=(0, 0, 0, 255), frequency=1.0)
+    b = Color(rgba=(255, 0, 0, 255), frequency=1.0)
+    grad = a.gradient_to(b, steps=3)
+    assert isinstance(grad, Palette)
+    assert len(grad) == 3
+
+
+def test_palette_gradient_bridges_consecutive_swatches() -> None:
+    palette = Palette(
+        [
+            Color(rgba=(0, 0, 0, 255), frequency=0.5),
+            Color(rgba=(255, 255, 255, 255), frequency=0.5),
+        ]
+    )
+    grad = palette.gradient(steps_between=1)
+    # endpoints + 1 inserted between them = 3
+    assert len(grad) == 3
+    assert sum(grad.frequencies) == pytest.approx(1.0)
+    assert len(palette) == 2  # original untouched
+
+
+def test_palette_gradient_single_color_unchanged() -> None:
+    palette = Palette([Color(rgba=(10, 20, 30, 255), frequency=1.0)])
+    grad = palette.gradient(steps_between=3)
+    assert len(grad) == 1
+    assert grad[0].rgb == (10, 20, 30)
+
+
+def test_palette_gradient_rejects_zero_steps() -> None:
+    palette = Palette([Color(rgba=(0, 0, 0, 255), frequency=0.5), Color(rgba=(1, 1, 1, 255), frequency=0.5)])
+    with pytest.raises(ValueError):
+        palette.gradient(steps_between=0)

@@ -1,6 +1,9 @@
 import colorsys
 import warnings
-from typing import cast
+from typing import TYPE_CHECKING, cast
+
+if TYPE_CHECKING:
+    from pylette.src.palette import Palette
 
 import numpy as np
 
@@ -283,6 +286,24 @@ class Color(object):
         """
         r, g, b = self.rgb
         return f"#{r:02X}{g:02X}{b:02X}"
+
+    def gradient_to(self, other: "Color", steps: int) -> "Palette":
+        """Return a palette of ``steps`` colors interpolated from this color to ``other``.
+
+        Interpolation runs in OKLab for a perceptually even ramp and includes both
+        endpoints. The generated colors get equal frequencies summing to 1.0.
+
+        Parameters:
+            other (Color): The end color of the ramp.
+            steps (int): Total number of colors, including both endpoints (>= 2).
+
+        Returns:
+            Palette: A new palette holding the gradient.
+        """
+        from pylette.src import operations
+        from pylette.src.palette import Palette
+
+        return Palette(operations.interpolate(self, other, steps))
 
     @property
     def luminance(self) -> float:
