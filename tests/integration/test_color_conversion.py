@@ -24,12 +24,17 @@ def test_to_hsv_and_hls_match_colorsys(sample: Color) -> None:
     assert sample.to(ColorSpace.HLS) == colorsys.rgb_to_hls(*srgb)
 
 
-def test_properties_and_get_colors_delegate_to_to(sample: Color) -> None:
+def test_properties_delegate_to_to(sample: Color) -> None:
     assert sample.hsv == sample.to(ColorSpace.HSV)
     assert sample.hls == sample.to(ColorSpace.HLS)
     assert sample.oklab == sample.to(ColorSpace.OKLAB)
+
+
+def test_get_colors_is_deprecated_and_delegates(sample: Color) -> None:
     for space in ColorSpace:
-        assert sample.get_colors(space) == sample.to(space)
+        with pytest.warns(DeprecationWarning):
+            value = sample.get_colors(space)
+        assert value == sample.to(space)
 
 
 def test_oklab_view_matches_shared_module(sample: Color) -> None:

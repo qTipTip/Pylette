@@ -69,6 +69,8 @@ rather than message. Each subclass also derives from `ValueError`, so existing
   one release and now emit a `DeprecationWarning`. The CLI's `--n` and
   `--num-threads` remain as deprecated aliases of `--palette-size` and
   `--max-workers`.
+- **`Color.get_colors(...)`**: replaced by `Color.to(...)`. It still works for
+  one release and now emits a `DeprecationWarning`.
 
 ### Removed
 

@@ -79,10 +79,10 @@ def test_invalid_colorspace_in_to_json_raises_invalid_colorspace_error(opaque_im
         palette.to_json(colorspace="not-a-space")
 
 
-def test_invalid_colorspace_in_get_colors_raises_invalid_colorspace_error() -> None:
+def test_invalid_colorspace_in_color_to_raises_invalid_colorspace_error() -> None:
     color = Color(rgba=(10, 20, 30, 255), frequency=1.0)
     with pytest.raises(InvalidColorspaceError):
-        color.get_colors(colorspace="not-a-space")
+        color.to("not-a-space")
 
 
 @pytest.mark.parametrize(

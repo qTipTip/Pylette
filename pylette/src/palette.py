@@ -157,7 +157,7 @@ class Palette:
         colors_list = []
         # Add color data
         for color in self.colors:
-            color_values = color.get_colors(colorspace)
+            color_values = color.to(colorspace)
             color_data: dict[str, object] = {
                 "frequency": float(color.frequency),
             }

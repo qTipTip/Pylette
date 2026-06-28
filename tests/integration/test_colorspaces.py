@@ -233,7 +233,7 @@ def test_palette_invariants_with_image_url(
 
 def test_colorspace_invariants_hls(test_kmean_extracted_palette: Palette):
     for color in test_kmean_extracted_palette:
-        H, L, S = color.get_colors(colorspace="hls")
+        H, L, S = color.to("hls")
         assert 0 <= H <= 360, f"Expected 0 <= h <= 360, got {H}"
         assert 0 <= L <= 1, f"Expected 0 <= l <= 1, got {L}"
         assert 0 <= S <= 1, f"Expected 0 <= s <= 1, got {S}"
@@ -241,7 +241,7 @@ def test_colorspace_invariants_hls(test_kmean_extracted_palette: Palette):
 
 def test_colorspace_invariants_hsv(test_kmean_extracted_palette: Palette):
     for color in test_kmean_extracted_palette:
-        H, L, V = color.get_colors(colorspace="hls")
+        H, L, V = color.to("hls")
         assert 0 <= H <= 360, f"Expected 0 <= h <= 360, got {H}"
         assert 0 <= L <= 1, f"Expected 0 <= l <= 1, got {L}"
         assert 0 <= V <= 1, f"Expected 0 <= s <= 1, got {V}"

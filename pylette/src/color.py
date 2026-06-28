@@ -212,9 +212,7 @@ class Color(object):
 
     def get_colors(self, colorspace: ColorSpace | str = ColorSpace.RGB) -> tuple[int, ...] | tuple[float, ...]:
         """
-        Returns the color values in the specified color space.
-
-        Thin wrapper around :meth:`to`, kept for backwards compatibility.
+        Deprecated alias for :meth:`to`.
 
         Parameters:
             colorspace (ColorSpace | str): The color space to use (enum member,
@@ -223,6 +221,11 @@ class Color(object):
         Returns:
             tuple[int, ...] | tuple[float, ...]: The color values in the specified color space.
         """
+        warnings.warn(
+            "Color.get_colors() is deprecated and will be removed; use Color.to() instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.to(colorspace)
 
     @property
