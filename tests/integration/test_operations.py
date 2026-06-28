@@ -1,4 +1,6 @@
 import pytest
+from hypothesis import given, settings
+from hypothesis import strategies as st
 
 from pylette import Color, HarmonyKind, InvalidHarmonyError, Palette
 from pylette.src import operations
@@ -255,3 +257,71 @@ def test_palette_harmony_seeds_from_dominant_color() -> None:
 def test_palette_harmony_empty_palette() -> None:
     result = Palette([]).harmony("triadic")
     assert len(result) == 0
+
+
+def _normalized_palette(colors: list[Color]) -> Palette:
+    total = sum(c.frequency for c in colors)
+    return Palette([Color.from_srgb_float(c.rgb_float, c.frequency / total, alpha=c.opacity) for c in colors])
+
+
+def _palette_strategy() -> st.SearchStrategy[Palette]:
+    color = st.builds(
+        Color,
+        rgba=st.tuples(st.integers(0, 255), st.integers(0, 255), st.integers(0, 255), st.just(255)),
+        frequency=st.floats(0.01, 1.0),
+    )
+    return st.lists(color, min_size=1, max_size=8).map(_normalized_palette)
+
+
+def _assert_palette_invariants(palette: Palette) -> None:
+    if len(palette) == 0:
+        return
+    assert sum(palette.frequencies) == pytest.approx(1.0)
+    for color in palette.colors:
+        assert all(isinstance(ch, int) and 0 <= ch <= 255 for ch in color.rgb)
+
+
+@settings(max_examples=50, deadline=None)
+@given(palette=_palette_strategy(), delta_e=st.floats(0.0, 0.3))
+def test_merge_similar_preserves_invariants(palette: Palette, delta_e: float) -> None:
+    original_len = len(palette)
+    result = palette.merge_similar(delta_e)
+    _assert_palette_invariants(result)
+    assert len(result) <= original_len
+    assert len(palette) == original_len  # immutability
+
+
+@settings(max_examples=50, deadline=None)
+@given(palette=_palette_strategy())
+def test_dedup_and_sort_preserve_invariants(palette: Palette) -> None:
+    before = [(c.rgb, c.frequency) for c in palette.colors]
+    deduped = palette.dedup()
+    _assert_palette_invariants(deduped)
+    assert len(deduped) <= len(palette)
+    ordered = palette.sort_perceptual()
+    _assert_palette_invariants(ordered)
+    assert len(ordered) == len(palette)
+    # idempotent + stable
+    assert [c.rgb for c in ordered.sort_perceptual().colors] == [c.rgb for c in ordered.colors]
+    assert [(c.rgb, c.frequency) for c in palette.colors] == before  # original unchanged
+
+
+@settings(max_examples=50, deadline=None)
+@given(palette=_palette_strategy(), steps_between=st.integers(1, 4))
+def test_gradient_preserves_invariants(palette: Palette, steps_between: int) -> None:
+    before = [(c.rgb, c.frequency) for c in palette.colors]
+    result = palette.gradient(steps_between)
+    _assert_palette_invariants(result)
+    assert len(result) >= len(palette)  # gradient is expanding (or unchanged for <2 colors)
+    assert [(c.rgb, c.frequency) for c in palette.colors] == before  # original unchanged
+
+
+@settings(max_examples=50, deadline=None)
+@given(palette=_palette_strategy(), kind=st.sampled_from(list(HarmonyKind)))
+def test_harmony_preserves_invariants(palette: Palette, kind: HarmonyKind) -> None:
+    before = [(c.rgb, c.frequency) for c in palette.colors]
+    result = palette.harmony(kind)
+    _assert_palette_invariants(result)
+    expected = 2 if kind is HarmonyKind.COMPLEMENTARY else 3
+    assert len(result) == expected
+    assert [(c.rgb, c.frequency) for c in palette.colors] == before  # original unchanged
