@@ -32,6 +32,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Use `get_extractor(...)` (or the registered `KMeansExtractor` /
   `MedianCutExtractor` classes) instead.
 
+### Fixed
+
+- **Reshape bug with alpha masking**: Extractors reshaped the pixel array to
+  `(height * width, n_channels)`, but after alpha masking the valid-pixel count
+  can be smaller than `height * width`. This caused the reshape to either raise
+  or silently produce a wrongly-shaped array. Extractors now reshape by the
+  array's actual length (`(-1, n_channels)`), so masked extraction works across
+  all extraction methods.
+
 
 # Released
 
