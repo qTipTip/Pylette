@@ -63,6 +63,7 @@ class ColorSpace(str, Enum):
     RGB = "rgb"
     HSV = "hsv"
     HLS = "hls"
+    OKLAB = "oklab"
 
 
 _EnumT = TypeVar("_EnumT", bound=Enum)

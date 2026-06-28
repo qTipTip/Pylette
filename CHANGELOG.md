@@ -30,6 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **String acceptance for `mode` and `colorspace`**: both now accept an enum
   member, its value, or its case-insensitive name (e.g. `mode="KM"`,
   `mode="KMeans"`).
+- **Unified color-space conversion**: `Color.to(space)` is now the single entry
+  point for converting a color to `rgb`, `hsv`, `hls`, or the new `oklab` space
+  (`Color.oklab` / `ColorSpace.OKLAB`).
 - **Typed exception hierarchy**: `PyletteError` base with `InvalidImageError`,
 `NoValidPixelsError`, `UnknownExtractionMethodError`, and
 `InvalidColorspaceError`. Using a `except PyletteError` clause now catches any
@@ -66,6 +69,8 @@ rather than message. Each subclass also derives from `ValueError`, so existing
   one release and now emit a `DeprecationWarning`. The CLI's `--n` and
   `--num-threads` remain as deprecated aliases of `--palette-size` and
   `--max-workers`.
+- **`Color.get_colors(...)`**: replaced by `Color.to(...)`. It still works for
+  one release and now emits a `DeprecationWarning`.
 
 ### Removed
 

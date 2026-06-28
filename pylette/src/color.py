@@ -1,8 +1,10 @@
 import colorsys
 import warnings
+from typing import cast
 
 import numpy as np
 
+from pylette.src.colorspaces import srgb_to_oklab
 from pylette.src.exceptions import InvalidColorspaceError
 from pylette.src.types import ColorSpace, coerce_to_enum
 
@@ -183,9 +185,34 @@ class Color(object):
         """
         return self.frequency < other.frequency
 
+    def to(self, space: ColorSpace | str = ColorSpace.RGB) -> tuple[int, ...] | tuple[float, ...]:
+        """
+        Returns the color in the requested color space.
+
+        This is the single conversion entry point; ``get_colors``, ``hsv``,
+        ``hls``, and the OKLab view all route through it, and all space math
+        lives in :mod:`pylette.src.colorspaces`.
+
+        Parameters:
+            space (ColorSpace | str): The target space (enum member, its value,
+                or case-insensitive name): ``rgb``, ``hsv``, ``hls``, or ``oklab``.
+
+        Returns:
+            tuple[int, ...] | tuple[float, ...]: The color values in that space
+            (RGB as 8-bit ints; the others as floats).
+        """
+        space = coerce_to_enum(space, ColorSpace, error_cls=InvalidColorspaceError)
+        if space is ColorSpace.RGB:
+            return self.rgb
+        if space is ColorSpace.HSV:
+            return colorsys.rgb_to_hsv(*self._srgb)
+        if space is ColorSpace.HLS:
+            return colorsys.rgb_to_hls(*self._srgb)
+        return srgb_to_oklab(self._srgb)
+
     def get_colors(self, colorspace: ColorSpace | str = ColorSpace.RGB) -> tuple[int, ...] | tuple[float, ...]:
         """
-        Returns the color values in the specified color space.
+        Deprecated alias for :meth:`to`.
 
         Parameters:
             colorspace (ColorSpace | str): The color space to use (enum member,
@@ -194,9 +221,12 @@ class Color(object):
         Returns:
             tuple[int, ...] | tuple[float, ...]: The color values in the specified color space.
         """
-        colorspace = coerce_to_enum(colorspace, ColorSpace, error_cls=InvalidColorspaceError)
-        colors = {ColorSpace.RGB: self.rgb, ColorSpace.HSV: self.hsv, ColorSpace.HLS: self.hls}
-        return colors[colorspace]
+        warnings.warn(
+            "Color.get_colors() is deprecated and will be removed; use Color.to() instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.to(colorspace)
 
     @property
     def hsv(self) -> tuple[float, float, float]:
@@ -206,7 +236,7 @@ class Color(object):
         Returns:
             tuple[float, float, float]: The color values in HSV color space.
         """
-        return colorsys.rgb_to_hsv(*self._srgb)
+        return cast("tuple[float, float, float]", self.to(ColorSpace.HSV))
 
     @property
     def hls(self) -> tuple[float, float, float]:
@@ -216,7 +246,17 @@ class Color(object):
         Returns:
             tuple[float, float, float]: The color values in HLS color space.
         """
-        return colorsys.rgb_to_hls(*self._srgb)
+        return cast("tuple[float, float, float]", self.to(ColorSpace.HLS))
+
+    @property
+    def oklab(self) -> tuple[float, float, float]:
+        """
+        Converts the color to the perceptual OKLab color space.
+
+        Returns:
+            tuple[float, float, float]: The ``(L, a, b)`` OKLab components.
+        """
+        return cast("tuple[float, float, float]", self.to(ColorSpace.OKLAB))
 
     @property
     def hex(self) -> str:

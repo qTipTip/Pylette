@@ -190,7 +190,7 @@ def display_palette_summary(successful_results: list[BatchResult], colorspace: C
                 frequency = f"{color.frequency:.1%}"
 
                 # Get colorspace values
-                color_values = color.get_colors(colorspace)
+                color_values = color.to(colorspace)
 
                 if colorspace == ColorSpace.RGB:
                     rgb_str = f"({int(color_values[0])}, {int(color_values[1])}, {int(color_values[2])})"
