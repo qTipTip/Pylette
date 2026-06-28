@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `register`, `get_extractor`, and `available_methods` from `Pylette.src.extractors`.
   Extractors are now registered via the `@register(...)` decorator, making it
   possible to plug in custom extraction methods.
+- **OKLab extractor**: New `ExtractionMethod.OKLAB` extraction mode that runs
+  k-means in the perceptual [OKLab](https://bottosson.github.io/posts/oklab/)
+  color space, so clusters are grouped by perceived color difference. Pixels are
+  linearized before conversion.
 
 ### Changed
 
