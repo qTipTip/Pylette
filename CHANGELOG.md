@@ -20,11 +20,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   k-means in the perceptual [OKLab](https://bottosson.github.io/posts/oklab/)
   color space, so clusters are grouped by perceived color difference. Pixels are
   linearized before conversion.
+- **`Color.rgb_float`**: New property returning the canonical color as float
+  sRGB components in `[0, 1]`, plus a `Color.from_srgb_float(...)` constructor
+  for building colors from continuous (non-quantized) centroids.
 
 ### Changed
 
 - **Import package renamed `Pylette` → `pylette`**
   Update imports: `from Pylette import x` → `from pylette import x`.
+- **`Color` stores float sRGB canonically**: colors are now kept as float sRGB
+  in `[0, 1]` internally.
+  `Color.rgb` now always returns a `tuple[int, int, int]` of plain Python ints
+  (previously it could return NumPy integers); `.hex`, `.hsv`, `.hls`, and
+  `.luminance` are derived from the internal float representation. The OKLab extractor keeps its
+  centroids pre-quantization for extra precision.
 - `extract_colors` now resolves the extraction algorithm through the registry
   instead of dispatching on the extraction method directly.
 - **Extractor `extract()` signature**: Dropped the unused `height` and `width`

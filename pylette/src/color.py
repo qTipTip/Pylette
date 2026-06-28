@@ -1,5 +1,4 @@
 import colorsys
-from typing import cast
 
 import numpy as np
 
@@ -9,22 +8,118 @@ from pylette.src.types import ColorSpace
 luminance_weights = np.array([0.2126, 0.7152, 0.0722])
 
 
+def _clamp_unit(value: float) -> float:
+    """Clamp a float into the closed unit interval [0, 1]."""
+    return min(1.0, max(0.0, float(value)))
+
+
 class Color(object):
+    """A single palette color.
+
+    The canonical representation is float sRGB in ``[0, 1]`` (plus a float
+    alpha). 8-bit quantization happens only at the output boundaries
+    (:attr:`rgb`, :attr:`rgba`, :attr:`a`, :attr:`hex`), so colors constructed
+    from continuous centroids keep their precision until they are read out.
+    """
+
     def __init__(self, rgba: tuple[int, ...], frequency: float):
         """
-        Initializes a Color object with RGBA values and frequency.
+        Initializes a Color object from 8-bit RGBA values.
+
+        The 8-bit input is the quantized view of the color; it is converted to
+        the canonical float store on construction.
 
         Parameters:
-            rgba (tuple[int, ...]): A tuple of RGBA values.
+            rgba (tuple[int, ...]): A tuple of RGBA values, each in [0, 255].
             frequency (float): The frequency of the color.
         """
         assert len(rgba) == 4, "RGBA values must be a tuple of length 4"
-        *rgb, alpha = rgba
-        self.rgb = cast(tuple[int, int, int], rgb)
-        self.rgba = rgba
-        self.a = alpha
+        r, g, b, alpha = (int(round(float(v))) for v in rgba)
+        self._srgb: tuple[float, float, float] = (r / 255.0, g / 255.0, b / 255.0)
+        self._alpha: float = alpha / 255.0
         self.freq: float = frequency
-        self.weight = alpha / 255.0
+
+    @classmethod
+    def from_srgb_float(
+        cls,
+        srgb: tuple[float, float, float],
+        frequency: float,
+        alpha: float = 1.0,
+    ) -> "Color":
+        """
+        Constructs a Color from float sRGB components in ``[0, 1]``.
+
+        This is the precision-preserving entry point for extractors whose
+        centroids live in continuous space (e.g. OKLab); it avoids the round
+        trip through 8-bit that :meth:`__init__` performs. Components are
+        clamped into ``[0, 1]`` so out-of-gamut centroids are handled gracefully.
+
+        Parameters:
+            srgb (tuple[float, float, float]): Gamma-encoded sRGB components.
+            frequency (float): The frequency of the color.
+            alpha (float): Alpha in ``[0, 1]`` (default fully opaque).
+
+        Returns:
+            Color: A color whose canonical store holds the given floats.
+        """
+        obj = cls.__new__(cls)
+        r, g, b = srgb
+        obj._srgb = (_clamp_unit(r), _clamp_unit(g), _clamp_unit(b))
+        obj._alpha = _clamp_unit(alpha)
+        obj.freq = frequency
+        return obj
+
+    @property
+    def rgb_float(self) -> tuple[float, float, float]:
+        """
+        The canonical color as float sRGB components in ``[0, 1]``.
+
+        Returns:
+            tuple[float, float, float]: The (r, g, b) components.
+        """
+        return self._srgb
+
+    @property
+    def rgb(self) -> tuple[int, int, int]:
+        """
+        The color as 8-bit sRGB.
+
+        Returns:
+            tuple[int, int, int]: (r, g, b) as plain Python ints in [0, 255].
+        """
+        r, g, b = self._srgb
+        return (int(round(r * 255.0)), int(round(g * 255.0)), int(round(b * 255.0)))
+
+    @property
+    def a(self) -> int:
+        """
+        The alpha channel as an 8-bit value.
+
+        Returns:
+            int: Alpha as a plain Python int in [0, 255].
+        """
+        return int(round(self._alpha * 255.0))
+
+    @property
+    def rgba(self) -> tuple[int, int, int, int]:
+        """
+        The color as 8-bit RGBA.
+
+        Returns:
+            tuple[int, int, int, int]: (r, g, b, a) as plain Python ints in [0, 255].
+        """
+        r, g, b = self.rgb
+        return (r, g, b, self.a)
+
+    @property
+    def weight(self) -> float:
+        """
+        The alpha channel as a fraction in ``[0, 1]``.
+
+        Returns:
+            float: Alpha in [0, 1].
+        """
+        return self._alpha
 
     def display(self, w: int = 50, h: int = 50) -> None:
         """
@@ -68,22 +163,22 @@ class Color(object):
     @property
     def hsv(self) -> tuple[float, float, float]:
         """
-        Converts the RGB color to HSV color space.
+        Converts the color to HSV color space, derived from the canonical float store.
 
         Returns:
             tuple[float, float, float]: The color values in HSV color space.
         """
-        return colorsys.rgb_to_hsv(r=self.rgb[0] / 255, g=self.rgb[1] / 255, b=self.rgb[2] / 255)
+        return colorsys.rgb_to_hsv(*self._srgb)
 
     @property
     def hls(self) -> tuple[float, float, float]:
         """
-        Converts the RGB color to HLS color space.
+        Converts the color to HLS color space, derived from the canonical float store.
 
         Returns:
             tuple[float, float, float]: The color values in HLS color space.
         """
-        return colorsys.rgb_to_hls(r=self.rgb[0] / 255, g=self.rgb[1] / 255, b=self.rgb[2] / 255)
+        return colorsys.rgb_to_hls(*self._srgb)
 
     @property
     def hex(self) -> str:
@@ -93,14 +188,15 @@ class Color(object):
         Returns:
             str: The color in hexadecimal format (e.g., "#FF5733").
         """
-        return f"#{self.rgb[0]:02X}{self.rgb[1]:02X}{self.rgb[2]:02X}"
+        r, g, b = self.rgb
+        return f"#{r:02X}{g:02X}{b:02X}"
 
     @property
     def luminance(self) -> float:
         """
-        Calculates the luminance of the color.
+        Calculates the luminance of the color, derived from the canonical float store.
 
         Returns:
-        float: The luminance of the color.
+        float: The luminance of the color, on the same 0-255 scale as the 8-bit channels.
         """
-        return np.dot(luminance_weights, self.rgb)
+        return float(np.dot(luminance_weights, self._srgb)) * 255.0
