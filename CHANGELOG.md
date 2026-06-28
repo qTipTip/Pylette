@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Extractor registry**: A registry for color-extraction algorithms, exposing
-  `register`, `get_extractor`, and `available_methods` from `Pylette.src.extractors`.
+  `register`, `get_extractor`, and `available_methods` from `pylette.src.extractors`.
   Extractors are now registered via the `@register(...)` decorator, making it
   possible to plug in custom extraction methods.
 - **OKLab extractor**: New `ExtractionMethod.OKLAB` extraction mode that runs
@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Import package renamed `Pylette` → `pylette`**
+  Update imports: `from Pylette import x` → `from pylette import x`.
 - `extract_colors` now resolves the extraction algorithm through the registry
   instead of dispatching on the extraction method directly.
 - **Extractor `extract()` signature**: Dropped the unused `height` and `width`
