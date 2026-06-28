@@ -25,3 +25,7 @@ class UnknownExtractionMethodError(PyletteError, ValueError):
 
 class InvalidColorspaceError(PyletteError, ValueError):
     """The requested color space is not recognized."""
+
+
+class InvalidHarmonyError(PyletteError, ValueError):
+    """The requested color-harmony kind is not recognized."""
