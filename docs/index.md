@@ -212,6 +212,29 @@ Control how your palettes are saved:
 
 
 
+## Operating on palettes
+
+Palette operations are immutable — each returns a new `Palette`, so they chain:
+
+```python
+from pylette import extract_colors
+
+palette = (
+    extract_colors("image.jpg", palette_size=12)
+    .merge_similar(delta_e=0.05)   # collapse perceptual near-duplicates (OKLab ΔE)
+    .sort_perceptual()             # order by perceptual lightness
+)
+
+# Perceptual difference between two colors:
+distance = palette[0].delta_e(palette[1])
+
+# Generate a harmony scheme from a single color:
+scheme = palette[0].harmony("triadic")   # complementary | triadic | analogous
+
+# Build a smooth ramp:
+ramp = palette[0].gradient_to(palette[-1], steps=8)
+```
+
 ## Example Palettes
 
 Check out these palettes extracted using Pylette! The top row corresponds to extraction using K-Means, and the bottom
