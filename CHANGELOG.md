@@ -30,6 +30,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **String acceptance for `mode` and `colorspace`**: both now accept an enum
   member, its value, or its case-insensitive name (e.g. `mode="KM"`,
   `mode="KMeans"`).
+- **Typed exception hierarchy**: `PyletteError` base with `InvalidImageError`,
+`NoValidPixelsError`, `UnknownExtractionMethodError`, and
+`InvalidColorspaceError`. Using a `except PyletteError` clause now catches any
+failures from Pylette, and the failure mode is identified by exception type
+rather than message. Each subclass also derives from `ValueError`, so existing
+`except ValueError` handlers keep working.
 
 ### Changed
 
