@@ -37,19 +37,3 @@ class KMeansExtractor(ColorExtractorBase):
         for color, freq in zip(palette, color_frequency):
             colors.append(Color(color, freq))
         return colors
-
-
-def k_means_extraction(arr: NDArray[NP_T], height: int, width: int, palette_size: int) -> list[Color]:
-    """
-    Extracts a color palette using KMeans.
-
-    Parameters:
-        arr (NDArray[float]): The input array.
-        height (int): The height of the image.
-        width (int): The width of the image.
-        palette_size (int): The number of colors to extract from the image.
-
-    Returns:
-        list[Color]: A palette of colors sorted by frequency.
-    """
-    return KMeansExtractor().extract(arr=arr, height=height, width=width, palette_size=palette_size)
