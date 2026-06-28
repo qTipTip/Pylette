@@ -170,6 +170,29 @@ def extract_colors(
     Returns:
         Palette: A palette of the extracted colors.
 
+    Guarantees:
+        The returned palette satisfies these invariants for every extraction
+        method (pinned by the property suite in ``tests/integration/test_invariants.py``):
+
+        - ``len(palette) <= palette_size``. Fewer colors are returned when the
+          image has fewer distinct colors than requested.
+        - The color frequencies sum to ``1.0``.
+        - Every channel of every ``Color.rgb`` is an ``int`` in ``[0, 255]``.
+        - Extraction is deterministic: the same image and arguments always
+          produce the same palette.
+        - Colors are ordered by ``sort_mode`` — ascending ``luminance`` or, by
+          default, descending ``frequency`` — and that ordering is stable.
+        - Degenerate inputs (a solid color, a 1x1 image, ``palette_size``
+          greater than the number of distinct colors, a partial alpha mask) are
+          handled without error. The one expected failure is an image with no
+          pixels left to sample (e.g. a fully alpha-masked image), which raises
+          :class:`~pylette.NoValidPixelsError`.
+
+    Raises:
+        InvalidImageError: If the image cannot be loaded or its type is unsupported.
+        NoValidPixelsError: If no pixels remain after alpha masking.
+        UnknownExtractionMethodError: If ``mode`` is not a known extraction method.
+
     Examples:
         Colors can be extracted from a variety of sources, including local files, byte streams, URLs, and numpy arrays.
 

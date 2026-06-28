@@ -110,7 +110,10 @@ class OKLabKMeansExtractor(ColorExtractorBase):
         # sRGB8 -> OKLab
         lab = linear_srgb_to_oklab(srgb_to_linear(rgb8 / 255.0))
 
-        model = KMeans(n_clusters=palette_size, n_init="auto", init="k-means++", random_state=2024)
+        # Never request more clusters than there are pixels (degenerate inputs
+        # like a 1x1 image); KMeans requires n_clusters <= n_samples.
+        n_clusters = min(palette_size, len(pixels))
+        model = KMeans(n_clusters=n_clusters, n_init="auto", init="k-means++", random_state=2024)
         labels = model.fit_predict(lab)
         centers_lab = np.asarray(model.cluster_centers_)
 
@@ -118,11 +121,11 @@ class OKLabKMeansExtractor(ColorExtractorBase):
         # Color stores full precision; out-of-gamut values are clamped.
         centers_srgb = np.clip(linear_to_srgb(oklab_to_linear_srgb(centers_lab)), 0.0, 1.0)
 
-        counts = np.bincount(labels, minlength=palette_size)
+        counts = np.bincount(labels, minlength=n_clusters)
         total = float(counts.sum())
 
         colors: list[Color] = []
-        for i in range(palette_size):
+        for i in range(n_clusters):
             if counts[i] == 0:
                 continue
             mean_alpha = float(alpha[labels == i].mean()) / 255.0

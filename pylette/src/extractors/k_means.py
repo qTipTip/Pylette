@@ -27,8 +27,11 @@ class KMeansExtractor(ColorExtractorBase):
 
         from sklearn.cluster import KMeans
 
-        arr = np.squeeze(arr)
-        model = KMeans(n_clusters=palette_size, n_init="auto", init="k-means++", random_state=2024)
+        arr = self._reshape_array(arr)
+        # Never request more clusters than there are pixels (degenerate inputs
+        # like a 1x1 image); KMeans requires n_clusters <= n_samples.
+        n_colors = min(palette_size, arr.shape[0])
+        model = KMeans(n_clusters=n_colors, n_init="auto", init="k-means++", random_state=2024)
         labels = model.fit_predict(arr)
         palette = np.array(model.cluster_centers_, dtype=int)
         color_count = np.bincount(labels)

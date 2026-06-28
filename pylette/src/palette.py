@@ -23,6 +23,10 @@ class Palette:
 
         Parameters:
             colors (list[Color]): A list of Color objects.
+
+        Note:
+            For a palette produced by :func:`~pylette.extract_colors`,
+            ``frequencies`` are the per-color relative weights and sum to ``1.0``.
         """
 
         self.colors = colors
