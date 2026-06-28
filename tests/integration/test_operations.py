@@ -1,6 +1,6 @@
 import pytest
 
-from pylette import Color, Palette
+from pylette import Color, HarmonyKind, InvalidHarmonyError, Palette
 from pylette.src import operations
 
 
@@ -212,3 +212,46 @@ def test_palette_gradient_rejects_zero_steps() -> None:
     palette = Palette([Color(rgba=(0, 0, 0, 255), frequency=0.5), Color(rgba=(1, 1, 1, 255), frequency=0.5)])
     with pytest.raises(ValueError):
         palette.gradient(steps_between=0)
+
+
+def test_harmony_complementary_has_two_colors() -> None:
+    seed = Color(rgba=(200, 50, 50, 255), frequency=1.0)
+    result = operations.harmony(seed, HarmonyKind.COMPLEMENTARY)
+    assert len(result) == 2
+    assert sum(c.frequency for c in result) == pytest.approx(1.0)
+
+
+def test_harmony_triadic_and_analogous_counts() -> None:
+    seed = Color(rgba=(200, 50, 50, 255), frequency=1.0)
+    assert len(operations.harmony(seed, "triadic")) == 3
+    assert len(operations.harmony(seed, "analogous")) == 3
+
+
+def test_harmony_rejects_unknown_kind() -> None:
+    seed = Color(rgba=(200, 50, 50, 255), frequency=1.0)
+    with pytest.raises(InvalidHarmonyError):
+        operations.harmony(seed, "tetradic")
+
+
+def test_color_harmony_returns_palette() -> None:
+    seed = Color(rgba=(200, 50, 50, 255), frequency=1.0)
+    result = seed.harmony("triadic")
+    assert isinstance(result, Palette)
+    assert len(result) == 3
+
+
+def test_palette_harmony_seeds_from_dominant_color() -> None:
+    palette = Palette(
+        [
+            Color(rgba=(10, 20, 30, 255), frequency=0.2),
+            Color(rgba=(200, 50, 50, 255), frequency=0.8),  # dominant
+        ]
+    )
+    result = palette.harmony("complementary")
+    # first color of a complementary scheme is the seed = the dominant color
+    assert result[0].rgb == (200, 50, 50)
+
+
+def test_palette_harmony_empty_palette() -> None:
+    result = Palette([]).harmony("triadic")
+    assert len(result) == 0

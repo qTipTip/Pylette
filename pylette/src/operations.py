@@ -8,10 +8,14 @@ for the private ``_normalize_frequencies`` helper, which only touches colors it
 was handed to finalize a freshly built result.
 """
 
+import colorsys
+
 import numpy as np
 
 from pylette.src.color import Color
 from pylette.src.colorspaces import oklab_to_srgb
+from pylette.src.exceptions import InvalidHarmonyError
+from pylette.src.types import HarmonyKind, coerce_to_enum
 
 
 def weighted_oklab_mean(colors: list[Color]) -> tuple[tuple[float, float, float], float]:
@@ -121,3 +125,31 @@ def dedup(colors: list[Color]) -> list[Color]:
         frequency = sum(c.frequency for c in group)
         result.append(Color.from_srgb_float(rep.rgb_float, frequency, alpha=rep.opacity))
     return result
+
+
+# Hue offsets (fraction of the 360° wheel) per harmony, seed listed first.
+_HARMONY_OFFSETS: dict[HarmonyKind, tuple[float, ...]] = {
+    HarmonyKind.COMPLEMENTARY: (0.0, 0.5),  # +180°
+    HarmonyKind.TRIADIC: (0.0, 1.0 / 3.0, 2.0 / 3.0),  # ±120°
+    HarmonyKind.ANALOGOUS: (-1.0 / 12.0, 0.0, 1.0 / 12.0),  # ±30°, seed in the middle
+}
+
+
+def harmony(seed: Color, kind: HarmonyKind | str) -> list[Color]:
+    """Generate a color-harmony scheme from ``seed`` by rotating hue in HSV.
+
+    Complementary (+180°), triadic (±120°), or analogous (±30°). The returned
+    colors share the seed's saturation, value, and opacity and get equal
+    frequencies summing to 1.0.
+
+    Raises:
+        InvalidHarmonyError: If ``kind`` is not a valid :class:`HarmonyKind`.
+    """
+    kind = coerce_to_enum(kind, HarmonyKind, error_cls=InvalidHarmonyError)
+    h, s, v = seed.hsv
+    result: list[Color] = []
+    for offset in _HARMONY_OFFSETS[kind]:
+        new_h = (h + offset) % 1.0
+        r, g, b = colorsys.hsv_to_rgb(new_h, s, v)
+        result.append(Color.from_srgb_float((r, g, b), frequency=0.0, alpha=seed.opacity))
+    return _normalize_frequencies(result)

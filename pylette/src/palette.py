@@ -9,6 +9,7 @@ from pylette.src.exceptions import InvalidColorspaceError
 from pylette.src.types import (
     ColorSpace,
     ExtractionParams,
+    HarmonyKind,
     ImageInfo,
     PaletteMetaData,
     ProcessingStats,
@@ -202,6 +203,27 @@ class Palette:
             Palette: A new, perceptually sorted palette.
         """
         return Palette(operations.sort_perceptual(self.colors, descending=descending))
+
+    def harmony(self, kind: "HarmonyKind | str") -> "Palette":
+        """Return a color-harmony scheme seeded from this palette's dominant color.
+
+        Convenience wrapper over :meth:`Color.harmony`: the seed is the
+        highest-frequency color. An empty palette yields an empty palette.
+
+        Parameters:
+            kind (HarmonyKind | str): ``"complementary"``, ``"triadic"``, or
+                ``"analogous"``.
+
+        Returns:
+            Palette: A new palette holding the harmony scheme.
+
+        Raises:
+            InvalidHarmonyError: If ``kind`` is not recognized.
+        """
+        if not self.colors:
+            return Palette([])
+        seed = max(self.colors, key=lambda c: c.frequency)
+        return Palette(operations.harmony(seed, kind))
 
     def to_json(
         self,

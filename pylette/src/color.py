@@ -9,7 +9,7 @@ import numpy as np
 
 from pylette.src.colorspaces import srgb_to_oklab
 from pylette.src.exceptions import InvalidColorspaceError
-from pylette.src.types import ColorSpace, coerce_to_enum
+from pylette.src.types import ColorSpace, HarmonyKind, coerce_to_enum
 
 # Weights for calculating luminance
 luminance_weights = np.array([0.2126, 0.7152, 0.0722])
@@ -304,6 +304,28 @@ class Color(object):
         from pylette.src.palette import Palette
 
         return Palette(operations.interpolate(self, other, steps))
+
+    def harmony(self, kind: "HarmonyKind | str") -> "Palette":
+        """Return a color-harmony scheme generated from this color.
+
+        ``kind`` is ``"complementary"``, ``"triadic"``, or ``"analogous"`` (a
+        :class:`HarmonyKind` member, its value, or case-insensitive name). The
+        returned palette holds the seed plus its hue-rotated partners with equal
+        frequencies.
+
+        Parameters:
+            kind (HarmonyKind | str): The harmony to generate.
+
+        Returns:
+            Palette: A new palette holding the harmony scheme.
+
+        Raises:
+            InvalidHarmonyError: If ``kind`` is not recognized.
+        """
+        from pylette.src import operations
+        from pylette.src.palette import Palette
+
+        return Palette(operations.harmony(self, kind))
 
     @property
     def luminance(self) -> float:
