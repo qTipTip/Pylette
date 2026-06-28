@@ -141,6 +141,12 @@ class MedianCutExtractor(ColorExtractorBase):
         valid_pixel_count = arr.shape[0]
         boxes = [ColorBox(arr)]
         while len(boxes) < palette_size:
-            largest_box_idx = np.argmax([box.size for box in boxes])
+            # Only boxes with at least 2 pixels can be split; a 1-pixel box would
+            # produce an empty box. Stop once nothing is splittable (e.g. there
+            # are fewer distinct pixels than the requested palette size).
+            splittable = [i for i, box in enumerate(boxes) if box.pixel_count >= 2]
+            if not splittable:
+                break
+            largest_box_idx = splittable[int(np.argmax([boxes[i].size for i in splittable]))]
             boxes = boxes[:largest_box_idx] + boxes[largest_box_idx].split() + boxes[largest_box_idx + 1 :]
         return [Color(tuple(map(int, box.average)), box.pixel_count / valid_pixel_count) for box in boxes]
