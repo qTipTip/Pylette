@@ -27,7 +27,7 @@ def test_image_from_PIL() -> PILImage:
 
 @pytest.fixture()
 def test_kmean_extracted_palette(test_image_path_as_str: str):
-    return extract_colors(image=test_image_path_as_str, palette_size=10, resize=True, mode=ExtractionMethod.KM)
+    return extract_colors(image=test_image_path_as_str, palette_size=10, resize=256, mode=ExtractionMethod.KM)
 
 
 @pytest.mark.parametrize("palette_size", [1, 5, 10, 100])
@@ -41,7 +41,7 @@ def test_palette_invariants_with_image_path(
     palette = extract_colors(
         image=test_image_path_as_str,
         palette_size=palette_size,
-        resize=True,
+        resize=256,
         mode=extraction_method,
     )
 
@@ -76,7 +76,7 @@ def test_palette_invariants_with_image_pathlike(
     palette = extract_colors(
         image=test_image_path_as_pathlike,
         palette_size=palette_size,
-        resize=True,
+        resize=256,
         mode=extraction_method,
     )
 
@@ -111,7 +111,7 @@ def test_palette_invariants_with_image_bytes(
     palette = extract_colors(
         image=test_image_as_bytes,
         palette_size=palette_size,
-        resize=True,
+        resize=256,
         mode=extraction_method,
     )
 
@@ -143,7 +143,7 @@ def test_palette_invariants_with_PIL_image(
     palette = extract_colors(
         image=test_image_from_PIL,
         palette_size=palette_size,
-        resize=True,
+        resize=256,
         mode=extraction_method,
     )
 
@@ -175,7 +175,7 @@ def test_palette_invariants_with_opencv(
     palette = extract_colors(
         image=test_image_from_opencv,
         palette_size=palette_size,
-        resize=True,
+        resize=256,
         mode=extraction_method,
     )
 
@@ -207,7 +207,7 @@ def test_palette_invariants_with_image_url(
     palette = extract_colors(
         image=test_image_as_url,
         palette_size=palette_size,
-        resize=True,
+        resize=256,
         mode=extraction_method,
     )
 
@@ -255,9 +255,9 @@ def test_colorspace_invariants_rgb(test_kmean_extracted_palette: Palette):
         assert 0 <= b <= 255, f"Expected 0 <= b <= 255, got {b}"
 
 
-@pytest.mark.parametrize("resize, sort_mode", [(True, "luminance"), (False, "frequency")])
+@pytest.mark.parametrize("resize, sort_mode", [(256, "luminance"), (None, "frequency")])
 def test_color_extraction_deterministic_kmeans(
-    test_image_path_as_str: PathLikeImage, resize: bool, sort_mode: Literal["luminance", "frequency"]
+    test_image_path_as_str: PathLikeImage, resize: int | None, sort_mode: Literal["luminance", "frequency"]
 ):
     palette1 = extract_colors(
         image=test_image_path_as_str,
