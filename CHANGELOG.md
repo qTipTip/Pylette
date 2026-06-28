@@ -6,6 +6,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+# Unreleased
+
+## 6.1.0
+
+### Added
+
+- **Palette operations**: a composable set of operations for working with an
+  extracted palette. Every operation is immutable — it returns a new `Palette`
+  (or `Color`s) and leaves the original untouched — so calls can be chained.
+  - `Palette.merge_similar(delta_e)`: merge perceptually near-duplicate colors
+    (within an OKLab ΔE threshold) into their frequency-weighted OKLab mean,
+    summing frequencies.
+  - `Palette.dedup()`: collapse exactly-equal colors (same 8-bit RGB), summing
+    their frequencies.
+  - `Palette.sort_perceptual(descending=False)`: order colors by perceptual
+    lightness (OKLab L); stable and idempotent.
+  - `Palette.gradient(steps_between)` and `Color.gradient_to(other, steps)`:
+    build a smooth ramp by interpolating between colors in OKLab.
+  - `Palette.harmony(kind)` and `Color.harmony(kind)`: generate a color-harmony
+    scheme (`complementary`, `triadic`, or `analogous`) by hue rotation;
+    `Palette.harmony` seeds from the dominant color.
+- **`Color.delta_e(other)`**: perceptual color difference as the Euclidean
+  distance between two colors in the OKLab color space.
+- **`HarmonyKind`** enum (`COMPLEMENTARY`, `TRIADIC`, `ANALOGOUS`) and the
+  **`InvalidHarmonyError`** exception (part of the `PyletteError` hierarchy),
+  both exported from `pylette`.
+
+
 # Released
 
 ## 6.0.0
