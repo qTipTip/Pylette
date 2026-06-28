@@ -89,13 +89,11 @@ class OKLabKMeansExtractor(ColorExtractorBase):
     """K-means clustering performed in OKLab (perceptual) space."""
 
     @override
-    def extract(self, arr: NDArray[NP_T], height: int, width: int, palette_size: int) -> list[Color]:
+    def extract(self, arr: NDArray[NP_T], palette_size: int) -> list[Color]:
         """Extract a palette by clustering pixels in OKLab space.
 
         Parameters:
             arr: Pixel array of shape ``(..., C)`` with ``C >= 3``; RGB(A), uint8.
-            height: Image height (unused; retained for protocol compatibility).
-            width: Image width (unused; retained for protocol compatibility).
             palette_size: Number of clusters / colors to extract.
 
         Returns:

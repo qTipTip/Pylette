@@ -204,7 +204,7 @@ def extract_colors(
 
     # Color extraction
     extractor = get_extractor(mode)
-    colors = extractor.extract(arr=valid_pixels, height=height, width=width, palette_size=palette_size)
+    colors = extractor.extract(arr=valid_pixels, palette_size=palette_size)
 
     if colors:
         if sort_mode == "luminance":

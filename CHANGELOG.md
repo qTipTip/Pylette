@@ -25,12 +25,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `extract_colors` now resolves the extraction algorithm through the registry
   instead of dispatching on the extraction method directly.
+- **Extractor `extract()` signature**: Dropped the unused `height` and `width`
+  parameters from `ColorExtractor.extract()`, `ColorExtractorBase.extract()`, and
+  all built-in extractors. The signature is now `extract(arr, palette_size)`.
+  Spatial dimensions are no longer needed since extractors reshape by the array's
+  actual length. Custom extractors implementing the protocol must update their
+  signature accordingly.
 
 ### Removed
 
 - Removed the `k_means_extraction` and `median_cut_extraction` free functions.
   Use `get_extractor(...)` (or the registered `KMeansExtractor` /
   `MedianCutExtractor` classes) instead.
+
+### Fixed
+
+- **Reshape bug with alpha masking**: Extractors reshaped the pixel array to
+  `(height * width, n_channels)`, but after alpha masking the valid-pixel count
+  can be smaller than `height * width`. This caused the reshape to either raise
+  or silently produce a wrongly-shaped array. Extractors now reshape by the
+  array's actual length (`(-1, n_channels)`), so masked extraction works across
+  all extraction methods.
 
 
 # Released
