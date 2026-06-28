@@ -11,7 +11,7 @@ from Pylette.types import ExtractionMethod
 @register(ExtractionMethod.KM)
 class KMeansExtractor(ColorExtractorBase):
     @override
-    def extract(self, arr: NDArray[NP_T], height: int, width: int, palette_size: int) -> list[Color]:
+    def extract(self, arr: NDArray[NP_T], palette_size: int) -> list[Color]:
         """
         Extracts a color palette using KMeans.
 

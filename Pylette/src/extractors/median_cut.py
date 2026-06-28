@@ -125,21 +125,19 @@ class ColorBox:
 @register(ExtractionMethod.MC)
 class MedianCutExtractor(ColorExtractorBase):
     @override
-    def extract(self, arr: NDArray[NP_T], height: int, width: int, palette_size: int) -> list[Color]:
+    def extract(self, arr: NDArray[NP_T], palette_size: int) -> list[Color]:
         """
         Extracts a color palette using the median cut algorithm.
 
         Parameters:
             arr (np.ndarray): The input array.
-            height (int): The height of the image.
-            width (int): The width of the image.
             palette_size (int): The number of colors to extract from the image.
 
         Returns:
             list[Color]: A list of colors extracted from the image.
         """
 
-        arr = self._reshape_array(arr=arr, height=height, width=width)
+        arr = self._reshape_array(arr=arr)
         valid_pixel_count = arr.shape[0]
         boxes = [ColorBox(arr)]
         while len(boxes) < palette_size:
