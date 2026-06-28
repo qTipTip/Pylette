@@ -3,8 +3,8 @@ from numpy.typing import NDArray
 from typing_extensions import override
 
 from Pylette.src.color import Color
-from Pylette.src.extractors import register
 from Pylette.src.extractors.protocol import NP_T, ColorExtractorBase
+from Pylette.src.extractors.registry import register
 from Pylette.types import ExtractionMethod
 
 
