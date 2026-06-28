@@ -13,3 +13,12 @@ def test_delta_e_is_symmetric_and_positive() -> None:
     b = Color(rgba=(200, 180, 50, 255), frequency=0.5)
     assert a.delta_e(b) == pytest.approx(b.delta_e(a))
     assert a.delta_e(b) > 0.0
+
+
+def test_harmony_kind_coerces_from_string() -> None:
+    from pylette import HarmonyKind
+    from pylette.src.types import coerce_to_enum
+
+    assert coerce_to_enum("triadic", HarmonyKind) is HarmonyKind.TRIADIC
+    assert coerce_to_enum("COMPLEMENTARY", HarmonyKind) is HarmonyKind.COMPLEMENTARY
+    assert coerce_to_enum(HarmonyKind.ANALOGOUS, HarmonyKind) is HarmonyKind.ANALOGOUS

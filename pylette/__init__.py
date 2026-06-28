@@ -10,6 +10,7 @@ from pylette.src.exceptions import (
     UnknownExtractionMethodError,
 )
 from pylette.src.palette import Palette
+from pylette.src.types import HarmonyKind
 
 __all__ = [
     "extract_colors",
@@ -17,6 +18,7 @@ __all__ = [
     "Palette",
     "Color",
     "types",
+    "HarmonyKind",
     "PyletteError",
     "InvalidImageError",
     "NoValidPixelsError",
