@@ -49,7 +49,7 @@ def test_cli_functionality():
 
         # Test CLI command
         result = subprocess.run(
-            [sys.executable, "-m", "pylette.cmd", tmp.name, "--palette_size", "3"], capture_output=True, text=True
+            [sys.executable, "-m", "pylette.cmd", tmp.name, "--palette-size", "3"], capture_output=True, text=True
         )
 
         if result.returncode != 0:
@@ -62,20 +62,20 @@ def test_cli_functionality():
 
 
 def test_extraction_methods():
-    """Test different extraction methods."""
+    """Test every extraction method registered in the registry."""
     print("✓ Testing different extraction methods...")
+
+    from pylette.src.extractors import available_methods
 
     test_img = Image.new("RGB", (50, 50), color="green")
 
-    # Test K-means extractor
-    kmeans_palette = pylette.extract_colors(test_img, palette_size=3, mode=pylette.types.ExtractionMethod.KM)
-    assert len(kmeans_palette) <= 3, "K-means should respect palette size"
-    print(f"  K-means extracted {len(kmeans_palette)} colors")
+    methods = available_methods()
+    assert methods, "Registry should expose at least one extraction method"
 
-    # Test Median cut extractor
-    mediancut_palette = pylette.extract_colors(test_img, palette_size=3, mode=pylette.types.ExtractionMethod.MC)
-    assert len(mediancut_palette) <= 3, "Median cut should respect palette size"
-    print(f"  Median cut extracted {len(mediancut_palette)} colors")
+    for method in methods:
+        palette = pylette.extract_colors(test_img, palette_size=3, mode=method)
+        assert len(palette) <= 3, f"{method.value} should respect palette size"
+        print(f"  {method.value} extracted {len(palette)} colors")
 
 
 def test_json_export():
