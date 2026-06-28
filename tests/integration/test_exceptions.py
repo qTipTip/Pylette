@@ -112,3 +112,10 @@ def test_batch_classifies_failures_by_exception_type(opaque_image: Image.Image, 
     failed = by_success[False]
     assert isinstance(failed.error, InvalidImageError)
     assert isinstance(failed.error, PyletteError)
+
+
+def test_invalid_harmony_error_is_pylette_error() -> None:
+    from pylette import InvalidHarmonyError, PyletteError
+
+    assert issubclass(InvalidHarmonyError, PyletteError)
+    assert issubclass(InvalidHarmonyError, ValueError)

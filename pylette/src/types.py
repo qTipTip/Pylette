@@ -66,6 +66,12 @@ class ColorSpace(str, Enum):
     OKLAB = "oklab"
 
 
+class HarmonyKind(str, Enum):
+    COMPLEMENTARY = "complementary"
+    TRIADIC = "triadic"
+    ANALOGOUS = "analogous"
+
+
 _EnumT = TypeVar("_EnumT", bound=Enum)
 
 

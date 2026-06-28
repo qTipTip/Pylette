@@ -3,11 +3,13 @@ import json
 import numpy as np
 from PIL import Image
 
+from pylette.src import operations
 from pylette.src.color import Color
 from pylette.src.exceptions import InvalidColorspaceError
 from pylette.src.types import (
     ColorSpace,
     ExtractionParams,
+    HarmonyKind,
     ImageInfo,
     PaletteMetaData,
     ProcessingStats,
@@ -125,6 +127,100 @@ class Palette:
             return [self.colors[i] for i in indices]
         else:
             raise ValueError(f"Invalid mode: {mode}. Must be 'frequency' or 'uniform'.")
+
+    def dedup(self) -> "Palette":
+        """Return a new palette with exactly-equal colors merged (frequencies summed).
+
+        Only colorspace-identical colors (same 8-bit RGB) are collapsed; for
+        perceptual near-duplicates use :meth:`merge_similar`. The original palette
+        is left unchanged.
+
+        Returns:
+            Palette: A new palette with exact duplicates removed.
+        """
+        return Palette(operations.dedup(self.colors))
+
+    def merge_similar(self, delta_e: float) -> "Palette":
+        """Return a new palette with perceptually similar colors merged.
+
+        Colors within ``delta_e`` of each other (OKLab ΔE, see
+        :meth:`Color.delta_e`) collapse to their frequency-weighted OKLab mean, with
+        frequencies summed (so the total stays ≈ 1.0). The original palette is left
+        unchanged. For exact duplicates only, use :meth:`dedup`.
+
+        Parameters:
+            delta_e (float): Non-negative ΔE threshold; larger merges more.
+
+        Returns:
+            Palette: A new palette with near-duplicates merged.
+        """
+        return Palette(operations.merge_similar(self.colors, delta_e))
+
+    def gradient(self, steps_between: int) -> "Palette":
+        """Return a new palette with interpolated colors bridging consecutive swatches.
+
+        Between each consecutive pair of colors, ``steps_between`` OKLab-interpolated
+        colors are inserted, producing a smooth ramp across the whole palette. The
+        result has equal frequencies summing to 1.0. A palette with fewer than two
+        colors has nothing to bridge and is returned unchanged. The original palette
+        is left unchanged.
+
+        Parameters:
+            steps_between (int): Colors to insert between each pair (>= 1).
+
+        Returns:
+            Palette: A new palette holding the gradient.
+
+        Raises:
+            ValueError: If ``steps_between`` is less than 1.
+        """
+        if steps_between < 1:
+            raise ValueError(f"steps_between must be at least 1, got {steps_between}.")
+        colors = self.colors
+        if len(colors) < 2:
+            return Palette([Color.from_srgb_float(c.rgb_float, c.frequency, alpha=c.opacity) for c in colors])
+        out: list[Color] = []
+        for idx in range(len(colors) - 1):
+            segment = operations.interpolate(colors[idx], colors[idx + 1], steps_between + 2)
+            if idx > 0:
+                segment = segment[1:]  # drop the seam color shared with the previous segment
+            out.extend(segment)
+        return Palette(operations.normalize_frequencies(out))
+
+    def sort_perceptual(self, descending: bool = False) -> "Palette":
+        """Return a new palette sorted by perceptual lightness (OKLab L).
+
+        Ascending by default (darkest first). The sort is stable and idempotent.
+        The original palette is left unchanged.
+
+        Parameters:
+            descending (bool): If True, sort lightest first.
+
+        Returns:
+            Palette: A new, perceptually sorted palette.
+        """
+        return Palette(operations.sort_perceptual(self.colors, descending=descending))
+
+    def harmony(self, kind: HarmonyKind | str) -> "Palette":
+        """Return a color-harmony scheme seeded from this palette's dominant color.
+
+        Seeds from the dominant (highest-frequency) color and delegates to the
+        harmony operation. An empty palette yields an empty palette.
+
+        Parameters:
+            kind (HarmonyKind | str): ``"complementary"``, ``"triadic"``, or
+                ``"analogous"``.
+
+        Returns:
+            Palette: A new palette holding the harmony scheme.
+
+        Raises:
+            InvalidHarmonyError: If ``kind`` is not recognized.
+        """
+        if not self.colors:
+            return Palette([])
+        seed = max(self.colors, key=lambda c: c.frequency)
+        return Palette(operations.harmony(seed, kind))
 
     def to_json(
         self,

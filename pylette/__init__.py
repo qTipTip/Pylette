@@ -3,12 +3,14 @@ from pylette.src.color import Color
 from pylette.src.color_extraction import batch_extract_colors, extract_colors
 from pylette.src.exceptions import (
     InvalidColorspaceError,
+    InvalidHarmonyError,
     InvalidImageError,
     NoValidPixelsError,
     PyletteError,
     UnknownExtractionMethodError,
 )
 from pylette.src.palette import Palette
+from pylette.src.types import HarmonyKind
 
 __all__ = [
     "extract_colors",
@@ -16,9 +18,11 @@ __all__ = [
     "Palette",
     "Color",
     "types",
+    "HarmonyKind",
     "PyletteError",
     "InvalidImageError",
     "NoValidPixelsError",
     "UnknownExtractionMethodError",
     "InvalidColorspaceError",
+    "InvalidHarmonyError",
 ]

@@ -68,3 +68,14 @@ def srgb_to_oklab(srgb: tuple[float, float, float]) -> tuple[float, float, float
     arr = np.asarray([srgb], dtype=np.float64)
     lab = linear_srgb_to_oklab(srgb_to_linear(arr))[0]
     return (float(lab[0]), float(lab[1]), float(lab[2]))
+
+
+def oklab_to_srgb(lab: tuple[float, float, float]) -> tuple[float, float, float]:
+    """Convert a single OKLab ``(L, a, b)`` triple to gamma-encoded sRGB in ``[0, 1]``.
+
+    Inverse of :func:`srgb_to_oklab`. ``linear_to_srgb`` clips into ``[0, 1]``,
+    so out-of-gamut OKLab inputs (e.g. an averaged centroid) are returned clamped.
+    """
+    arr = np.asarray([lab], dtype=np.float64)
+    srgb = linear_to_srgb(oklab_to_linear_srgb(arr))[0]
+    return (float(srgb[0]), float(srgb[1]), float(srgb[2]))

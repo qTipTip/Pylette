@@ -1,12 +1,15 @@
 import colorsys
 import warnings
-from typing import cast
+from typing import TYPE_CHECKING, cast
+
+if TYPE_CHECKING:
+    from pylette.src.palette import Palette
 
 import numpy as np
 
 from pylette.src.colorspaces import srgb_to_oklab
 from pylette.src.exceptions import InvalidColorspaceError
-from pylette.src.types import ColorSpace, coerce_to_enum
+from pylette.src.types import ColorSpace, HarmonyKind, coerce_to_enum
 
 # Weights for calculating luminance
 luminance_weights = np.array([0.2126, 0.7152, 0.0722])
@@ -210,6 +213,21 @@ class Color(object):
             return colorsys.rgb_to_hls(*self._srgb)
         return srgb_to_oklab(self._srgb)
 
+    def delta_e(self, other: "Color") -> float:
+        """Perceptual color difference to ``other`` as Euclidean distance in OKLab.
+
+        OKLab is built so that straight-line distance approximates perceived
+        difference, so no extra weighting is applied. Symmetric, non-negative,
+        and zero for colors with identical OKLab coordinates.
+
+        Parameters:
+            other (Color): The color to compare against.
+
+        Returns:
+            float: The OKLab ΔE between the two colors.
+        """
+        return float(np.linalg.norm(np.array(self.oklab) - np.array(other.oklab)))
+
     def get_colors(self, colorspace: ColorSpace | str = ColorSpace.RGB) -> tuple[int, ...] | tuple[float, ...]:
         """
         Deprecated alias for :meth:`to`.
@@ -268,6 +286,46 @@ class Color(object):
         """
         r, g, b = self.rgb
         return f"#{r:02X}{g:02X}{b:02X}"
+
+    def gradient_to(self, other: "Color", steps: int) -> "Palette":
+        """Return a palette of ``steps`` colors interpolated from this color to ``other``.
+
+        Interpolation runs in OKLab for a perceptually even ramp and includes both
+        endpoints. The generated colors get equal frequencies summing to 1.0.
+
+        Parameters:
+            other (Color): The end color of the ramp.
+            steps (int): Total number of colors, including both endpoints (>= 2).
+
+        Returns:
+            Palette: A new palette holding the gradient.
+        """
+        from pylette.src import operations
+        from pylette.src.palette import Palette
+
+        return Palette(operations.interpolate(self, other, steps))
+
+    def harmony(self, kind: HarmonyKind | str) -> "Palette":
+        """Return a color-harmony scheme generated from this color.
+
+        ``kind`` is ``"complementary"``, ``"triadic"``, or ``"analogous"`` (a
+        :class:`HarmonyKind` member, its value, or case-insensitive name). The
+        returned palette holds the seed plus its hue-rotated partners with equal
+        frequencies.
+
+        Parameters:
+            kind (HarmonyKind | str): The harmony to generate.
+
+        Returns:
+            Palette: A new palette holding the harmony scheme.
+
+        Raises:
+            InvalidHarmonyError: If ``kind`` is not recognized.
+        """
+        from pylette.src import operations
+        from pylette.src.palette import Palette
+
+        return Palette(operations.harmony(self, kind))
 
     @property
     def luminance(self) -> float:
