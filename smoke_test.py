@@ -16,6 +16,20 @@ from PIL import Image
 import pylette
 
 
+def make_test_image(w: int = 64, h: int = 64) -> Image.Image:
+    """Build a deterministic multi-color image.
+
+    A solid-color image has only one distinct color, so clustering extractors
+    (KMeans, OKLab) collapse to a single swatch and emit ConvergenceWarnings,
+    while MedianCut pads to ``palette_size`` with duplicates. A gradient gives
+    every method enough distinct colors to return a full, meaningful palette.
+    """
+    pixels = [((x * 4) % 256, (y * 4) % 256, ((x + y) * 2) % 256) for y in range(h) for x in range(w)]
+    img = Image.new("RGB", (w, h))
+    img.putdata(pixels)
+    return img
+
+
 def test_library_import():
     """Test that the library can be imported successfully."""
     print("✓ Testing library import...")
@@ -28,12 +42,11 @@ def test_basic_color_extraction():
     """Test basic color extraction functionality."""
     print("✓ Testing basic color extraction...")
 
-    # Create a simple test image
-    test_img = Image.new("RGB", (100, 100), color="red")
+    # Create a multi-color test image so extraction returns a full palette
+    test_img = make_test_image()
     palette = pylette.extract_colors(test_img, palette_size=5)
 
-    assert len(palette) <= 5, f"Palette size should not exceed 5, got {len(palette)}"
-    assert len(palette) > 0, "Should extract at least one color"
+    assert len(palette) == 5, f"Expected 5 colors from a multi-color image, got {len(palette)}"
 
     print(f"  Extracted {len(palette)} colors successfully")
 
@@ -44,7 +57,7 @@ def test_cli_functionality():
 
     # Create a temporary test image
     with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
-        test_img = Image.new("RGB", (50, 50), color="blue")
+        test_img = make_test_image()
         test_img.save(tmp.name)
 
         # Test CLI command
@@ -67,14 +80,14 @@ def test_extraction_methods():
 
     from pylette.src.extractors import available_methods
 
-    test_img = Image.new("RGB", (50, 50), color="green")
+    test_img = make_test_image()
 
     methods = available_methods()
     assert methods, "Registry should expose at least one extraction method"
 
     for method in methods:
         palette = pylette.extract_colors(test_img, palette_size=3, mode=method)
-        assert len(palette) <= 3, f"{method.value} should respect palette size"
+        assert len(palette) == 3, f"{method.value} should extract 3 colors from a multi-color image, got {len(palette)}"
         print(f"  {method.value} extracted {len(palette)} colors")
 
 
@@ -82,7 +95,7 @@ def test_json_export():
     """Test JSON export functionality."""
     print("✓ Testing JSON export...")
 
-    test_img = Image.new("RGB", (50, 50), color="purple")
+    test_img = make_test_image()
     palette = pylette.extract_colors(test_img, palette_size=2)
 
     # Test JSON export
@@ -93,7 +106,7 @@ def test_json_export():
         with open(tmp.name, "r") as f:
             data = json.load(f)
             assert "colors" in data, "JSON should contain 'colors' key"
-            assert len(data["colors"]) <= 2, f"Should have at most 2 colors, got {len(data['colors'])}"
+            assert len(data["colors"]) == 2, f"Should have 2 colors, got {len(data['colors'])}"
 
         # Clean up
         Path(tmp.name).unlink()
