@@ -95,3 +95,24 @@ def test_palette_dedup_is_immutable_and_returns_new_palette() -> None:
     assert len(deduped) == 1
     assert len(palette) == 2  # original untouched
     assert sum(deduped.frequencies) == pytest.approx(1.0)
+
+
+def test_sort_perceptual_orders_by_lightness_and_is_idempotent() -> None:
+    colors = [
+        Color(rgba=(255, 255, 255, 255), frequency=0.25),
+        Color(rgba=(0, 0, 0, 255), frequency=0.25),
+        Color(rgba=(128, 128, 128, 255), frequency=0.5),
+    ]
+    sorted_once = operations.sort_perceptual(colors)
+    lightness = [c.oklab[0] for c in sorted_once]
+    assert lightness == sorted(lightness)  # ascending by L
+    sorted_twice = operations.sort_perceptual(sorted_once)
+    assert [c.rgb for c in sorted_twice] == [c.rgb for c in sorted_once]  # idempotent
+    assert [c.rgb for c in colors][0] == (255, 255, 255)  # input untouched
+
+
+def test_palette_sort_perceptual_descending() -> None:
+    palette = Palette([Color(rgba=(0, 0, 0, 255), frequency=0.5), Color(rgba=(255, 255, 255, 255), frequency=0.5)])
+    result = palette.sort_perceptual(descending=True)
+    assert result[0].rgb == (255, 255, 255)
+    assert len(palette) == 2  # original untouched

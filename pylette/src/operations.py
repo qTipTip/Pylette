@@ -39,6 +39,15 @@ def _normalize_frequencies(colors: list[Color]) -> list[Color]:  # pyright: igno
     return colors
 
 
+def sort_perceptual(colors: list[Color], descending: bool = False) -> list[Color]:
+    """Return a new list of ``colors`` sorted by OKLab lightness (L).
+
+    Python's ``sorted`` is stable, so equal-lightness colors keep their relative
+    order; sorting an already-sorted list is a no-op (idempotent).
+    """
+    return sorted(colors, key=lambda c: c.oklab[0], reverse=descending)
+
+
 def dedup(colors: list[Color]) -> list[Color]:
     """Collapse exactly-equal colors (same 8-bit RGB), summing their frequencies.
 

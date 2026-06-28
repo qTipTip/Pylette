@@ -139,6 +139,20 @@ class Palette:
         """
         return Palette(operations.dedup(self.colors))
 
+    def sort_perceptual(self, descending: bool = False) -> "Palette":
+        """Return a new palette sorted by perceptual lightness (OKLab L).
+
+        Ascending by default (darkest first). The sort is stable and idempotent.
+        The original palette is left unchanged.
+
+        Parameters:
+            descending (bool): If True, sort lightest first.
+
+        Returns:
+            Palette: A new, perceptually sorted palette.
+        """
+        return Palette(operations.sort_perceptual(self.colors, descending=descending))
+
     def to_json(
         self,
         filename: str | None = None,
