@@ -281,3 +281,11 @@ def test_color_extraction_deterministic_kmeans(
         assert g == g2, f"Expected g1 == g2, got {g} != {g2}"
         assert b == b2, f"Expected b1 == b2, got {b} != {b2}"
         assert freq == freq2, f"Expected freq1 == freq2, got {freq} != {freq2}"
+
+
+@pytest.mark.parametrize("srgb", [(0.0, 0.0, 0.0), (1.0, 1.0, 1.0), (0.2, 0.5, 0.9), (0.55, 0.1, 0.33)])
+def test_oklab_to_srgb_roundtrips(srgb: tuple[float, float, float]) -> None:
+    from pylette.src.colorspaces import oklab_to_srgb, srgb_to_oklab
+
+    restored = oklab_to_srgb(srgb_to_oklab(srgb))
+    assert restored == pytest.approx(srgb, abs=1e-6)
