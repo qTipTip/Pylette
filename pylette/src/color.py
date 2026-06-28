@@ -210,6 +210,21 @@ class Color(object):
             return colorsys.rgb_to_hls(*self._srgb)
         return srgb_to_oklab(self._srgb)
 
+    def delta_e(self, other: "Color") -> float:
+        """Perceptual color difference to ``other`` as Euclidean distance in OKLab.
+
+        OKLab is built so that straight-line distance approximates perceived
+        difference, so no extra weighting is applied. Symmetric, non-negative,
+        and zero for colors with identical OKLab coordinates.
+
+        Parameters:
+            other (Color): The color to compare against.
+
+        Returns:
+            float: The OKLab ΔE between the two colors.
+        """
+        return float(np.linalg.norm(np.array(self.oklab) - np.array(other.oklab)))
+
     def get_colors(self, colorspace: ColorSpace | str = ColorSpace.RGB) -> tuple[int, ...] | tuple[float, ...]:
         """
         Deprecated alias for :meth:`to`.
