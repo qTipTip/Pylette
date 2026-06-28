@@ -4,6 +4,7 @@ import numpy as np
 from PIL import Image
 
 from pylette.src.color import Color
+from pylette.src.exceptions import InvalidColorspaceError
 from pylette.src.types import (
     ColorSpace,
     ExtractionParams,
@@ -140,7 +141,7 @@ class Palette:
             dict | None: The palette data as a dictionary if filename is None.
         """
 
-        colorspace = coerce_to_enum(colorspace, ColorSpace)
+        colorspace = coerce_to_enum(colorspace, ColorSpace, error_cls=InvalidColorspaceError)
 
         # Build the palette data
         palette_data: dict[str, object] = {

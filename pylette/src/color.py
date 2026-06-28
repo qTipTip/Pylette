@@ -3,6 +3,7 @@ import warnings
 
 import numpy as np
 
+from pylette.src.exceptions import InvalidColorspaceError
 from pylette.src.types import ColorSpace, coerce_to_enum
 
 # Weights for calculating luminance
@@ -193,7 +194,7 @@ class Color(object):
         Returns:
             tuple[int, ...] | tuple[float, ...]: The color values in the specified color space.
         """
-        colorspace = coerce_to_enum(colorspace, ColorSpace)
+        colorspace = coerce_to_enum(colorspace, ColorSpace, error_cls=InvalidColorspaceError)
         colors = {ColorSpace.RGB: self.rgb, ColorSpace.HSV: self.hsv, ColorSpace.HLS: self.hls}
         return colors[colorspace]
 
