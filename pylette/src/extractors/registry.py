@@ -5,7 +5,7 @@ Registry of color-extraction algorithms
 from typing import Callable, TypeVar
 
 from pylette.src.extractors.protocol import ColorExtractor
-from pylette.src.types import ExtractionMethod
+from pylette.src.types import ExtractionMethod, coerce_to_enum
 
 _REGISTRY: dict[ExtractionMethod, ColorExtractor] = {}
 _E = TypeVar("_E", bound=ColorExtractor)
@@ -40,12 +40,7 @@ def get_extractor(method: ExtractionMethod | str) -> ColorExtractor:
         ValueError: If ``method`` is not a known method or has no registered extractor.
     """
 
-    if not isinstance(method, ExtractionMethod):
-        try:
-            method = ExtractionMethod(method)
-        except ValueError:
-            valid = ", ".join(sorted(m.value for m in ExtractionMethod))
-            raise ValueError(f"Unknown extraction method {method}. Valid methods: {valid}.") from None
+    method = coerce_to_enum(method, ExtractionMethod)
 
     try:
         return _REGISTRY[method]
