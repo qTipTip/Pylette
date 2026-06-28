@@ -25,6 +25,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `extract_colors` now resolves the extraction algorithm through the registry
   instead of dispatching on the extraction method directly.
+- **Extractor `extract()` signature**: Dropped the unused `height` and `width`
+  parameters from `ColorExtractor.extract()`, `ColorExtractorBase.extract()`, and
+  all built-in extractors. The signature is now `extract(arr, palette_size)`.
+  Spatial dimensions are no longer needed since extractors reshape by the array's
+  actual length. Custom extractors implementing the protocol must update their
+  signature accordingly.
 
 ### Removed
 
