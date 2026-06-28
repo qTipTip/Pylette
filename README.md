@@ -61,10 +61,10 @@ pylette image.jpg
 pylette *.jpg --export-json --output results/
 
 # Extract 8 colors in HSV colorspace with structured export
-pylette photo.png --n 8 --colorspace hsv --export-json --output colors.json
+pylette photo.png --palette-size 8 --colorspace hsv --export-json --output colors.json
 
 # Batch process with parallel processing and table display
-pylette images/*.png --n 6 --num-threads 4
+pylette images/*.png --palette-size 6 --max-workers 4
 ```
 
 **Example Output:**
@@ -104,7 +104,7 @@ pylette *.png --export-json --output results/ --no-stdout
 
 ```bash
 # Use different extraction algorithms
-pylette image.jpg --mode MedianCut --n 6
+pylette image.jpg --mode MedianCut --palette-size 6
 
 # Handle transparent images
 pylette logo.png --alpha-mask-threshold 128
@@ -128,7 +128,7 @@ for color in palette.colors:
     print(f"RGB: {color.rgb}")
     print(f"Hex: {color.hex}")
     print(f"HSV: {color.hsv}")
-    print(f"Frequency: {color.freq:.2%}")
+    print(f"Frequency: {color.frequency:.2%}")
 
 # Export to structured JSON
 palette.to_json(filename='palette.json', colorspace='hsv')
@@ -258,14 +258,14 @@ Arguments:
   IMAGE_SOURCES...  Images, URLs, or directories to process [required]
 
 Options:
-  --mode [KMeans|MedianCut]     Extraction algorithm [default: KMeans]
-  --n INTEGER                   Number of colors to extract [default: 5]
+  --mode [KMeans|MedianCut|OKLab]  Extraction algorithm [default: KMeans]
+  --palette-size, --n INTEGER   Number of colors to extract [default: 5]
   --sort-by [frequency|luminance]  Sort colors by [default: luminance]
   --colorspace [rgb|hsv|hls]    Color space [default: rgb]
   --export-json                 Export to JSON format
   --output PATH                 Output file or directory for JSON export
   --alpha-mask-threshold [0-255]  Alpha threshold for transparency
-  --num-threads INTEGER         Parallel processing threads
+  --max-workers, --num-threads INTEGER  Parallel processing threads
   --display-colors             Show palette images
   --no-stdout                  Suppress table output
   --help                       Show help message
