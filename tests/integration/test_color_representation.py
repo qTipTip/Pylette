@@ -80,5 +80,31 @@ def test_eight_bit_constructor_matches_legacy_hsv() -> None:
 def test_rgba_and_alpha_are_plain_ints() -> None:
     color = Color(rgba=(10, 20, 30, 128), frequency=0.5)
     assert color.rgba == (10, 20, 30, 128)
-    assert isinstance(color.a, int)
-    assert color.weight == pytest.approx(128 / 255)
+    assert isinstance(color.alpha, int)
+    assert color.alpha == 128
+    assert color.opacity == pytest.approx(128 / 255)
+
+
+def test_alpha_and_opacity_are_derived() -> None:
+    """`.alpha` is the raw 0-255 channel; `.opacity` is the [0, 1] float (P2a)."""
+    color = Color.from_srgb_float((0.1, 0.2, 0.3), frequency=0.5, alpha=0.5)
+    assert color.opacity == pytest.approx(0.5)
+    assert color.alpha == 128  # round(0.5 * 255)
+    assert color.rgba[3] == color.alpha
+
+
+def test_frequency_is_canonical() -> None:
+    color = Color(rgba=(10, 20, 30, 255), frequency=0.25)
+    assert color.frequency == 0.25
+
+
+@pytest.mark.parametrize(
+    "deprecated_attr, canonical_attr",
+    [("freq", "frequency"), ("weight", "opacity"), ("a", "alpha")],
+)
+def test_deprecated_aliases_warn_and_still_work(deprecated_attr: str, canonical_attr: str) -> None:
+    """`.freq`, `.weight`, `.a` remain functional for one release with a warning."""
+    color = Color(rgba=(10, 20, 30, 128), frequency=0.5)
+    with pytest.warns(DeprecationWarning):
+        deprecated_value = getattr(color, deprecated_attr)
+    assert deprecated_value == getattr(color, canonical_attr)
