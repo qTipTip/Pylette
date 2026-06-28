@@ -2,10 +2,10 @@ import numpy as np
 from numpy.typing import ArrayLike, NDArray
 from typing_extensions import override
 
-from Pylette.src.color import Color
-from Pylette.src.extractors.protocol import NP_T, ColorExtractorBase
-from Pylette.src.extractors.registry import register
-from Pylette.src.types import ColorArray, ExtractionMethod
+from pylette.src.color import Color
+from pylette.src.extractors.protocol import NP_T, ColorExtractorBase
+from pylette.src.extractors.registry import register
+from pylette.src.types import ColorArray, ExtractionMethod
 
 
 class ColorBox:

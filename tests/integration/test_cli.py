@@ -2,7 +2,7 @@ from pathlib import Path
 
 from typer.testing import CliRunner
 
-from Pylette.cmd import pylette_app
+from pylette.cmd import pylette_app
 
 runner = CliRunner()
 

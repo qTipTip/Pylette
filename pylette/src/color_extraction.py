@@ -9,9 +9,9 @@ from typing import Callable, Literal, Sequence
 import numpy as np
 from PIL import Image
 
-from Pylette.src.extractors.registry import get_extractor
-from Pylette.src.palette import Palette
-from Pylette.src.types import (
+from pylette.src.extractors.registry import get_extractor
+from pylette.src.palette import Palette
+from pylette.src.types import (
     BatchResult,
     ExtractionMethod,
     ExtractionParams,

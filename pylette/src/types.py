@@ -1,5 +1,5 @@
 """
-Centralized type definitions for Pylette.
+Centralized type definitions for pylette.
 
 This module contains all the type aliases and protocols used throughout the Pylette library
 to ensure type safety and consistency.
@@ -16,7 +16,7 @@ from numpy.typing import NDArray
 from PIL import Image
 
 if TYPE_CHECKING:
-    from Pylette.src.palette import Palette
+    from pylette.src.palette import Palette
 
 
 class ImageLike(Protocol):

@@ -7,14 +7,14 @@ import numpy as np
 import pytest
 from PIL import Image
 
-from Pylette import extract_colors
-from Pylette.src.extractors.oklab import (
+from pylette import extract_colors
+from pylette.src.extractors.oklab import (
     linear_srgb_to_oklab,
     linear_to_srgb,
     oklab_to_linear_srgb,
     srgb_to_linear,
 )
-from Pylette.types import ExtractionMethod
+from pylette.types import ExtractionMethod
 
 
 class TestOKLabTransforms:

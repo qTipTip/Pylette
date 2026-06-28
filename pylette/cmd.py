@@ -7,9 +7,9 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from Pylette.src.cli_utils import PyletteProgress
-from Pylette.src.color_extraction import batch_extract_colors
-from Pylette.src.types import BatchResult, ColorSpace, ExtractionMethod
+from pylette.src.cli_utils import PyletteProgress
+from pylette.src.color_extraction import batch_extract_colors
+from pylette.src.types import BatchResult, ColorSpace, ExtractionMethod
 
 
 class SortBy(str, Enum):

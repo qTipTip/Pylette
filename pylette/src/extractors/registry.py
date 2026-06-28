@@ -4,8 +4,8 @@ Registry of color-extraction algorithms
 
 from typing import Callable, TypeVar
 
-from Pylette.src.extractors.protocol import ColorExtractor
-from Pylette.src.types import ExtractionMethod
+from pylette.src.extractors.protocol import ColorExtractor
+from pylette.src.types import ExtractionMethod
 
 _REGISTRY: dict[ExtractionMethod, ColorExtractor] = {}
 _E = TypeVar("_E", bound=ColorExtractor)

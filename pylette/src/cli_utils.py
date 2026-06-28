@@ -6,7 +6,7 @@ from rich.progress import BarColumn, Progress, TaskID, TextColumn, TimeElapsedCo
 from rich.table import Table
 from rich.text import Text
 
-from Pylette.src.color import Color
+from pylette.src.color import Color
 
 
 class RecentlyCompletedDisplay:

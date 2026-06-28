@@ -26,10 +26,10 @@ import numpy as np
 from numpy.typing import NDArray
 from typing_extensions import override
 
-from Pylette.src.color import Color
-from Pylette.src.extractors.protocol import NP_T, ColorExtractorBase
-from Pylette.src.extractors.registry import register
-from Pylette.src.types import ExtractionMethod, FloatArray
+from pylette.src.color import Color
+from pylette.src.extractors.protocol import NP_T, ColorExtractorBase
+from pylette.src.extractors.registry import register
+from pylette.src.types import ExtractionMethod, FloatArray
 
 
 # sRGB <-> linear sRGB (IEC 61966-2-1 transfer function)

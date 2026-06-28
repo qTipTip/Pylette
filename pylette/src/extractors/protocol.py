@@ -4,7 +4,7 @@ from typing import Protocol, TypeVar, runtime_checkable
 import numpy as np
 from numpy.typing import NDArray
 
-from Pylette.src.color import Color
+from pylette.src.color import Color
 
 NP_T = TypeVar("NP_T", bound=np.generic, covariant=True)
 

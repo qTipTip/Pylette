@@ -5,10 +5,10 @@ from pathlib import Path
 import pytest
 from typer.testing import CliRunner
 
-from Pylette import extract_colors
-from Pylette.cmd import pylette_app
-from Pylette.src.color import Color
-from Pylette.src.types import ColorSpace
+from pylette import extract_colors
+from pylette.cmd import pylette_app
+from pylette.src.color import Color
+from pylette.src.types import ColorSpace
 
 
 class TestJSONExport:

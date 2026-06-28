@@ -6,9 +6,9 @@ import pytest
 from cv2.typing import MatLike
 from numpy.testing import assert_approx_equal
 
-from Pylette.src.color_extraction import extract_colors
-from Pylette.src.palette import Palette
-from Pylette.src.types import BytesImage, CV2Image, ExtractionMethod, PathLikeImage, PILImage, URLImage
+from pylette.src.color_extraction import extract_colors
+from pylette.src.palette import Palette
+from pylette.src.types import BytesImage, CV2Image, ExtractionMethod, PathLikeImage, PILImage, URLImage
 
 
 @pytest.fixture
