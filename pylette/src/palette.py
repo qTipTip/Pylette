@@ -185,10 +185,7 @@ class Palette:
             if idx > 0:
                 segment = segment[1:]  # drop the seam color shared with the previous segment
             out.extend(segment)
-        n = len(out)
-        for c in out:
-            c.frequency = 1.0 / n
-        return Palette(out)
+        return Palette(operations.normalize_frequencies(out))
 
     def sort_perceptual(self, descending: bool = False) -> "Palette":
         """Return a new palette sorted by perceptual lightness (OKLab L).
@@ -204,11 +201,11 @@ class Palette:
         """
         return Palette(operations.sort_perceptual(self.colors, descending=descending))
 
-    def harmony(self, kind: "HarmonyKind | str") -> "Palette":
+    def harmony(self, kind: HarmonyKind | str) -> "Palette":
         """Return a color-harmony scheme seeded from this palette's dominant color.
 
-        Convenience wrapper over :meth:`Color.harmony`: the seed is the
-        highest-frequency color. An empty palette yields an empty palette.
+        Seeds from the dominant (highest-frequency) color and delegates to the
+        harmony operation. An empty palette yields an empty palette.
 
         Parameters:
             kind (HarmonyKind | str): ``"complementary"``, ``"triadic"``, or

@@ -305,7 +305,7 @@ class Color(object):
 
         return Palette(operations.interpolate(self, other, steps))
 
-    def harmony(self, kind: "HarmonyKind | str") -> "Palette":
+    def harmony(self, kind: HarmonyKind | str) -> "Palette":
         """Return a color-harmony scheme generated from this color.
 
         ``kind`` is ``"complementary"``, ``"triadic"``, or ``"analogous"`` (a

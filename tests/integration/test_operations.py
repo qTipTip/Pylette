@@ -67,13 +67,13 @@ def test_weighted_oklab_mean_zero_total_frequency_uses_uniform_weights() -> None
 
 def test_normalize_frequencies_sums_to_one() -> None:
     colors = [Color(rgba=(i, i, i, 255), frequency=0.0) for i in (10, 20, 30, 40)]
-    normalized = operations._normalize_frequencies(colors)
+    normalized = operations.normalize_frequencies(colors)
     assert sum(c.frequency for c in normalized) == pytest.approx(1.0)
     assert all(c.frequency == pytest.approx(0.25) for c in normalized)
 
 
 def test_normalize_frequencies_empty_list() -> None:
-    assert operations._normalize_frequencies([]) == []
+    assert operations.normalize_frequencies([]) == []
 
 
 def test_dedup_collapses_exact_duplicates_and_sums_frequency() -> None:
@@ -284,11 +284,13 @@ def _assert_palette_invariants(palette: Palette) -> None:
 @settings(max_examples=50, deadline=None)
 @given(palette=_palette_strategy(), delta_e=st.floats(0.0, 0.3))
 def test_merge_similar_preserves_invariants(palette: Palette, delta_e: float) -> None:
+    before = [(c.rgb, c.frequency) for c in palette.colors]
     original_len = len(palette)
     result = palette.merge_similar(delta_e)
     _assert_palette_invariants(result)
     assert len(result) <= original_len
     assert len(palette) == original_len  # immutability
+    assert [(c.rgb, c.frequency) for c in palette.colors] == before  # original unchanged
 
 
 @settings(max_examples=50, deadline=None)

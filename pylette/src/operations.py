@@ -4,7 +4,7 @@ This module holds the numeric core for the palette operations exposed as thin
 methods on :class:`~pylette.src.color.Color` and
 :class:`~pylette.src.palette.Palette`. Functions here take and return plain
 ``list[Color]`` (or a single ``Color``); they never mutate their inputs except
-for the private ``_normalize_frequencies`` helper, which only touches colors it
+for the ``normalize_frequencies`` helper, which only touches colors it
 was handed to finalize a freshly built result.
 """
 
@@ -35,7 +35,7 @@ def weighted_oklab_mean(colors: list[Color]) -> tuple[tuple[float, float, float]
     return oklab_to_srgb((float(mean_lab[0]), float(mean_lab[1]), float(mean_lab[2]))), mean_opacity
 
 
-def _normalize_frequencies(colors: list[Color]) -> list[Color]:
+def normalize_frequencies(colors: list[Color]) -> list[Color]:
     """Assign equal frequencies summing to 1.0 across ``colors`` in place."""
     n = len(colors)
     for color in colors:
@@ -49,7 +49,8 @@ def sort_perceptual(colors: list[Color], descending: bool = False) -> list[Color
     Python's ``sorted`` is stable, so equal-lightness colors keep their relative
     order; sorting an already-sorted list is a no-op (idempotent).
     """
-    return sorted(colors, key=lambda c: c.oklab[0], reverse=descending)
+    ordered = sorted(colors, key=lambda c: c.oklab[0], reverse=descending)
+    return [Color.from_srgb_float(c.rgb_float, c.frequency, alpha=c.opacity) for c in ordered]
 
 
 def merge_similar(colors: list[Color], delta_e: float) -> list[Color]:
@@ -77,7 +78,7 @@ def merge_similar(colors: list[Color], delta_e: float) -> list[Color]:
                 break
         else:
             clusters.append([color])
-            reps.append(color)
+            reps.append(Color.from_srgb_float(color.rgb_float, color.frequency, alpha=color.opacity))
     return reps
 
 
@@ -100,7 +101,7 @@ def interpolate(a: Color, b: Color, steps: int) -> list[Color]:
         lab = (la[0] + t * (lb[0] - la[0]), la[1] + t * (lb[1] - la[1]), la[2] + t * (lb[2] - la[2]))
         opacity = a.opacity + t * (b.opacity - a.opacity)
         result.append(Color.from_srgb_float(oklab_to_srgb(lab), frequency=0.0, alpha=opacity))
-    return _normalize_frequencies(result)
+    return normalize_frequencies(result)
 
 
 def dedup(colors: list[Color]) -> list[Color]:
@@ -127,7 +128,7 @@ def dedup(colors: list[Color]) -> list[Color]:
     return result
 
 
-# Hue offsets (fraction of the 360° wheel) per harmony, seed listed first.
+# Hue offsets (fraction of the 360-degree wheel) per harmony; seed is at offset 0.0 (middle entry for analogous).
 _HARMONY_OFFSETS: dict[HarmonyKind, tuple[float, ...]] = {
     HarmonyKind.COMPLEMENTARY: (0.0, 0.5),  # +180°
     HarmonyKind.TRIADIC: (0.0, 1.0 / 3.0, 2.0 / 3.0),  # ±120°
@@ -152,4 +153,4 @@ def harmony(seed: Color, kind: HarmonyKind | str) -> list[Color]:
         new_h = (h + offset) % 1.0
         r, g, b = colorsys.hsv_to_rgb(new_h, s, v)
         result.append(Color.from_srgb_float((r, g, b), frequency=0.0, alpha=seed.opacity))
-    return _normalize_frequencies(result)
+    return normalize_frequencies(result)
