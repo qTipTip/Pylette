@@ -8,7 +8,7 @@ to ensure type safety and consistency.
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Protocol, TypeAlias, TypedDict
+from typing import TYPE_CHECKING, Any, Protocol, TypeAlias, TypedDict, TypeVar
 
 import numpy as np
 from cv2.typing import MatLike
@@ -63,6 +63,35 @@ class ColorSpace(str, Enum):
     RGB = "rgb"
     HSV = "hsv"
     HLS = "hls"
+
+
+_EnumT = TypeVar("_EnumT", bound=Enum)
+
+
+def coerce_to_enum(value: "_EnumT | str", enum_cls: type[_EnumT]) -> _EnumT:
+    """Coerce ``value`` to a member of ``enum_cls``.
+
+    Accepts an existing member, the member's value, or its (case-insensitive)
+    name. This is the single place that turns user-facing strings into enums
+    (e.g. ``mode`` and ``colorspace``), replacing acceptance scattered across the
+    registry, ``extract_colors``, and JSON export.
+
+    Raises:
+        ValueError: If ``value`` matches no member of ``enum_cls``.
+    """
+    if isinstance(value, enum_cls):
+        return value
+    if isinstance(value, str):
+        try:
+            return enum_cls(value)
+        except ValueError:
+            pass
+        try:
+            return enum_cls[value.upper()]
+        except KeyError:
+            pass
+    valid = ", ".join(f"{m.name}/{m.value}" for m in enum_cls)
+    raise ValueError(f"Unknown {enum_cls.__name__} {value!r}. Valid options: {valid}.")
 
 
 # PaletteMetaData Types

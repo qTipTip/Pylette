@@ -4,7 +4,15 @@ import numpy as np
 from PIL import Image
 
 from pylette.src.color import Color
-from pylette.src.types import ColorSpace, ExtractionParams, ImageInfo, PaletteMetaData, ProcessingStats, SourceType
+from pylette.src.types import (
+    ColorSpace,
+    ExtractionParams,
+    ImageInfo,
+    PaletteMetaData,
+    ProcessingStats,
+    SourceType,
+    coerce_to_enum,
+)
 
 
 class Palette:
@@ -17,7 +25,7 @@ class Palette:
         """
 
         self.colors = colors
-        self.frequencies = [c.freq for c in colors]
+        self.frequencies = [c.frequency for c in colors]
         self.number_of_colors = len(colors)
         self.metadata = metadata
 
@@ -116,7 +124,7 @@ class Palette:
     def to_json(
         self,
         filename: str | None = None,
-        colorspace: ColorSpace = ColorSpace.RGB,
+        colorspace: ColorSpace | str = ColorSpace.RGB,
         include_metadata: bool = True,
     ) -> dict[str, object] | None:
         """
@@ -124,12 +132,15 @@ class Palette:
 
         Parameters:
             filename (str | None): File to save to. If None, returns the dictionary.
-            colorspace (Literal["rgb", "hsv", "hls"]): Color space to use.
+            colorspace (ColorSpace | str): Color space to use (enum member, its
+                value, or case-insensitive name).
             include_metadata (bool): Whether to include palette metadata.
 
         Returns:
             dict | None: The palette data as a dictionary if filename is None.
         """
+
+        colorspace = coerce_to_enum(colorspace, ColorSpace)
 
         # Build the palette data
         palette_data: dict[str, object] = {
@@ -143,7 +154,7 @@ class Palette:
         for color in self.colors:
             color_values = color.get_colors(colorspace)
             color_data: dict[str, object] = {
-                "frequency": float(color.freq),
+                "frequency": float(color.frequency),
             }
 
             # Add colorspace-specific field
@@ -197,7 +208,7 @@ class Palette:
     def export(
         self,
         filename: str,
-        colorspace: ColorSpace = ColorSpace.RGB,
+        colorspace: ColorSpace | str = ColorSpace.RGB,
         include_metadata: bool = True,
     ) -> None:
         """
@@ -205,7 +216,8 @@ class Palette:
 
         Parameters:
             filename (str): File to save to (extension will be added automatically if not present).
-            colorspace (ColorSpace): Color space to use.
+            colorspace (ColorSpace | str): Color space to use (enum member, its
+                value, or case-insensitive name).
             include_metadata (bool): Whether to include metadata.
         """
 
@@ -216,7 +228,7 @@ class Palette:
         self.to_json(filename=filename, colorspace=colorspace, include_metadata=include_metadata)
 
     def __str__(self):
-        return "".join(["({}, {}, {}, {}) \n".format(c.rgb[0], c.rgb[1], c.rgb[2], c.freq) for c in self.colors])
+        return "".join(["({}, {}, {}, {}) \n".format(c.rgb[0], c.rgb[1], c.rgb[2], c.frequency) for c in self.colors])
 
     # Convenient metadata accessors
     @property

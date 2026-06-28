@@ -63,10 +63,10 @@ Extract palettes from images using simple commands:
     pylette *.jpg --export-json --output results/
 
     # Extract 8 colors in HSV colorspace with structured export
-    pylette photo.png --n 8 --colorspace hsv --export-json --output colors.json
+    pylette photo.png --palette-size 8 --colorspace hsv --export-json --output colors.json
 
     # Batch process with parallel processing and table display
-    pylette images/*.png --n 6 --num-threads 4
+    pylette images/*.png --palette-size 6 --max-workers 4
     ```
 
 **Example Output:**
@@ -100,7 +100,7 @@ For programmatic usage and advanced workflows:
         print(f"RGB: {color.rgb}")
         print(f"Hex: {color.hex}")
         print(f"HSV: {color.hsv}")
-        print(f"Frequency: {color.freq:.2%}")
+        print(f"Frequency: {color.frequency:.2%}")
 
     # Export to structured JSON
     palette.to_json(filename='palette.json', colorspace='hsv')

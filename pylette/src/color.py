@@ -1,8 +1,9 @@
 import colorsys
+import warnings
 
 import numpy as np
 
-from pylette.src.types import ColorSpace
+from pylette.src.types import ColorSpace, coerce_to_enum
 
 # Weights for calculating luminance
 luminance_weights = np.array([0.2126, 0.7152, 0.0722])
@@ -37,7 +38,7 @@ class Color(object):
         r, g, b, alpha = (int(round(float(v))) for v in rgba)
         self._srgb: tuple[float, float, float] = (r / 255.0, g / 255.0, b / 255.0)
         self._alpha: float = alpha / 255.0
-        self.freq: float = frequency
+        self.frequency: float = frequency
 
     @classmethod
     def from_srgb_float(
@@ -66,7 +67,7 @@ class Color(object):
         r, g, b = srgb
         obj._srgb = (_clamp_unit(r), _clamp_unit(g), _clamp_unit(b))
         obj._alpha = _clamp_unit(alpha)
-        obj.freq = frequency
+        obj.frequency = frequency
         return obj
 
     @property
@@ -91,14 +92,24 @@ class Color(object):
         return (int(round(r * 255.0)), int(round(g * 255.0)), int(round(b * 255.0)))
 
     @property
-    def a(self) -> int:
+    def alpha(self) -> int:
         """
-        The alpha channel as an 8-bit value.
+        The alpha channel as a raw 8-bit value (matches :attr:`rgba`).
 
         Returns:
             int: Alpha as a plain Python int in [0, 255].
         """
         return int(round(self._alpha * 255.0))
+
+    @property
+    def opacity(self) -> float:
+        """
+        The alpha channel as a fraction (opacity) in ``[0, 1]``.
+
+        Returns:
+            float: Opacity in [0, 1].
+        """
+        return self._alpha
 
     @property
     def rgba(self) -> tuple[int, int, int, int]:
@@ -109,17 +120,41 @@ class Color(object):
             tuple[int, int, int, int]: (r, g, b, a) as plain Python ints in [0, 255].
         """
         r, g, b = self.rgb
-        return (r, g, b, self.a)
+        return (r, g, b, self.alpha)
+
+    @property
+    def a(self) -> int:
+        """Deprecated alias for :attr:`alpha`."""
+        warnings.warn(
+            "Color.a is deprecated and will be removed; use Color.alpha instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.alpha
 
     @property
     def weight(self) -> float:
-        """
-        The alpha channel as a fraction in ``[0, 1]``.
+        """Deprecated alias for :attr:`opacity`.
 
-        Returns:
-            float: Alpha in [0, 1].
+        The name is misleading: in a palette context "weight" reads as relative
+        importance (frequency), but it holds opacity. Use :attr:`opacity`.
         """
-        return self._alpha
+        warnings.warn(
+            "Color.weight is deprecated and will be removed; use Color.opacity instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.opacity
+
+    @property
+    def freq(self) -> float:
+        """Deprecated alias for :attr:`frequency`."""
+        warnings.warn(
+            "Color.freq is deprecated and will be removed; use Color.frequency instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.frequency
 
     def display(self, w: int = 50, h: int = 50) -> None:
         """
@@ -145,18 +180,20 @@ class Color(object):
         Returns:
             bool: True if the frequency of this color is less than the frequency of the other color, False otherwise.
         """
-        return self.freq < other.freq
+        return self.frequency < other.frequency
 
-    def get_colors(self, colorspace: ColorSpace = ColorSpace.RGB) -> tuple[int, ...] | tuple[float, ...]:
+    def get_colors(self, colorspace: ColorSpace | str = ColorSpace.RGB) -> tuple[int, ...] | tuple[float, ...]:
         """
         Returns the color values in the specified color space.
 
         Parameters:
-            colorspace (ColorSpace): The color space to use.
+            colorspace (ColorSpace | str): The color space to use (enum member,
+                its value, or case-insensitive name).
 
         Returns:
             tuple[int, ...] | tuple[float, ...]: The color values in the specified color space.
         """
+        colorspace = coerce_to_enum(colorspace, ColorSpace)
         colors = {ColorSpace.RGB: self.rgb, ColorSpace.HSV: self.hsv, ColorSpace.HLS: self.hls}
         return colors[colorspace]
 

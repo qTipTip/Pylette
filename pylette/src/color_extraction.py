@@ -21,6 +21,7 @@ from pylette.src.types import (
     PILImage,
     ProcessingStats,
     SourceType,
+    coerce_to_enum,
 )
 
 
@@ -88,7 +89,7 @@ def batch_extract_colors(
     images: Sequence[ImageInput],
     palette_size: int = 5,
     resize: bool = True,
-    mode: ExtractionMethod = ExtractionMethod.KM,
+    mode: ExtractionMethod | str = ExtractionMethod.KM,
     sort_mode: Literal["luminance", "frequency"] | None = None,
     alpha_mask_threshold: int | None = None,
     max_workers: int | None = None,
@@ -141,7 +142,7 @@ def extract_colors(
     image: ImageInput,
     palette_size: int = 5,
     resize: bool = True,
-    mode: ExtractionMethod = ExtractionMethod.KM,
+    mode: ExtractionMethod | str = ExtractionMethod.KM,
     sort_mode: Literal["luminance", "frequency"] | None = None,
     alpha_mask_threshold: int | None = None,
 ) -> Palette:
@@ -167,6 +168,8 @@ def extract_colors(
     """
 
     start_time = time.time()
+
+    mode = coerce_to_enum(mode, ExtractionMethod)
 
     source_type = _get_source_type_from_image_input(image)
     # Normalize input to PIL Image and convert to RGBA

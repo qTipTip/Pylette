@@ -23,6 +23,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`Color.rgb_float`**: New property returning the canonical color as float
   sRGB components in `[0, 1]`, plus a `Color.from_srgb_float(...)` constructor
   for building colors from continuous (non-quantized) centroids.
+- **Honest color attribute names**: `Color.frequency` (relative cluster weight
+  in `[0, 1]`, summing to 1), `Color.alpha` (raw 0–255 channel), and
+  `Color.opacity` (the same value as the old `.weight`, in `[0, 1]`). These
+  replace `.freq`, `.a`, and `.weight` respectively.
+- **String acceptance for `mode` and `colorspace`**: both now accept an enum
+  member, its value, or its case-insensitive name (e.g. `mode="KM"`,
+  `mode="KMeans"`).
 
 ### Changed
 
@@ -42,6 +49,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Spatial dimensions are no longer needed since extractors reshape by the array's
   actual length. Custom extractors implementing the protocol must update their
   signature accordingly.
+- **CLI option names aligned with the library**: `--palette-size` (canonical;
+  `--n` kept as an alias) and `--max-workers` (canonical; `--num-threads` kept
+  as an alias).
+
+### Deprecated
+
+- **`Color.freq`, `Color.weight`, `Color.a`**: replaced by `Color.frequency`,
+  `Color.opacity`, and `Color.alpha` respectively. The old names still work for
+  one release and now emit a `DeprecationWarning`. The CLI's `--n` and
+  `--num-threads` remain as deprecated aliases of `--palette-size` and
+  `--max-workers`.
 
 ### Removed
 
