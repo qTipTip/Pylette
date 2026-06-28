@@ -61,6 +61,10 @@ rather than message. Each subclass also derives from `ValueError`, so existing
 - **CLI option names aligned with the library**: `--palette-size` (canonical;
   `--n` kept as an alias) and `--max-workers` (canonical; `--num-threads` kept
   as an alias).
+- **Explicit sample size**: `resize` now takes an `int` sample size or `None`
+  (no resize) instead of a bare bool, surfacing the previously hidden 256x256
+  downscale. The default is `resize=256` (unchanged behavior). The
+  `ExtractionParams` metadata `resize` field is now `int | None`.
 
 ### Deprecated
 
@@ -71,6 +75,9 @@ rather than message. Each subclass also derives from `ValueError`, so existing
   `--max-workers`.
 - **`Color.get_colors(...)`**: replaced by `Color.to(...)`. It still works for
   one release and now emits a `DeprecationWarning`.
+- **Bare bool `resize`**: pass an int sample size or `None` instead. `resize=True`
+  (→ `256`) and `resize=False` (→ `None`) still work for one release and now emit
+  a `DeprecationWarning`.
 
 ### Removed
 

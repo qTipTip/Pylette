@@ -33,7 +33,7 @@ def test_extraction_survives_alpha_masking(half_transparent_image: Image.Image, 
         half_transparent_image,
         palette_size=5,
         mode=mode,
-        resize=False,
+        resize=None,
         alpha_mask_threshold=0,
     )
     assert len(palette) <= 5

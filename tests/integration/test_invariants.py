@@ -37,8 +37,8 @@ def _assert_palette_invariants(palette: Palette, palette_size: int) -> None:
 
 @pytest.mark.parametrize("mode", METHODS)
 @pytest.mark.parametrize("palette_size", [1, 3, 5])
-@pytest.mark.parametrize("resize", [True, False])
-def test_solid_image_is_handled(mode: str, palette_size: int, resize: bool) -> None:
+@pytest.mark.parametrize("resize", [256, None])
+def test_solid_image_is_handled(mode: str, palette_size: int, resize: int | None) -> None:
     img = Image.new("RGB", (8, 8), (12, 200, 75))
     palette = extract_colors(img, palette_size=palette_size, mode=mode, resize=resize)
     _assert_palette_invariants(palette, palette_size)
@@ -48,7 +48,7 @@ def test_solid_image_is_handled(mode: str, palette_size: int, resize: bool) -> N
 @pytest.mark.parametrize("mode", METHODS)
 def test_one_by_one_image_is_handled(mode: str) -> None:
     img = Image.fromarray(np.array([[[10, 20, 30]]], dtype=np.uint8), "RGB")
-    palette = extract_colors(img, palette_size=5, mode=mode, resize=False)
+    palette = extract_colors(img, palette_size=5, mode=mode, resize=None)
     _assert_palette_invariants(palette, 5)
     assert len(palette) >= 1
 
@@ -57,7 +57,7 @@ def test_one_by_one_image_is_handled(mode: str) -> None:
 def test_palette_size_exceeds_distinct_colors(mode: str) -> None:
     arr = np.array([[[0, 0, 0], [255, 255, 255]], [[255, 0, 0], [0, 0, 255]]], dtype=np.uint8)
     img = Image.fromarray(arr, "RGB")
-    palette = extract_colors(img, palette_size=10, mode=mode, resize=False)
+    palette = extract_colors(img, palette_size=10, mode=mode, resize=None)
     _assert_palette_invariants(palette, 10)
 
 
@@ -67,7 +67,7 @@ def test_partial_alpha_mask_is_handled(mode: str) -> None:
     arr[..., :3] = np.random.default_rng(0).integers(0, 256, (16, 16, 3))
     arr[::2, :, 3] = 255  # half opaque, half transparent
     img = Image.fromarray(arr, "RGBA")
-    palette = extract_colors(img, palette_size=5, mode=mode, resize=False, alpha_mask_threshold=0)
+    palette = extract_colors(img, palette_size=5, mode=mode, resize=None, alpha_mask_threshold=0)
     _assert_palette_invariants(palette, 5)
 
 
@@ -76,7 +76,7 @@ def test_total_alpha_mask_raises_typed_error(mode: str) -> None:
     arr = np.zeros((16, 16, 4), dtype=np.uint8)  # alpha = 0 everywhere
     img = Image.fromarray(arr, "RGBA")
     with pytest.raises(NoValidPixelsError):
-        extract_colors(img, palette_size=5, mode=mode, resize=False, alpha_mask_threshold=0)
+        extract_colors(img, palette_size=5, mode=mode, resize=None, alpha_mask_threshold=0)
 
 
 @pytest.mark.parametrize("mode", METHODS)
@@ -119,7 +119,7 @@ _image_arrays = arrays(
     palette_size=st.integers(1, 8),
     mode=st.sampled_from(METHODS),
     sort_mode=st.sampled_from([None, "luminance", "frequency"]),
-    resize=st.booleans(),
+    resize=st.sampled_from([None, 64]),
 )
 def test_property_invariants_hold_for_arbitrary_images(arr, palette_size, mode, sort_mode, resize) -> None:  # type: ignore[no-untyped-def]
     mode_str = "RGB" if arr.shape[-1] == 3 else "RGBA"

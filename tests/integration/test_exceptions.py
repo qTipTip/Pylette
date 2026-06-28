@@ -60,7 +60,7 @@ def test_invalid_url_image_raises_invalid_image_error(requests_mock) -> None:  #
 def test_fully_masked_image_raises_no_valid_pixels_error(fully_transparent_image: Image.Image) -> None:
     """The all-masked #76 case stays pinned to a typed error."""
     with pytest.raises(NoValidPixelsError):
-        extract_colors(fully_transparent_image, alpha_mask_threshold=0, resize=False)
+        extract_colors(fully_transparent_image, alpha_mask_threshold=0, resize=None)
 
 
 def test_unknown_mode_raises_unknown_extraction_method_error(opaque_image: Image.Image) -> None:

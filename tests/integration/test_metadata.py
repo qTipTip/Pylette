@@ -6,11 +6,11 @@ from pylette.src.types import BytesImage, ExtractionMethod, PathLikeImage, URLIm
 
 
 @pytest.mark.parametrize("mode", [ExtractionMethod.KM, ExtractionMethod.MC])
-@pytest.mark.parametrize("resize", [True, False])
+@pytest.mark.parametrize("resize", [256, None])
 class TestMetadata:
     """Test metadata verification for different extraction configurations."""
 
-    def test_metadata_file_path_as_str(self, test_image_path_as_str: str, mode: ExtractionMethod, resize: bool):
+    def test_metadata_file_path_as_str(self, test_image_path_as_str: str, mode: ExtractionMethod, resize: int | None):
         """Test metadata for file path as string input."""
         palette = extract_colors(test_image_path_as_str, mode=mode, resize=resize)
 
@@ -31,13 +31,13 @@ class TestMetadata:
         assert image_info["mode"] == "RGBA"
         assert image_info["has_alpha"] is True
 
-        if resize:
+        if resize is not None:
             assert image_info["processed_size"] == (256, 256)
         else:
             assert image_info["processed_size"] == (1202, 1276)
 
     def test_metadata_file_path_as_pathlike(
-        self, test_image_path_as_pathlike: PathLikeImage, mode: ExtractionMethod, resize: bool
+        self, test_image_path_as_pathlike: PathLikeImage, mode: ExtractionMethod, resize: int | None
     ):
         """Test metadata for file path as Path object input."""
         palette = extract_colors(test_image_path_as_pathlike, mode=mode, resize=resize)
@@ -59,12 +59,12 @@ class TestMetadata:
         assert image_info["mode"] == "RGBA"
         assert image_info["has_alpha"] is True
 
-        if resize:
+        if resize is not None:
             assert image_info["processed_size"] == (256, 256)
         else:
             assert image_info["processed_size"] == (1202, 1276)
 
-    def test_metadata_url(self, test_image_as_url: URLImage, mode: ExtractionMethod, resize: bool):
+    def test_metadata_url(self, test_image_as_url: URLImage, mode: ExtractionMethod, resize: int | None):
         """Test metadata for URL input."""
         palette = extract_colors(test_image_as_url, mode=mode, resize=resize)
 
@@ -85,12 +85,12 @@ class TestMetadata:
         assert image_info["mode"] == "RGBA"
         assert image_info["has_alpha"] is True
 
-        if resize:
+        if resize is not None:
             assert image_info["processed_size"] == (256, 256)
         else:
             assert image_info["processed_size"] == (1202, 1276)
 
-    def test_metadata_bytes(self, test_image_as_bytes: BytesImage, mode: ExtractionMethod, resize: bool):
+    def test_metadata_bytes(self, test_image_as_bytes: BytesImage, mode: ExtractionMethod, resize: int | None):
         """Test metadata for bytes input."""
         palette = extract_colors(test_image_as_bytes, mode=mode, resize=resize)
 
@@ -110,7 +110,7 @@ class TestMetadata:
         assert image_info["mode"] == "RGBA"
         assert image_info["has_alpha"] is True
 
-        if resize:
+        if resize is not None:
             assert image_info["processed_size"] == (256, 256)
         else:
             assert image_info["processed_size"] == (1202, 1276)
@@ -135,7 +135,7 @@ def test_metadata_processing_stats(test_image_path_as_str: str):
 
 def test_metadata_processing_stats_no_resize(test_image_path_as_str: str):
     """Test processing statistics for non-resized image."""
-    palette = extract_colors(test_image_path_as_str, resize=False)
+    palette = extract_colors(test_image_path_as_str, resize=None)
 
     assert palette.metadata
     stats = palette.metadata["processing_stats"]

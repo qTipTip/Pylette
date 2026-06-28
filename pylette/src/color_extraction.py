@@ -1,5 +1,6 @@
 import time
 import urllib.parse
+import warnings
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from io import BytesIO
@@ -95,10 +96,31 @@ def _get_descriptive_image_source(image: ImageInput, pil_image: PILImage) -> str
         return f"<unknown: {type(image).__name__}>"
 
 
+def _resolve_resize(resize: int | bool | None) -> int | None:
+    """Normalize the ``resize`` argument to a pixel sample size or ``None``.
+
+    Accepts an ``int`` sample size (the image is resized to ``(resize, resize)``
+    before sampling), ``None`` (no resize, sample the full image), or a
+    deprecated ``bool`` (``True`` -> 256, ``False`` -> ``None``).
+    """
+    if isinstance(resize, bool):
+        warnings.warn(
+            "Passing a bool for `resize` is deprecated and will be removed; pass an int "
+            "sample size (e.g. resize=256) or None to disable resizing (True maps to 256, "
+            "False to None).",
+            DeprecationWarning,
+            stacklevel=3,
+        )
+        return 256 if resize else None
+    if resize is not None and resize < 1:
+        raise ValueError(f"resize must be a positive int or None, got {resize!r}.")
+    return resize
+
+
 def batch_extract_colors(
     images: Sequence[ImageInput],
     palette_size: int = 5,
-    resize: bool = True,
+    resize: int | bool | None = 256,
     mode: ExtractionMethod | str = ExtractionMethod.KM,
     sort_mode: Literal["luminance", "frequency"] | None = None,
     alpha_mask_threshold: int | None = None,
@@ -111,6 +133,8 @@ def batch_extract_colors(
         progress_callback: Optional callback function called when each task completes.
                          Receives (task_number, result) as arguments.
     """
+
+    resize = _resolve_resize(resize)
 
     def thread_fn(image: ImageInput):
         return extract_colors(
@@ -151,7 +175,7 @@ def batch_extract_colors(
 def extract_colors(
     image: ImageInput,
     palette_size: int = 5,
-    resize: bool = True,
+    resize: int | bool | None = 256,
     mode: ExtractionMethod | str = ExtractionMethod.KM,
     sort_mode: Literal["luminance", "frequency"] | None = None,
     alpha_mask_threshold: int | None = None,
@@ -162,7 +186,12 @@ def extract_colors(
     Parameters:
         image: The input image.
         palette_size: The number of colors to extract.
-        resize: Whether to resize the image before processing.
+        resize: The sample size. The image is downscaled to ``(resize, resize)``
+            before colors are extracted, which bounds runtime; pass ``None`` to
+            sample the image at full resolution instead. Smaller values are
+            faster but coarser; larger values are slower but capture more detail.
+            Defaults to ``256``. (Passing a ``bool`` is deprecated: ``True`` maps
+            to ``256`` and ``False`` to ``None``.)
         mode: The color quantization algorithm to use.
         sort_mode: The mode to sort colors.
         alpha_mask_threshold: Optional integer between 0, 255.
@@ -196,13 +225,14 @@ def extract_colors(
     Examples:
         Colors can be extracted from a variety of sources, including local files, byte streams, URLs, and numpy arrays.
 
-        >>> extract_colors("path/to/image.jpg", palette_size=5, resize=True, mode="KM", sort_mode="luminance")
-        >>> extract_colors(b"image_bytes", palette_size=5, resize=True, mode="KM", sort_mode="luminance")
+        >>> extract_colors("path/to/image.jpg", palette_size=5, resize=256, mode="KM", sort_mode="luminance")
+        >>> extract_colors(b"image_bytes", palette_size=5, resize=None, mode="KM", sort_mode="luminance")
     """
 
     start_time = time.time()
 
     mode = coerce_to_enum(mode, ExtractionMethod, error_cls=UnknownExtractionMethodError)
+    resize = _resolve_resize(resize)
 
     source_type = _get_source_type_from_image_input(image)
     # Normalize input to PIL Image and convert to RGBA
@@ -213,15 +243,15 @@ def extract_colors(
     # Store original image info
     image_info = ImageInfo(
         original_size=original_size,
-        processed_size=img.size if not resize else (256, 256),
+        processed_size=(resize, resize) if resize is not None else img.size,
         format=getattr(img_obj, "format", None),
         mode=img.mode,
         has_alpha=img.mode in ("RGBA", "LA") or "transparency" in img_obj.info,
     )
 
-    if resize:
-        img = img.resize((256, 256))
-        image_info["processed_size"] = (256, 256)
+    if resize is not None:
+        img = img.resize((resize, resize))
+        image_info["processed_size"] = (resize, resize)
 
     width, height = img.size
     arr = np.asarray(img)

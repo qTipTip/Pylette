@@ -118,7 +118,7 @@ class ExtractionParams(TypedDict):
     palette_size: int
     mode: ExtractionMethod
     sort_mode: str | None
-    resize: bool
+    resize: int | None
     alpha_mask_threshold: int | None
 
 
