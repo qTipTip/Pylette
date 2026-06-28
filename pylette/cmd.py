@@ -26,7 +26,9 @@ def main(
         List[str], typer.Argument(help="A list of paths / directories / URLs pointing to images.")
     ],  # These can be paths or URLs
     mode: ExtractionMethod = ExtractionMethod.KM,
-    n: int = 5,
+    palette_size: int = typer.Option(
+        5, "--palette-size", "--n", help="Number of colors to extract. (--n is a deprecated alias.)"
+    ),
     sort_by: SortBy = SortBy.luminance,
     stdout: bool = True,
     out_filename: pathlib.Path | None = None,
@@ -38,8 +40,12 @@ def main(
         max=255,
         help="Alpha threshold for transparent image masking (0-255). Pixels with alpha below this value are excluded.",
     ),
-    num_threads: int | None = typer.Option(
-        None, min=1, help="Number of threads used for batch extraction of color palettes"
+    max_workers: int | None = typer.Option(
+        None,
+        "--max-workers",
+        "--num-threads",
+        min=1,
+        help="Number of worker threads for batch extraction. (--num-threads is a deprecated alias.)",
     ),
     export_json: bool = typer.Option(False, "--export-json", help="Export palettes to JSON format"),
     output: pathlib.Path | None = typer.Option(
@@ -55,7 +61,7 @@ def main(
         raise typer.Exit(1)
 
     # Set up progress bar for CLI
-    with PyletteProgress(palette_size=n) as progress:
+    with PyletteProgress(palette_size=palette_size) as progress:
         task_id = progress.add_task("Extracting colors...", total=len(image_sources))
 
         def progress_callback(task_number: int, result: BatchResult):
@@ -71,11 +77,11 @@ def main(
 
         results = batch_extract_colors(
             images=image_sources,
-            palette_size=n,
+            palette_size=palette_size,
             sort_mode=sort_by.value,
             mode=mode,
             alpha_mask_threshold=alpha_mask_threshold,
-            max_workers=num_threads,
+            max_workers=max_workers,
             progress_callback=progress_callback,
         )
 
@@ -181,7 +187,7 @@ def display_palette_summary(successful_results: list[BatchResult], colorspace: C
             # Add color rows
             for color in palette.colors:
                 hex_color = color.hex
-                frequency = f"{color.freq:.1%}"
+                frequency = f"{color.frequency:.1%}"
 
                 # Get colorspace values
                 color_values = color.get_colors(colorspace)
@@ -219,3 +225,7 @@ def print_extraction_summary(successful: list[BatchResult], failed: list[BatchRe
 
 def main_typer() -> None:
     pylette_app()
+
+
+if __name__ == "__main__":
+    main_typer()
